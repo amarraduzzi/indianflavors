@@ -70,6 +70,11 @@ const copy = {
     ar: `دجاج تندوري مشوي في ${name}`,
   },
   benefitsKicker: { fr: 'Et ensuite', en: 'And after that', ar: 'وبعد ذلك' },
+  benefitsTitle: {
+    fr: 'Le club continue de vous gâter',
+    en: 'The club keeps spoiling you',
+    ar: 'يستمر النادي في تدليلكم',
+  },
   galleryAlt1: { fr: 'Chicken tikka maison', en: 'House chicken tikka', ar: 'دجاج تيكا منزلي' },
   galleryAlt2: { fr: 'Pani puri croustillants', en: 'Crisp pani puri', ar: 'باني بوري مقرمش' },
   galleryAlt3: { fr: 'Samossas faits maison', en: 'Homemade samosas', ar: 'سمبوسة منزلية' },
@@ -91,6 +96,7 @@ const copy = {
     ar: 'لا رسائل مزعجة ولا إلحاح متكرر. تصلكم العروض الشخصية مرة واحدة على الأقل شهريًا، لا أقل من ذلك أبدًا، ولا أكثر مما يبقى ممتعًا لتلقيه.',
   },
   faqKicker: { fr: 'Questions sur le club', en: 'Questions about the club', ar: 'أسئلة حول النادي' },
+  faqTitle: { fr: 'Tout ce qu\'il faut savoir', en: 'Everything you need to know', ar: 'كل ما تحتاجون معرفته' },
   closing: { fr: 'À bientôt à table.', en: 'See you at the table soon.', ar: 'إلى اللقاء قريبًا على الطاولة.' },
 } satisfies Record<string, LocalizedText>;
 
@@ -293,8 +299,11 @@ const path = localizedPath('/club', lang);
        icon rows. -->
   <div class="section-tint">
     <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
-      <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-7" style="color: var(--color-accent)">
+      <span class="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--color-accent)">
         {t(copy.benefitsKicker, lang)}
+      </span>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-8" style="color: var(--color-text-primary)">
+        {t(copy.benefitsTitle, lang)}
       </h2>
       <div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
         {benefits.map((benefit, i) => (
@@ -347,7 +356,7 @@ const path = localizedPath('/club', lang);
     <section class="max-w-4xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
       <div class="grid sm:grid-cols-2 gap-8 sm:gap-10 items-center">
         <div class="photo-frame rounded-2xl overflow-hidden aspect-[4/3]" data-reveal="scale">
-          <img src="/images/gallery-curries.webp" alt={t(copy.joinImageAlt, lang)} class="w-full h-full object-cover" loading="lazy" />
+          <img src="/images/gallery-biryani.webp" alt={t(copy.joinImageAlt, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
         <div data-reveal>
           <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-3" style="color: var(--color-text-primary)">
@@ -361,31 +370,40 @@ const path = localizedPath('/club', lang);
     </section>
   </div>
 
-  <section class="relative max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16 overflow-hidden">
-    <img
-      src="/images/club-emblem.webp"
-      alt=""
-      aria-hidden="true"
-      class="mark-watermark w-[20rem] h-[20rem] -left-24 -bottom-24 hidden sm:block"
-    />
-    <div
-      class="relative rounded-2xl px-6 py-8 sm:px-10 sm:py-10 text-center"
-      style="border: 1px solid var(--color-border); background-color: var(--color-surface)"
-      data-reveal
-    >
-      <p class="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--color-accent)">
-        {t(copy.promiseTitle, lang)}
-      </p>
-      <p class="font-display text-lg sm:text-xl leading-relaxed max-w-xl mx-auto" style="color: var(--color-text-primary)">
-        {t(copy.promiseText, lang)}
-      </p>
-    </div>
-  </section>
-
+  <!-- The promise statement now opens the same tinted panel as the FAQ
+       instead of sitting in its own plain black section between two tinted
+       bands — that used to read as a third, disconnected stop in the
+       scroll (plain → warm → plain-with-watermark → tint) before you ever
+       reached a question. One continuous panel (trust statement, then the
+       questions it naturally raises) reads as a single considered "before
+       you ask" moment instead of the page restarting its rhythm twice in
+       three short sections. -->
   <div class="section-tint">
-    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
-      <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-5" style="color: var(--color-accent)">
+    <section class="relative max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16 overflow-hidden">
+      <img
+        src="/images/club-emblem.webp"
+        alt=""
+        aria-hidden="true"
+        class="mark-watermark w-[20rem] h-[20rem] -left-24 -top-16 hidden sm:block"
+      />
+      <div
+        class="relative rounded-2xl px-6 py-8 sm:px-10 sm:py-10 text-center mb-12 sm:mb-16"
+        style="border: 1px solid var(--color-border); background-color: var(--color-background)"
+        data-reveal
+      >
+        <p class="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--color-accent)">
+          {t(copy.promiseTitle, lang)}
+        </p>
+        <p class="font-display text-lg sm:text-xl leading-relaxed max-w-xl mx-auto" style="color: var(--color-text-primary)">
+          {t(copy.promiseText, lang)}
+        </p>
+      </div>
+
+      <span class="block text-xs font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--color-accent)">
         {t(copy.faqKicker, lang)}
+      </span>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-7" style="color: var(--color-text-primary)">
+        {t(copy.faqTitle, lang)}
       </h2>
       <div class="space-y-3">
         {faqItems.map((item, i) => (
