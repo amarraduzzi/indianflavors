@@ -285,9 +285,9 @@ const path = localizedPath('/', lang);
         loading="lazy"
       />
     </div>
-    <!-- Gold tint (--color-accent) instead of the wine-red --color-primary-dark
-         used elsewhere on the site — this band specifically reads better warm/gold
-         against this photo than the brand red does. -->
+    <!-- Gold tint, same as --color-primary-dark now resolves to site-wide
+         (see global.css) — kept as an explicit --color-accent mix here since
+         this band was tuned by eye against this specific photo. -->
     <div class="absolute inset-0" style="background: linear-gradient(100deg, color-mix(in srgb, var(--color-accent) 30%, var(--color-background)) 0%, color-mix(in srgb, var(--color-accent) 16%, rgba(11,11,12,0.55)) 42%, rgba(11,11,12,0.15) 68%, transparent 100%)"></div>
 
     <div class="relative z-10 h-full flex items-center max-w-7xl mx-auto px-5 sm:px-8">

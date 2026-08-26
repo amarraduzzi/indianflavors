@@ -11,7 +11,14 @@
    ============================================================================ */
 :root {
   --color-primary: #C8102E;
-  --color-primary-dark: #8F0B20;
+  /* Was the wine-red #8F0B20 — every "warm dark" section across the site
+     (section-tint-warm, the scrolled header, the alternating Menu/FAQ/Avis
+     bands, the Club and signature-dish spotlight overlays) is color-mixed
+     off THIS single token, by design (see the .section-tint-warm comment
+     below). Changing it here re-tints the whole site from wine-red to a
+     dark bronze-gold in one place instead of hunting every individual
+     color-mix() call. */
+  --color-primary-dark: #8A6423;
   --color-accent: #C9A15A;
   --color-background: #0B0B0C;
   --color-surface: #131315;
