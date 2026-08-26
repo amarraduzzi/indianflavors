@@ -67,10 +67,41 @@ const copy = {
     en: 'House-made naan, baked in the tandoor',
     ar: 'خبز نان محضّر منزليًا، مخبوز في التندور',
   },
-  galleryAlt3: {
-    fr: `Intérieur de la salle chez ${siteConfig.identity.name}`,
-    en: `Inside the dining room at ${siteConfig.identity.name}`,
-    ar: `داخل صالة ${siteConfig.identity.name}`,
+  ambianceKicker: { fr: "L'ambiance", en: 'The ambiance', ar: 'الأجواء' },
+  ambianceTitle: {
+    fr: 'Un aperçu de l\'atmosphère',
+    en: 'A taste of the atmosphere',
+    ar: 'لمحة عن الأجواء',
+  },
+  ambianceAlt1: {
+    fr: 'Motif géométrique orientaliste, détail décoratif',
+    en: 'Geometric Moorish pattern, decorative detail',
+    ar: 'نقش هندسي مغربي، تفصيل زخرفي',
+  },
+  ambianceAlt2: {
+    fr: 'Cocktail sans alcool servi dans une ambiance tamisée',
+    en: 'Non-alcoholic cocktail served in a dimly lit setting',
+    ar: 'مشروب غير كحولي يُقدَّم في أجواء خافتة',
+  },
+  ambianceAlt3: {
+    fr: 'Biryani fumant servi dans une marmite en cuivre traditionnelle',
+    en: 'Steaming biryani served in a traditional copper pot',
+    ar: 'برياني ساخن يُقدَّم في قدر نحاسي تقليدي',
+  },
+  ambianceAlt4: {
+    fr: 'Thé chai versé depuis une théière artisanale',
+    en: 'Chai tea poured from a handcrafted teapot',
+    ar: 'شاي يُصَبّ من إبريق حرفي',
+  },
+  ambianceAlt5: {
+    fr: 'Lanterne orientale allumée, décor de table',
+    en: 'Lit Moorish lantern, table decor',
+    ar: 'فانوس شرقي مضاء، ديكور طاولة',
+  },
+  ambianceAlt6: {
+    fr: 'Naan fait maison servi avec une sauce chutney',
+    en: 'House-made naan served with a chutney dip',
+    ar: 'خبز نان محضّر منزليًا يُقدَّم مع صلصة الشطني',
   },
   bombayKicker: { fr: 'Tous les vendredis soir', en: 'Every Friday night', ar: 'كل ليلة جمعة' },
   bombayTitle: { fr: 'Bombay Lounge', en: 'Bombay Lounge', ar: 'بومباي لاونج' },
@@ -320,19 +351,59 @@ const path = localizedPath('/', lang);
   <!-- Photo gallery -->
   <div class="section-tint">
     <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div class="photo-frame rounded-2xl col-span-2 sm:col-span-1 aspect-square" data-reveal="scale">
+      <!-- Two tiles, not three: the third slot used to hold interior-1.webp
+           (a wide shot that put the framed royal portrait and Moroccan flag
+           front and center), which read as generic restaurant decor rather
+           than anything specific to this room. No other on-hand ambiance
+           photo was an honest match for that slot — see the honesty rule
+           documented in menu-highlights.ts — so this stays a clean 2-up
+           grid until a proper replacement photo comes in. -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div class="photo-frame rounded-2xl aspect-[4/3]" data-reveal="scale">
           <img src="/images/reservation-hero.webp" alt={t(copy.galleryAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
-        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 100ms">
+        <div class="photo-frame rounded-2xl aspect-[4/3]" data-reveal="scale" style="transition-delay: 100ms">
           <img src="/images/gallery-naan.webp" alt={t(copy.galleryAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 200ms">
-          <img src="/images/interior-1.webp" alt={t(copy.galleryAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
       </div>
     </section>
   </div>
+
+  <!-- Ambiance mood board — mood/reference imagery, deliberately kept apart
+       from the gallery above and from the menu's per-dish photos. Those are
+       genuine photos of this room and these dishes; these six are stand-ins
+       for the atmosphere while real on-site photography is being shot, so
+       the copy above (kicker + alt text) frames them as mood, never as "this
+       is our biryani" or "this is our dining room" — same honesty line the
+       rest of the site holds to, just applied to a different kind of image.
+       Swap these six for real shots as soon as they're in; no code changes
+       needed beyond the src attributes below. -->
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+    <div class="max-w-2xl mb-10 sm:mb-12" data-reveal>
+      <p class="font-bold text-sm tracking-widest uppercase" style="color: var(--color-accent)">{t(copy.ambianceKicker, lang)}</p>
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">{t(copy.ambianceTitle, lang)}</h2>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale">
+        <img src="/images/mood-tile.webp" alt={t(copy.ambianceAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 60ms">
+        <img src="/images/mood-cocktail.webp" alt={t(copy.ambianceAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 120ms">
+        <img src="/images/mood-biryani.webp" alt={t(copy.ambianceAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 180ms">
+        <img src="/images/mood-chai.webp" alt={t(copy.ambianceAlt4, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 240ms">
+        <img src="/images/mood-lantern.webp" alt={t(copy.ambianceAlt5, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 300ms">
+        <img src="/images/mood-naan.webp" alt={t(copy.ambianceAlt6, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+    </div>
+  </section>
 
   <!-- Why us / E-E-A-T signals -->
   <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24 grid sm:grid-cols-3 gap-8">
