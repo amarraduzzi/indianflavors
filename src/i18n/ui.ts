@@ -21,6 +21,7 @@ export const nav: Record<'accueil' | 'menu' | 'aPropos' | 'avis' | 'club' | 'res
 export const common = {
   commander: { fr: 'Commander', en: 'Order', ar: 'اطلب الآن' } satisfies LocalizedText,
   voirLeMenu: { fr: 'Voir le menu', en: 'View the menu', ar: 'شاهد القائمة' } satisfies LocalizedText,
+  reserverUneTable: { fr: 'Réserver une table', en: 'Reserve a table', ar: 'احجز طاولة' } satisfies LocalizedText,
   menuComplet: { fr: 'Menu complet', en: 'Full menu', ar: 'القائمة الكاملة' } satisfies LocalizedText,
   decouvrirLeMenu: { fr: 'Découvrir le menu', en: 'Discover the menu', ar: 'اكتشف القائمة' } satisfies LocalizedText,
   voirLeMenuComplet: { fr: 'Voir le menu complet', en: 'See the full menu', ar: 'شاهد القائمة الكاملة' } satisfies LocalizedText,
