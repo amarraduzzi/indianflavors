@@ -400,29 +400,44 @@ const path = localizedPath('/', lang);
   </style>
 
   <script>
-    document.querySelectorAll<HTMLElement>('.testimonial-carousel').forEach((carousel) => {
-      const slides = Array.from(carousel.querySelectorAll<HTMLElement>('.testimonial-slide'));
-      const dots = Array.from(carousel.querySelectorAll<HTMLElement>('.testimonial-dot'));
-      let active = 0;
-      let timer: ReturnType<typeof setInterval>;
+    // Wrapped in 'astro:page-load' like every other script on this site
+    // (see Layout.astro/Header.astro's comments) — Layout.astro enables
+    // View Transitions sitewide, so a plain module script here only ever
+    // ran on a hard page refresh, never on a client-side navigation TO the
+    // home page (the normal way a visitor arrives via the nav bar). That
+    // left every slide stuck at its default opacity:0/absolute state and
+    // every dot un-highlighted — exactly the "empty" carousel this fixes.
+    // The `data-wired` guard mirrors ReservationContent.astro's form guard
+    // so repeated soft-navigations to Home don't stack up duplicate
+    // setInterval timers on the same carousel.
+    document.addEventListener('astro:page-load', () => {
+      document.querySelectorAll<HTMLElement>('.testimonial-carousel').forEach((carousel) => {
+        if (carousel.dataset.wired === 'true') return;
+        carousel.dataset.wired = 'true';
 
-      function show(index: number) {
-        active = (index + slides.length) % slides.length;
-        slides.forEach((s, i) => s.classList.toggle('is-active', i === active));
-        dots.forEach((d, i) => d.classList.toggle('is-active', i === active));
-      }
-      function start() {
-        timer = setInterval(() => show(active + 1), 6000);
-      }
-      dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => {
-          show(i);
-          clearInterval(timer);
-          start();
+        const slides = Array.from(carousel.querySelectorAll<HTMLElement>('.testimonial-slide'));
+        const dots = Array.from(carousel.querySelectorAll<HTMLElement>('.testimonial-dot'));
+        let active = 0;
+        let timer: ReturnType<typeof setInterval>;
+
+        function show(index: number) {
+          active = (index + slides.length) % slides.length;
+          slides.forEach((s, i) => s.classList.toggle('is-active', i === active));
+          dots.forEach((d, i) => d.classList.toggle('is-active', i === active));
+        }
+        function start() {
+          timer = setInterval(() => show(active + 1), 6000);
+        }
+        dots.forEach((dot, i) => {
+          dot.addEventListener('click', () => {
+            show(i);
+            clearInterval(timer);
+            start();
+          });
         });
+        show(0);
+        start();
       });
-      show(0);
-      start();
     });
   </script>
 </Layout>
