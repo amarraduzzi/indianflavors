@@ -165,13 +165,14 @@ export const menuHighlights: MenuHighlightCategory[] = [
     ],
   },
   {
+    // No category banner here (see the honesty rule at the top of this
+    // file, and the same call already made for the two categories above
+    // this): the only photo available for this category was a grainy,
+    // off-brand snapshot that clashed with every other professional shot
+    // on the site, and there's no accurate replacement photo of these
+    // specific dishes on hand yet. Text-only is the correct fallback —
+    // never a mismatched or lower-quality stand-in.
     label: { fr: 'Plats Principaux', en: 'Main Courses', ar: 'الأطباق الرئيسية' },
-    image: '/images/gallery-curries.webp',
-    imageAlt: {
-      fr: 'Currys mijotés servis en plat principal',
-      en: 'Slow-cooked curries served as a main course',
-      ar: 'أطباق كاري مطهوة على نار هادئة كطبق رئيسي',
-    },
     items: [
       {
         name: 'Butter Chicken',

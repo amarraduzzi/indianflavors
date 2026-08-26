@@ -58,9 +58,9 @@ const copy = {
     ar: 'برياني حيدر آبادي مطهو ببطء حتى الكمال، يُقدَّم مع باني بوري وخبز نان طازج من التندور.',
   },
   galleryAlt1: {
-    fr: `Plats de ${siteConfig.identity.name}, ${primaryKeyword} à ${city}`,
-    en: `Dishes from ${siteConfig.identity.name}, ${primaryKeyword} in ${city}`,
-    ar: `أطباق من ${siteConfig.identity.name}, ${primaryKeyword} في ${city}`,
+    fr: `Table dressée chez ${siteConfig.identity.name}, ambiance feutrée`,
+    en: `A set table at ${siteConfig.identity.name}, moody ambiance`,
+    ar: `طاولة مُعدّة في ${siteConfig.identity.name}، أجواء دافئة`,
   },
   galleryAlt2: {
     fr: 'Naan fait maison, cuit au tandoor',
@@ -68,9 +68,9 @@ const copy = {
     ar: 'خبز نان محضّر منزليًا، مخبوز في التندور',
   },
   galleryAlt3: {
-    fr: "Sélection d'entrées et de plats indiens",
-    en: 'A selection of Indian starters and dishes',
-    ar: 'تشكيلة من المقبلات والأطباق الهندية',
+    fr: `Intérieur de la salle chez ${siteConfig.identity.name}`,
+    en: `Inside the dining room at ${siteConfig.identity.name}`,
+    ar: `داخل صالة ${siteConfig.identity.name}`,
   },
   bombayKicker: { fr: 'Tous les vendredis soir', en: 'Every Friday night', ar: 'كل ليلة جمعة' },
   bombayTitle: { fr: 'Bombay Lounge', en: 'Bombay Lounge', ar: 'بومباي لاونج' },
@@ -322,13 +322,13 @@ const path = localizedPath('/', lang);
     <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <div class="photo-frame rounded-2xl col-span-2 sm:col-span-1 aspect-square" data-reveal="scale">
-          <img src="/images/gallery-curries.webp" alt={t(copy.galleryAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
+          <img src="/images/reservation-hero.webp" alt={t(copy.galleryAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
         <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 100ms">
           <img src="/images/gallery-naan.webp" alt={t(copy.galleryAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
         <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 200ms">
-          <img src="/images/gallery-spread.webp" alt={t(copy.galleryAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
+          <img src="/images/interior-1.webp" alt={t(copy.galleryAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
       </div>
     </section>
