@@ -10,6 +10,16 @@
 // online opt-in / WhatsApp button here, since adding one would undercut
 // the "you can only get in at the restaurant" exclusivity the club is
 // built on.
+//
+// v2: first pass was pure typography (crest + a flat list of icon rows) —
+// read as "boring" next to every other page's photo bands, galleries and
+// tinted sections (see Home/About's use of .ken-burns spotlights,
+// .photo-frame galleries, .card-lift grids). This pass borrows those exact
+// established motifs instead of inventing new ones, so the page finally
+// carries the same food-forward texture as the rest of the site: a
+// full-bleed photo spotlight for the one automatic perk (the welcome
+// discount), a card grid for the rest, a photo/text split for "how to
+// join", and a small gallery beat for breathing room.
 import Layout from '../layouts/Layout.astro';
 import Ornament from '../components/Ornament.astro';
 import { siteConfig } from '../config/site.config';
@@ -43,12 +53,36 @@ const copy = {
     en: `At ${name}, we don't do impersonal loyalty cards. The Club is for people who genuinely love what we do here, and who get something back from time to time.`,
     ar: `في ${name}، نحن لا نعتمد بطاقات ولاء باردة. النادي مخصص لمن يحب حقًا ما نقدمه هنا، ويحصل بين الحين والآخر على شيء في المقابل.`,
   },
-  benefitsKicker: { fr: 'Ce que vous recevez', en: 'What you get', ar: 'ما الذي تحصل عليه' },
+  welcomeKicker: { fr: 'Bienvenue', en: 'Welcome', ar: 'مرحبًا بكم' },
+  welcomeQuote: {
+    fr: "-10% sur l'addition, dès votre premier repas en tant que membre.",
+    en: '10% off the bill, from your very first meal as a member.',
+    ar: 'خصم 10% على الفاتورة، منذ أول وجبة لكم كعضو.',
+  },
+  welcomeSub: {
+    fr: "Le seul avantage automatique du club, tout le reste arrive au fil du temps.",
+    en: "The club's only automatic perk, everything else comes over time.",
+    ar: 'الميزة التلقائية الوحيدة في النادي، أما الباقي فيأتي مع الوقت.',
+  },
+  welcomeAlt: {
+    fr: `Poulet tandoori grillé chez ${name}`,
+    en: `Grilled tandoori chicken at ${name}`,
+    ar: `دجاج تندوري مشوي في ${name}`,
+  },
+  benefitsKicker: { fr: 'Et ensuite', en: 'And after that', ar: 'وبعد ذلك' },
+  galleryAlt1: { fr: 'Chicken tikka maison', en: 'House chicken tikka', ar: 'دجاج تيكا منزلي' },
+  galleryAlt2: { fr: 'Pani puri croustillants', en: 'Crisp pani puri', ar: 'باني بوري مقرمش' },
+  galleryAlt3: { fr: 'Samossas faits maison', en: 'Homemade samosas', ar: 'سمبوسة منزلية' },
   joinTitle: { fr: 'Comment rejoindre le club', en: 'How to join the club', ar: 'كيف تنضم إلى النادي' },
   joinText: {
     fr: "L'Indian Flavor Club ne se rejoint pas en ligne. Il n'y a pas de formulaire, pas de compte à créer. Demandez-en simplement à votre serveur lors de votre prochaine visite : il se fera un plaisir de vous expliquer comment ça marche, sur place.",
     en: 'You can\'t join the Indian Flavor Club online. There\'s no form, no account to create. Just ask your server about it on your next visit, they\'ll be happy to explain how it works, right there at the table.',
     ar: 'لا يمكن الانضمام إلى نادي Indian Flavor عبر الإنترنت. لا استمارة ولا حساب يجب إنشاؤه. فقط اسأل النادل في زيارتك القادمة، وسيسعد بشرح الطريقة على الطاولة مباشرة.',
+  },
+  joinImageAlt: {
+    fr: `Table dressée dans la salle de ${name}`,
+    en: `A set table inside ${name}`,
+    ar: `طاولة مُعدّة داخل ${name}`,
   },
   promiseTitle: { fr: 'Notre engagement', en: 'Our promise', ar: 'التزامنا' },
   promiseText: {
@@ -66,16 +100,10 @@ interface Benefit {
   description: LocalizedText;
 }
 
+// The -10% welcome offer used to open this list — it now has its own photo
+// spotlight above (the club's one automatic, immediate perk), so this list
+// is deliberately everything that comes AFTER that first visit.
 const benefits: Benefit[] = [
-  {
-    icon: 'M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6',
-    title: { fr: '-10% à votre prochaine visite', en: '-10% on your next visit', ar: 'خصم 10% في زيارتكم القادمة' },
-    description: {
-      fr: "Dès que vous rejoignez le club, votre prochain repas est à -10% sur l'addition.",
-      en: 'The moment you join, your next meal is 10% off the bill.',
-      ar: 'بمجرد انضمامكم، تحصلون على خصم 10% على فاتورة وجبتكم القادمة.',
-    },
-  },
   {
     icon: 'M4 10h16M6 10V6a2 2 0 012-2h8a2 2 0 012 2v4M5 10v9m14-9v9M5 19h14',
     title: { fr: 'Priorité pour votre table', en: 'Priority for your table', ar: 'الأولوية لطاولتكم' },
@@ -232,48 +260,116 @@ const path = localizedPath('/club', lang);
     </div>
   </section>
 
-  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-4 sm:pt-6 pb-4">
-    <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-8" style="color: var(--color-accent)">
-      {t(copy.benefitsKicker, lang)}
-    </h2>
-    <div class="space-y-7">
-      {benefits.map((benefit, i) => (
-        <div class="flex items-start gap-4" style={`transition-delay: ${i * 70}ms`} data-reveal>
-          <span
-            class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full"
-            style="background-color: color-mix(in srgb, var(--color-accent) 12%, transparent)"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.6">
-              <path d={benefit.icon} stroke="var(--color-accent)" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </span>
-          <div>
-            <p class="font-display font-semibold text-base sm:text-lg" style="color: var(--color-text-primary)">
-              {t(benefit.title, lang)}
-            </p>
-            <p class="text-sm mt-1 leading-relaxed" style="color: var(--color-text-muted)">
-              {t(benefit.description, lang)}
-            </p>
-          </div>
-        </div>
-      ))}
+  <!-- Welcome-offer spotlight — same full-bleed ken-burns photo band as
+       Home's "signature spotlight" (see HomeContent.astro), reused here
+       instead of listing -10% as just another icon row. It's the club's
+       one automatic, immediate perk, so it gets the one big visual
+       moment on the page. -->
+  <section class="relative min-h-[360px] sm:h-[56vh] overflow-hidden" data-reveal="scale">
+    <div class="ken-burns absolute inset-0">
+      <img
+        src="/images/dish-tandoori-chicken.webp"
+        alt={t(copy.welcomeAlt, lang)}
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+    </div>
+    <div class="absolute inset-0" style="background: linear-gradient(100deg, color-mix(in srgb, var(--color-primary-dark) 30%, var(--color-background)) 0%, color-mix(in srgb, var(--color-primary-dark) 16%, rgba(11,11,12,0.55)) 42%, rgba(11,11,12,0.15) 68%, transparent 100%)"></div>
+    <div class="relative z-10 h-full flex items-center max-w-3xl mx-auto px-5 sm:px-8">
+      <div class="max-w-md">
+        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-4" style="color: var(--color-accent)">
+          {t(copy.welcomeKicker, lang)}
+        </span>
+        <p class="pull-quote">{t(copy.welcomeQuote, lang)}</p>
+        <p class="mt-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+          {t(copy.welcomeSub, lang)}
+        </p>
+      </div>
     </div>
   </section>
 
-  <div class="section-tint relative overflow-hidden">
-    <section class="relative max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
-      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-3" style="color: var(--color-text-primary)">
-        {t(copy.joinTitle, lang)}
+  <!-- Remaining benefits as a card grid (same .card-lift rounded-2xl
+       treatment as the menu highlights on Home) instead of a flat list of
+       icon rows. -->
+  <div class="section-tint">
+    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+      <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-7" style="color: var(--color-accent)">
+        {t(copy.benefitsKicker, lang)}
       </h2>
-      <p class="text-sm sm:text-base leading-relaxed max-w-2xl" style="color: var(--color-text-muted)">
-        {t(copy.joinText, lang)}
-      </p>
+      <div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
+        {benefits.map((benefit, i) => (
+          <div
+            class="card-lift rounded-2xl p-5 sm:p-6"
+            style={`background-color: var(--color-background); border: 1px solid var(--color-border); transition-delay: ${i * 70}ms`}
+            data-reveal
+          >
+            <span
+              class="inline-flex items-center justify-center w-10 h-10 rounded-full mb-4"
+              style="background-color: color-mix(in srgb, var(--color-accent) 12%, transparent)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.6">
+                <path d={benefit.icon} stroke="var(--color-accent)" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <p class="font-display font-semibold text-base sm:text-lg" style="color: var(--color-text-primary)">
+              {t(benefit.title, lang)}
+            </p>
+            <p class="text-sm mt-1.5 leading-relaxed" style="color: var(--color-text-muted)">
+              {t(benefit.description, lang)}
+            </p>
+          </div>
+        ))}
+      </div>
     </section>
   </div>
 
-  <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+  <!-- Small photo beat for breathing room, same grid/photo-frame/hover-zoom
+       treatment as Home's gallery — different dishes, so it isn't a literal
+       repeat of the Home gallery. -->
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale">
+        <img src="/images/dish-chicken-tikka.webp" alt={t(copy.galleryAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 100ms">
+        <img src="/images/dish-pani-puri.webp" alt={t(copy.galleryAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 200ms">
+        <img src="/images/dish-samosa.webp" alt={t(copy.galleryAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- How to join — photo/text split instead of a flat text block, so the
+       page's rhythm varies (spotlight band, then card grid, then this)
+       rather than repeating the same "big photo band" shape twice. -->
+  <div class="section-tint-warm">
+    <section class="max-w-4xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div class="grid sm:grid-cols-2 gap-8 sm:gap-10 items-center">
+        <div class="photo-frame rounded-2xl overflow-hidden aspect-[4/3]" data-reveal="scale">
+          <img src="/images/gallery-curries.webp" alt={t(copy.joinImageAlt, lang)} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div data-reveal>
+          <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-3" style="color: var(--color-text-primary)">
+            {t(copy.joinTitle, lang)}
+          </h2>
+          <p class="text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+            {t(copy.joinText, lang)}
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="relative max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16 overflow-hidden">
+    <img
+      src="/images/club-emblem.webp"
+      alt=""
+      aria-hidden="true"
+      class="mark-watermark w-[20rem] h-[20rem] -left-24 -bottom-24 hidden sm:block"
+    />
     <div
-      class="rounded-2xl px-6 py-8 sm:px-10 sm:py-10 text-center"
+      class="relative rounded-2xl px-6 py-8 sm:px-10 sm:py-10 text-center"
       style="border: 1px solid var(--color-border); background-color: var(--color-surface)"
       data-reveal
     >
@@ -286,7 +382,7 @@ const path = localizedPath('/club', lang);
     </div>
   </section>
 
-  <div class="section-tint-warm">
+  <div class="section-tint">
     <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
       <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-5" style="color: var(--color-accent)">
         {t(copy.faqKicker, lang)}
@@ -295,7 +391,7 @@ const path = localizedPath('/club', lang);
         {faqItems.map((item, i) => (
           <details
             class="group rounded-xl px-5 py-4"
-            style="background-color: var(--color-surface); border: 1px solid var(--color-border)"
+            style="background-color: var(--color-background); border: 1px solid var(--color-border)"
             open={i === 0}
             data-reveal
           >
@@ -310,11 +406,11 @@ const path = localizedPath('/club', lang);
     </section>
   </div>
 
+  <Ornament />
+
   <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-20 text-center">
     <p class="font-display text-xl sm:text-2xl font-semibold" style="color: var(--color-text-primary)">
       {t(copy.closing, lang)}
     </p>
   </section>
-
-  <Ornament />
 </Layout>
