@@ -35,10 +35,6 @@ export default defineConfig({
   // above), so a JS-only language switch would quietly undo that for two
   // of the three languages. `getRelativeLocaleUrl` from astro:i18n is what
   // the header's language switcher uses to link between them.
-  server: {
-    host: '0.0.0.0',
-    port: 3000,
-  },
   i18n: {
     defaultLocale: 'fr',
     locales: ['fr', 'en', 'ar'],

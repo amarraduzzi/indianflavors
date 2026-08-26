@@ -7,11 +7,12 @@
 // genuinely repeat (nav, buttons) still have exactly one source of truth.
 import type { LocalizedText } from './languages';
 
-export const nav: Record<'accueil' | 'menu' | 'aPropos' | 'avis' | 'faq' | 'contact', LocalizedText> = {
+export const nav: Record<'accueil' | 'menu' | 'aPropos' | 'avis' | 'club' | 'faq' | 'contact', LocalizedText> = {
   accueil: { fr: 'Accueil', en: 'Home', ar: 'الرئيسية' },
   menu: { fr: 'Menu', en: 'Menu', ar: 'القائمة' },
   aPropos: { fr: 'À propos', en: 'About', ar: 'من نحن' },
   avis: { fr: 'Avis', en: 'Reviews', ar: 'التقييمات' },
+  club: { fr: 'Le Club', en: 'The Club', ar: 'النادي' },
   faq: { fr: 'FAQ', en: 'FAQ', ar: 'الأسئلة الشائعة' },
   contact: { fr: 'Contact', en: 'Contact', ar: 'اتصل بنا' },
 };
