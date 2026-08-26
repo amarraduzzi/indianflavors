@@ -285,18 +285,18 @@ const path = localizedPath('/', lang);
         loading="lazy"
       />
     </div>
-    <!-- Gold tint, same as --color-primary-dark now resolves to site-wide
-         (see global.css) — kept as an explicit --color-accent mix here since
-         this band was tuned by eye against this specific photo. -->
-    <div class="absolute inset-0" style="background: linear-gradient(100deg, color-mix(in srgb, var(--color-accent) 30%, var(--color-background)) 0%, color-mix(in srgb, var(--color-accent) 16%, rgba(11,11,12,0.55)) 42%, rgba(11,11,12,0.15) 68%, transparent 100%)"></div>
-
+    <!-- Gold gradient wash removed — client called it out as a "haze"
+         clouding an otherwise clean photo. Legibility for the text on the
+         left is now handled by text-shadow instead of a scrim over the
+         whole photo (see the hero section further up for the same
+         approach), so the image itself stays untouched. -->
     <div class="relative z-10 h-full flex items-center max-w-7xl mx-auto px-5 sm:px-8">
       <div class="max-w-md">
-        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-4" style="color: var(--color-accent)">{t(copy.platSignatureKicker, lang)}</span>
-        <p class="pull-quote">
+        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-4 [text-shadow:0_2px_10px_rgba(0,0,0,0.85)]" style="color: var(--color-accent)">{t(copy.platSignatureKicker, lang)}</span>
+        <p class="pull-quote [text-shadow:0_2px_14px_rgba(0,0,0,0.85)]">
           {t(copy.platSignatureQuote, lang)}
         </p>
-        <a href={localizedPath('/menu', lang)} class="inline-block mt-6 text-sm font-bold" style="color: var(--color-accent)">{t(common.voirLeMenuComplet, lang)} {arrow(lang)}</a>
+        <a href={localizedPath('/menu', lang)} class="inline-block mt-6 text-sm font-bold [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]" style="color: var(--color-accent)">{t(common.voirLeMenuComplet, lang)} {arrow(lang)}</a>
       </div>
     </div>
   </section>
