@@ -146,20 +146,33 @@ const path = localizedPath('/', lang);
   ogImage="/images/hero-home.webp"
   jsonLd={restaurantJsonLd}
 >
-  <!-- Hero — two different crops of the same moment (chef, steam, copper
-       pot), not one photo stretched/cropped by CSS. The mobile shot has its
-       negative space at the TOP (so the title sits under the header,
-       clear of the food), the desktop shot has it on the LEFT (so the
-       title sits beside the food instead of on top of it) — swapping which
-       image loads per breakpoint instead of trying to make one crop serve
-       both, since object-cover on the desktop photo at a phone's tall
-       narrow viewport would just crop straight through the chef. -->
-  <section class="relative min-h-[640px] sm:h-[92vh] flex items-start sm:items-center overflow-hidden">
-    <img src="/images/hero-home-mobile.webp" alt={t(copy.metaDescription, lang)} class="sm:hidden absolute inset-0 w-full h-full object-cover" />
+  <!-- Hero — two different crops/photos, not one image stretched or
+       cropped by CSS. Desktop's negative space is on the LEFT (title
+       sits beside the food). Mobile (v3) is a moody, naturally dark shot —
+       blurred chef + bokeh kitchen lights up top, the sharp curry/naan
+       only in the bottom quarter — so the top ~70% is already dark enough
+       for the title on its own; the gradient below is just a light assist
+       for contrast and to blend into the header, not the thing doing the
+       work (v1 leaned on a flat black band, v2 was a full-frame steam shot
+       with almost no natural dark zone; this one has real photographic
+       depth instead of either).
+
+       object-top on the mobile image still matters: real phone browsers
+       (address bar + tab strip + gesture bar eating into the viewport)
+       render this section shorter than a clean devtools viewport does,
+       and object-cover's default crop is centered — a short container
+       would crop evenly off the top AND bottom, pulling the dark zone up
+       and out of frame. Pinning to the top keeps the framing stable
+       regardless of viewport height; any extra cropping comes off the
+       bottom (the dish) instead. -->
+
+  <section class="relative min-h-[600px] sm:h-[92vh] flex items-start sm:items-center overflow-hidden">
+    <img src="/images/hero-home-mobile.webp" alt={t(copy.metaDescription, lang)} class="sm:hidden absolute inset-0 w-full h-full object-cover object-top" />
     <img src="/images/hero-home.webp" alt={t(copy.metaDescription, lang)} class="hidden sm:block absolute inset-0 w-full h-full object-cover" />
-    <!-- Mobile overlay: dark at the top (where the title sits), clearing by
-         the time the image reaches the food/steam so the photo still reads. -->
-    <div class="sm:hidden absolute inset-0" style="background: linear-gradient(180deg, var(--color-background) 0%, rgba(11,11,12,0.85) 26%, rgba(11,11,12,0.45) 50%, rgba(11,11,12,0.1) 66%, transparent 78%)"></div>
+    <!-- Mobile overlay: light assist only — the photo itself is already
+         dark up top, this just adds a bit more contrast near the header
+         and tapers away well before the dish. -->
+    <div class="sm:hidden absolute inset-0" style="background: linear-gradient(180deg, rgba(11,11,12,0.5) 0%, rgba(11,11,12,0.35) 20%, rgba(11,11,12,0.15) 40%, transparent 58%)"></div>
     <!-- Desktop overlay: same diagonal dark-corner treatment as the
          "signature spotlight" band further down this page (see the
          gallery-biryani section) — reused here instead of a new gradient
