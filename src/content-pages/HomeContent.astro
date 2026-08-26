@@ -171,7 +171,27 @@ const path = localizedPath('/', lang);
        regardless of viewport height; any extra cropping comes off the
        bottom (the dish) instead. -->
 
-  <section class="relative min-h-[500px] sm:h-[92vh] flex items-start sm:items-center overflow-hidden">
+  <!-- Fixed to exactly one screen on mobile (100svh — the SMALL viewport
+       height unit, i.e. the viewport with the browser's address/tab bars
+       at their most expanded) so the next section never peeks in on
+       first load, on any phone. This has to be a scoped <style> media
+       query rather than a Tailwind class: an inline style attribute would
+       out-specificity the sm:h-[92vh] class and break the desktop height,
+       and 100vh/100svh need to be two separate declarations (the second
+       silently no-ops on browsers that don't support svh yet, instead of
+       the whole rule being dropped as invalid).
+
+       items-center (not items-start) on purpose: pinning content to the
+       top left zero margin at the BOTTOM, and the site-wide floating
+       WhatsApp button (WhatsAppButton.astro) is `position: fixed; bottom:
+       20px; right: 18px` — a fixed element that doesn't know or care
+       where this section's content ends. Centering gives equal breathing
+       room top and bottom automatically, so content lands nowhere near
+       that button regardless of how a real device's text wraps; the
+       pb-24 below adds an extra explicit margin on top of that as a
+       second line of defense, since the button is real screen furniture,
+       not just "whatever's below the fold". -->
+  <section id="home-hero" class="relative sm:h-[92vh] flex items-center overflow-hidden">
     <img src="/images/hero-home-mobile.webp" alt={t(copy.metaDescription, lang)} class="sm:hidden absolute inset-0 w-full h-full object-cover object-top" />
     <img src="/images/hero-home.webp" alt={t(copy.metaDescription, lang)} class="hidden sm:block absolute inset-0 w-full h-full object-cover" />
     <!-- Mobile overlay: light assist only — the photo itself is already
@@ -184,23 +204,32 @@ const path = localizedPath('/', lang);
          shape, mostly reinforcing the photo's own dark left side. -->
     <div class="hidden sm:block absolute inset-0" style="background: linear-gradient(100deg, var(--color-background) 0%, rgba(11,11,12,0.6) 28%, rgba(11,11,12,0.2) 50%, transparent 72%)"></div>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-20 sm:pt-0 pb-10 sm:pb-0 w-full">
+    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-14 sm:pt-0 pb-24 sm:pb-0 w-full">
       <div class="max-w-xl">
-        <span class="inline-block text-xs font-bold uppercase tracking-[0.3em] mb-4" style="color: var(--color-accent)">
+        <!-- text-shadow on mobile only: the fix that actually stops this
+             hero from needing a new gradient tweak every time the photo
+             changes. Contrast used to depend on exactly which pixels of
+             the photo happen to sit behind each line at each device's
+             real (chrome-shrunk) viewport height — fragile, as the last
+             few rounds proved. A shadow keeps every line readable against
+             ANY part of the photo, so swapping photos again won't
+             reopen this. Removed on desktop, where the photo's own dark
+             left side already does the job cleanly. -->
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.3em] mb-3 [text-shadow:0_2px_10px_rgba(0,0,0,0.85)] sm:[text-shadow:none]" style="color: var(--color-accent)">
           {city} · {country}
         </span>
-        <h1 class="font-display text-[2.4rem] leading-[1.05] sm:text-5xl lg:text-6xl font-semibold tracking-tight" style="color: var(--color-text-primary)">
+        <h1 class="font-display text-[1.85rem] leading-[1.15] sm:text-5xl lg:text-6xl font-semibold tracking-tight [text-shadow:0_2px_14px_rgba(0,0,0,0.85)] sm:[text-shadow:none]" style="color: var(--color-text-primary)">
           {t(copy.heroTitle, lang)}
         </h1>
-        <p class="mt-5 text-base sm:text-lg max-w-md" style="color: var(--color-text-muted)">
+        <p class="mt-3 text-sm sm:text-lg max-w-md [text-shadow:0_1px_8px_rgba(0,0,0,0.9)] sm:[text-shadow:none]" style="color: var(--color-text-muted)">
           {t(copy.heroSubtitle, lang)}
         </p>
-        <div class="mt-8 flex flex-wrap gap-3">
+        <div class="mt-5 flex flex-wrap gap-3">
           <Button href={orderCtaLabel.href} external variant="cta">{orderCtaLabel.label}</Button>
           <Button href={localizedPath('/menu', lang)} variant="outline">{t(common.voirLeMenu, lang)}</Button>
         </div>
-        <p class="mt-5 flex items-center gap-2 text-sm" style="color: var(--color-text-muted)">
-          <span style="color: var(--color-accent); letter-spacing: 1px">{ratingStars}</span>
+        <p class="mt-4 flex items-center gap-2 text-sm [text-shadow:0_1px_8px_rgba(0,0,0,0.9)] sm:[text-shadow:none]" style="color: var(--color-text-muted)">
+          <span style="color: var(--color-accent); letter-spacing: 1px; text-shadow: 0 1px 8px rgba(0,0,0,0.9)">{ratingStars}</span>
           {aggregateRating.ratingValue}/5 · {aggregateRating.reviewCount} {t(common.avisTripadvisorSuffix, lang)}
         </p>
       </div>
@@ -394,3 +423,16 @@ const path = localizedPath('/', lang);
     });
   </script>
 </Layout>
+
+<style>
+  /* See the comment above #home-hero in the markup: this has to live here
+     (not as a Tailwind class) so it doesn't out-specificity the
+     sm:h-[92vh] desktop height, and so the 100vh/100svh fallback works as
+     two real separate declarations. */
+  @media (max-width: 639px) {
+    #home-hero {
+      height: 100vh;
+      height: 100svh;
+    }
+  }
+</style>
