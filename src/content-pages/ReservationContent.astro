@@ -16,7 +16,6 @@
 // REST API. The site stays fully static (astro.config.mjs's
 // `output: 'static'`); Supabase IS the backend, not a server we run.
 import Layout from '../layouts/Layout.astro';
-import PageHero from '../components/PageHero.astro';
 import { siteConfig } from '../config/site.config';
 import { t, localizedPath, type Language } from '../i18n/languages';
 import { place } from '../i18n/ui';
@@ -49,6 +48,13 @@ const copy = {
     ar: 'أخبرونا بموعد قدومكم، ونحن نهتم بالباقي. يتم تأكيد كل طلب من فريقنا عبر الهاتف أو واتساب.',
   },
   heroAlt: { fr: `Intérieur du ${primaryKeyword} ${name}`, en: `Interior of ${name}, ${primaryKeyword}`, ar: `داخل ${name}, ${primaryKeyword}` },
+
+  formKicker: { fr: 'Votre table vous attend', en: 'Your table awaits', ar: 'طاولتكم في انتظاركم' },
+  formLead: {
+    fr: 'Quelques informations et notre équipe s’occupe du reste.',
+    en: 'A few details and our team takes care of the rest.',
+    ar: 'بضع معلومات وفريقنا يهتم بالباقي.',
+  },
 
   formName: { fr: 'Nom complet', en: 'Full name', ar: 'الاسم الكامل' },
   formPhone: { fr: 'Téléphone (WhatsApp de préférence)', en: 'Phone (WhatsApp preferred)', ar: 'الهاتف (يفضل واتساب)' },
@@ -98,6 +104,12 @@ const copy = {
     en: 'A request isn’t a confirmed reservation yet — we’ll contact you back to confirm it.',
     ar: 'الطلب ليس حجزًا مؤكدًا بعد — سنتواصل معكم للتأكيد.',
   },
+  trustResponse: {
+    fr: 'Réponse rapide, par téléphone ou WhatsApp',
+    en: 'Fast reply, by phone or WhatsApp',
+    ar: 'رد سريع، عبر الهاتف أو واتساب',
+  },
+  trustRatingSuffix: { fr: 'sur Google', en: 'on Google', ar: 'على Google' },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 // Time-slot options generated straight from siteConfig.contact.hours — same
@@ -123,19 +135,61 @@ const partySizes = [1, 2, 3, 4, 5, 6, 7, 8];
 // are the right transport here, not a hidden secret needing a real backend.
 const { supabaseUrl, supabaseAnonKey } = siteConfig.reservations;
 const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
+const { googleRating, googleReviewsUrl } = siteConfig.social;
 ---
 <Layout title={t(copy.metaTitle, lang)} description={t(copy.metaDescription, lang)} path={path} lang={lang}>
-  <PageHero kicker={city} title={t(copy.heroTitle, lang)} subtitle={t(copy.heroSubtitle, lang)} image="/images/interior-1.webp" alt={t(copy.heroAlt, lang)} />
+  <!-- Bespoke hero for this page — the photo has its own built-in dark
+       negative space on one side (by design, from the source image), so
+       the title sits directly in that space instead of the generic
+       bottom-gradient treatment every other PageHero page uses. A
+       horizontal scrim is layered in as a safety net so the text stays
+       legible even where the crop shifts at odd viewport widths, and a
+       matching bottom scrim keeps the transition into the page body from
+       the site's usual dark-rising gradient. -->
+  <section id="rsv-hero" class="relative h-[46vh] min-h-[340px] sm:h-[52vh] sm:min-h-[420px] flex items-center overflow-hidden">
+    <img
+      src="/images/reservation-hero.webp"
+      alt={t(copy.heroAlt, lang)}
+      class="absolute inset-0 w-full h-full object-cover"
+      id="rsv-hero-img"
+    />
+    <div class="rsv-hero-scrim absolute inset-0"></div>
+    <div
+      class="absolute inset-0"
+      style="background: linear-gradient(0deg, var(--color-background) 0%, rgba(11,11,12,0) 32%)"
+    ></div>
 
-  <section class="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20 grid sm:grid-cols-[1.4fr_1fr] gap-10 sm:gap-14 items-start">
+    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 w-full">
+      <div class="max-w-md">
+        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-3" style="color: var(--color-accent)">
+          {city}
+        </span>
+        <h1 class="font-display text-3xl sm:text-5xl font-semibold" style="color: var(--color-text-primary)">
+          {t(copy.heroTitle, lang)}
+        </h1>
+        <p class="mt-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+          {t(copy.heroSubtitle, lang)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-14 sm:py-20 grid sm:grid-cols-[1.4fr_1fr] gap-10 sm:gap-14 items-start">
     <!-- The form card -->
     <div
-      class="rsv-card rounded-2xl p-6 sm:p-8"
+      class="rsv-card rounded-2xl p-6 sm:p-9 max-w-2xl"
       style="background-color: var(--color-surface); border: 1px solid var(--color-border)"
       data-reveal
     >
+      <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-2" style="color: var(--color-accent)">
+        {t(copy.formKicker, lang)}
+      </span>
+      <p class="font-display text-xl sm:text-2xl mb-7" style="color: var(--color-text-primary)">
+        {t(copy.formLead, lang)}
+      </p>
+
       <form id="reservation-form" novalidate>
-        <div class="grid sm:grid-cols-2 gap-4">
+        <div class="grid sm:grid-cols-2 gap-5">
           <div class="sm:col-span-2">
             <label class="rsv-label" for="rsv-name">{t(copy.formName, lang)}</label>
             <input class="rsv-input" type="text" id="rsv-name" name="name" autocomplete="name" required />
@@ -225,6 +279,34 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
           {t(copy.infoConfirm, lang)}
         </p>
       </div>
+
+      <!-- Trust/warmth row — a real, unfabricated rating (see the standing
+           note on siteConfig.social above) plus a plain-language promise on
+           response speed, so the form isn't the only thing on this side of
+           the page: a first-time visitor gets a small reason to trust the
+           process before they hand over their phone number. -->
+      <div class="flex flex-wrap gap-x-5 gap-y-3 mt-6 pt-6" style="border-top: 1px solid var(--color-border)">
+        {googleRating && (
+          <a
+            href={googleReviewsUrl}
+            target="_blank"
+            rel="noreferrer"
+            class="flex items-center gap-1.5 text-sm font-semibold"
+            style="color: var(--color-text-primary)"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--color-accent)" class="shrink-0">
+              <path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8-6.1-3.6-6.1 3.6 1.5-6.8-5.2-4.7 6.9-.7z" />
+            </svg>
+            {googleRating} <span class="font-normal" style="color: var(--color-text-muted)">{t(copy.trustRatingSuffix, lang)}</span>
+          </a>
+        )}
+        <span class="flex items-center gap-1.5 text-sm" style="color: var(--color-text-muted)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+            <path d="M13 2L4 14h7l-1 8 9-12h-7z" />
+          </svg>
+          {t(copy.trustResponse, lang)}
+        </span>
+      </div>
     </div>
   </section>
 </Layout>
@@ -242,12 +324,15 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
   .rsv-input {
     width: 100%;
     border-radius: 0.6rem;
-    padding: 0.7rem 0.9rem;
+    padding: 0.85rem 1rem;
     font-size: 0.9rem;
     background-color: var(--color-background);
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+  .rsv-input:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
   }
   .rsv-input::placeholder {
     color: var(--color-text-muted);
@@ -256,6 +341,7 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
   .rsv-input:focus {
     outline: none;
     border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
   }
   /* Native date/time-picker icon is dark-on-dark by default in Chromium —
      invert so it's actually visible against this site's near-black inputs. */
@@ -322,8 +408,11 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
 
   .rsv-status-success,
   .rsv-status-error {
-    border-radius: 0.75rem;
-    padding: 1rem 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-radius: 0.9rem;
+    padding: 1.1rem 1.25rem;
     font-size: 0.875rem;
     line-height: 1.5;
   }
@@ -341,7 +430,68 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
   .rsv-status-error p:first-child {
     font-weight: 700;
     margin-bottom: 0.3rem;
+    font-size: 1.05rem;
     font-family: var(--font-display);
+  }
+  .rsv-status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .rsv-status-success .rsv-status-icon {
+    background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+    color: var(--color-accent);
+  }
+  .rsv-status-error .rsv-status-icon {
+    background-color: color-mix(in srgb, #c8102e 20%, transparent);
+    color: #e8536c;
+  }
+
+  /* Hero scrim — a horizontal wash keeps the title legible over the photo
+     regardless of exactly how the crop lands at a given viewport width
+     (the source photo's own dark negative space isn't guaranteed to
+     survive object-cover at every aspect ratio), and mirrors for RTL so
+     the dark side always sits under the text column, not under the dish. */
+  .rsv-hero-scrim {
+    background: linear-gradient(
+      90deg,
+      rgba(11, 11, 12, 0.94) 0%,
+      rgba(11, 11, 12, 0.8) 32%,
+      rgba(11, 11, 12, 0.35) 55%,
+      rgba(11, 11, 12, 0.05) 75%
+    );
+  }
+  [dir='rtl'] .rsv-hero-scrim {
+    background: linear-gradient(
+      270deg,
+      rgba(11, 11, 12, 0.94) 0%,
+      rgba(11, 11, 12, 0.8) 32%,
+      rgba(11, 11, 12, 0.35) 55%,
+      rgba(11, 11, 12, 0.05) 75%
+    );
+  }
+  #rsv-hero-img {
+    object-position: 70% center;
+  }
+  @media (max-width: 640px) {
+    /* Narrow viewports can't spare half the width for a text column and
+       still show enough of the dish to feel intentional — bias the crop
+       further right toward the food, and let the scrim run stronger and
+       wider so the (now smaller, still near-full-width) text block stays
+       readable without needing its own separately art-directed image. */
+    #rsv-hero-img {
+      object-position: 82% center;
+    }
+    .rsv-hero-scrim {
+      background: linear-gradient(90deg, rgba(11, 11, 12, 0.95) 0%, rgba(11, 11, 12, 0.85) 60%, rgba(11, 11, 12, 0.5) 100%);
+    }
+    [dir='rtl'] .rsv-hero-scrim {
+      background: linear-gradient(270deg, rgba(11, 11, 12, 0.95) 0%, rgba(11, 11, 12, 0.85) 60%, rgba(11, 11, 12, 0.5) 100%);
+    }
   }
 </style>
 
@@ -473,8 +623,13 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
     function renderSuccess() {
       statusEl.innerHTML = `
         <div class="rsv-status-success">
-          <p>${labels.successTitle}</p>
-          <p>${labels.successBody}</p>
+          <span class="rsv-status-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+          </span>
+          <div>
+            <p>${labels.successTitle}</p>
+            <p>${labels.successBody}</p>
+          </div>
         </div>
       `;
       statusEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -483,9 +638,14 @@ const whatsappHref = `https://wa.me/${siteConfig.contact.whatsappNumber}`;
     function renderError() {
       statusEl.innerHTML = `
         <div class="rsv-status-error">
-          <p>${labels.errorTitle}</p>
-          <p>${labels.errorBody}</p>
-          <a href="${whatsappHref}" target="_blank" rel="noreferrer" class="rsv-btn rsv-btn-filled mt-3">${labels.errorCallOrWhatsapp}</a>
+          <span class="rsv-status-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16.5h.01M10.3 3.9L2.7 17a2 2 0 001.7 3h15.2a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+          </span>
+          <div>
+            <p>${labels.errorTitle}</p>
+            <p>${labels.errorBody}</p>
+            <a href="${whatsappHref}" target="_blank" rel="noreferrer" class="rsv-btn rsv-btn-filled mt-3">${labels.errorCallOrWhatsapp}</a>
+          </div>
         </div>
       `;
       statusEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
