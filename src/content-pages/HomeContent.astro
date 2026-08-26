@@ -148,14 +148,19 @@ const path = localizedPath('/', lang);
 >
   <!-- Hero — two different crops/photos, not one image stretched or
        cropped by CSS. Desktop's negative space is on the LEFT (title
-       sits beside the food). Mobile (v3) is a moody, naturally dark shot —
-       blurred chef + bokeh kitchen lights up top, the sharp curry/naan
-       only in the bottom quarter — so the top ~70% is already dark enough
-       for the title on its own; the gradient below is just a light assist
-       for contrast and to blend into the header, not the thing doing the
-       work (v1 leaned on a flat black band, v2 was a full-frame steam shot
-       with almost no natural dark zone; this one has real photographic
-       depth instead of either).
+       sits beside the food). Mobile (v4) is the chef facing camera at his
+       table — only the very top strip (~11% of the frame, above the
+       pendant lights) is naturally dark; the rest of the shot is lit and
+       detailed (brick wall, lights, face, the dish), so this needed the
+       LIGHTEST gradient assist of any version so far, just enough to seat
+       the title against the header.
+
+       This source photo also had a fabricated restaurant logo embroidered
+       on the chef's jacket ("Saffron ... Fusion Cuisine") — not Indian
+       Flavors. Before resizing for the site, that patch of fabric was
+       cloned over and the real logo-mark.webp was screen-blended on in
+       its place, so what ships is the client's actual mark, not a
+       fictional brand.
 
        object-top on the mobile image still matters: real phone browsers
        (address bar + tab strip + gesture bar eating into the viewport)
@@ -166,20 +171,20 @@ const path = localizedPath('/', lang);
        regardless of viewport height; any extra cropping comes off the
        bottom (the dish) instead. -->
 
-  <section class="relative min-h-[600px] sm:h-[92vh] flex items-start sm:items-center overflow-hidden">
+  <section class="relative min-h-[500px] sm:h-[92vh] flex items-start sm:items-center overflow-hidden">
     <img src="/images/hero-home-mobile.webp" alt={t(copy.metaDescription, lang)} class="sm:hidden absolute inset-0 w-full h-full object-cover object-top" />
     <img src="/images/hero-home.webp" alt={t(copy.metaDescription, lang)} class="hidden sm:block absolute inset-0 w-full h-full object-cover" />
     <!-- Mobile overlay: light assist only — the photo itself is already
          dark up top, this just adds a bit more contrast near the header
          and tapers away well before the dish. -->
-    <div class="sm:hidden absolute inset-0" style="background: linear-gradient(180deg, rgba(11,11,12,0.5) 0%, rgba(11,11,12,0.35) 20%, rgba(11,11,12,0.15) 40%, transparent 58%)"></div>
+    <div class="sm:hidden absolute inset-0" style="background: linear-gradient(180deg, rgba(11,11,12,0.4) 0%, rgba(11,11,12,0.24) 16%, rgba(11,11,12,0.08) 30%, transparent 44%)"></div>
     <!-- Desktop overlay: same diagonal dark-corner treatment as the
          "signature spotlight" band further down this page (see the
          gallery-biryani section) — reused here instead of a new gradient
          shape, mostly reinforcing the photo's own dark left side. -->
     <div class="hidden sm:block absolute inset-0" style="background: linear-gradient(100deg, var(--color-background) 0%, rgba(11,11,12,0.6) 28%, rgba(11,11,12,0.2) 50%, transparent 72%)"></div>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-28 sm:pt-0 pb-16 sm:pb-0 w-full">
+    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-20 sm:pt-0 pb-10 sm:pb-0 w-full">
       <div class="max-w-xl">
         <span class="inline-block text-xs font-bold uppercase tracking-[0.3em] mb-4" style="color: var(--color-accent)">
           {city} · {country}
