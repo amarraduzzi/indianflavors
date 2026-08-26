@@ -57,16 +57,6 @@ const copy = {
     en: 'A Hyderabadi Dum Biryani slow-cooked to perfection, served with pani puri and naan straight from the tandoor.',
     ar: 'برياني حيدر آبادي مطهو ببطء حتى الكمال، يُقدَّم مع باني بوري وخبز نان طازج من التندور.',
   },
-  galleryAlt1: {
-    fr: `Table dressée chez ${siteConfig.identity.name}, ambiance feutrée`,
-    en: `A set table at ${siteConfig.identity.name}, moody ambiance`,
-    ar: `طاولة مُعدّة في ${siteConfig.identity.name}، أجواء دافئة`,
-  },
-  galleryAlt2: {
-    fr: 'Naan fait maison, cuit au tandoor',
-    en: 'House-made naan, baked in the tandoor',
-    ar: 'خبز نان محضّر منزليًا، مخبوز في التندور',
-  },
   ambianceKicker: { fr: "L'ambiance", en: 'The ambiance', ar: 'الأجواء' },
   ambianceTitle: {
     fr: 'Un aperçu de l\'atmosphère',
@@ -348,62 +338,48 @@ const path = localizedPath('/', lang);
     </div>
   </section>
 
-  <!-- Photo gallery -->
+  <!-- Ambiance mood board — mood/reference imagery. Used to sit right below
+       a small, unheaded 2-photo gallery (the real reservation-hero + naan
+       shots); that made for two photo grids back to back with nothing to
+       break up the rhythm, and those two photos already appear elsewhere
+       on the site (reservation hero, menu naan category) so the standalone
+       block added little. Removed that block and kept this one — it has
+       its own kicker/heading and a fuller set of images, so it carries the
+       "gallery" role on its own now. The six images here are stand-ins for
+       the atmosphere while real on-site photography is being shot, so the
+       copy below (kicker + alt text) frames them as mood, never as "this is
+       our biryani" or "this is our dining room" — same honesty line the
+       rest of the site holds to, just applied to a different kind of image.
+       Swap these six for real shots as soon as they're in; no code changes
+       needed beyond the src attributes below. -->
   <div class="section-tint">
     <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-      <!-- Two tiles, not three: the third slot used to hold interior-1.webp
-           (a wide shot that put the framed royal portrait and Moroccan flag
-           front and center), which read as generic restaurant decor rather
-           than anything specific to this room. No other on-hand ambiance
-           photo was an honest match for that slot — see the honesty rule
-           documented in menu-highlights.ts — so this stays a clean 2-up
-           grid until a proper replacement photo comes in. -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-        <div class="photo-frame rounded-2xl aspect-[4/3]" data-reveal="scale">
-          <img src="/images/reservation-hero.webp" alt={t(copy.galleryAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
+      <div class="max-w-2xl mb-10 sm:mb-12" data-reveal>
+        <p class="font-bold text-sm tracking-widest uppercase" style="color: var(--color-accent)">{t(copy.ambianceKicker, lang)}</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">{t(copy.ambianceTitle, lang)}</h2>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale">
+          <img src="/images/mood-tile.webp" alt={t(copy.ambianceAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
-        <div class="photo-frame rounded-2xl aspect-[4/3]" data-reveal="scale" style="transition-delay: 100ms">
-          <img src="/images/gallery-naan.webp" alt={t(copy.galleryAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
+        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 60ms">
+          <img src="/images/mood-cocktail.webp" alt={t(copy.ambianceAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 120ms">
+          <img src="/images/mood-biryani.webp" alt={t(copy.ambianceAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 180ms">
+          <img src="/images/mood-chai.webp" alt={t(copy.ambianceAlt4, lang)} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 240ms">
+          <img src="/images/mood-lantern.webp" alt={t(copy.ambianceAlt5, lang)} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 300ms">
+          <img src="/images/mood-naan.webp" alt={t(copy.ambianceAlt6, lang)} class="w-full h-full object-cover" loading="lazy" />
         </div>
       </div>
     </section>
   </div>
-
-  <!-- Ambiance mood board — mood/reference imagery, deliberately kept apart
-       from the gallery above and from the menu's per-dish photos. Those are
-       genuine photos of this room and these dishes; these six are stand-ins
-       for the atmosphere while real on-site photography is being shot, so
-       the copy above (kicker + alt text) frames them as mood, never as "this
-       is our biryani" or "this is our dining room" — same honesty line the
-       rest of the site holds to, just applied to a different kind of image.
-       Swap these six for real shots as soon as they're in; no code changes
-       needed beyond the src attributes below. -->
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-    <div class="max-w-2xl mb-10 sm:mb-12" data-reveal>
-      <p class="font-bold text-sm tracking-widest uppercase" style="color: var(--color-accent)">{t(copy.ambianceKicker, lang)}</p>
-      <h2 class="font-display text-3xl sm:text-4xl font-semibold mt-2">{t(copy.ambianceTitle, lang)}</h2>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale">
-        <img src="/images/mood-tile.webp" alt={t(copy.ambianceAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 60ms">
-        <img src="/images/mood-cocktail.webp" alt={t(copy.ambianceAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 120ms">
-        <img src="/images/mood-biryani.webp" alt={t(copy.ambianceAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 180ms">
-        <img src="/images/mood-chai.webp" alt={t(copy.ambianceAlt4, lang)} class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 240ms">
-        <img src="/images/mood-lantern.webp" alt={t(copy.ambianceAlt5, lang)} class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 300ms">
-        <img src="/images/mood-naan.webp" alt={t(copy.ambianceAlt6, lang)} class="w-full h-full object-cover" loading="lazy" />
-      </div>
-    </div>
-  </section>
 
   <!-- Why us / E-E-A-T signals -->
   <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24 grid sm:grid-cols-3 gap-8">
