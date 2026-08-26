@@ -438,8 +438,12 @@ const path = localizedPath('/', lang);
        for playback outside Safari (the source was HEVC, which Chrome/
        Firefox don't decode) and downscaled to 720p — plenty for a
        contained player, a fraction of the original's file size. Autoplay
-       is muted+loop (browsers block audio autoplay anyway); native
-       controls stay on so a visitor can unmute for the music themselves. -->
+       starts muted+loop (required — browsers block audio-on autoplay
+       outright), then the astro:page-load script below unmutes it once the
+       card is actually scrolled into view and mutes it again on the way
+       out, so the lounge music only plays while a visitor is looking at it,
+       not the instant the page loads. Native controls stay on as a manual
+       fallback (some browsers still block the scripted unmute). -->
   <!-- .section-tint, not .section-tint-warm — the testimonial carousel
        right after this is already warm-tinted, and two warm sections back
        to back is exactly the flat, undifferentiated rhythm the Club page
@@ -454,6 +458,7 @@ const path = localizedPath('/', lang);
             style="background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 24px 60px rgba(0,0,0,0.45)"
           >
             <video
+              id="bombay-video"
               class="w-full aspect-[9/16] rounded-[1.5rem] object-cover"
               poster="/images/bombay-lounge-poster.webp"
               autoplay
@@ -590,6 +595,29 @@ const path = localizedPath('/', lang);
         });
         show(0);
         start();
+      });
+
+      // Bombay Lounge video: unmute once it's actually in view, mute again
+      // once it scrolls back out — see the comment above the <video> tag.
+      // The `data-wired` guard matches the carousel's own, so a soft
+      // navigation back to Home doesn't stack up duplicate observers on
+      // the same video element.
+      document.querySelectorAll<HTMLVideoElement>('#bombay-video').forEach((video) => {
+        if (video.dataset.wired === 'true') return;
+        video.dataset.wired = 'true';
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              // Some browsers refuse a scripted unmute outright; that's fine
+              // — the video just stays muted and the native controls (kept
+              // on for exactly this) let the visitor unmute it themselves.
+              video.muted = !entry.isIntersecting;
+            });
+          },
+          { threshold: 0.6 }
+        );
+        observer.observe(video);
       });
     });
   </script>
