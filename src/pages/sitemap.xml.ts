@@ -5,7 +5,7 @@ import { siteConfig } from '../config/site.config';
 // in astro.config.mjs for why). Update this list if pages are added or
 // removed — it deliberately stays a flat, explicit array rather than a
 // filesystem crawl, so it's obvious at a glance exactly what's in it.
-const PAGES = ['/', '/menu', '/a-propos', '/avis', '/club', '/faq', '/contact'];
+const PAGES = ['/', '/menu', '/a-propos', '/avis', '/club', '/reservation', '/faq', '/contact'];
 
 export const GET: APIRoute = () => {
   const base = siteConfig.identity.siteUrl.replace(/\/$/, '');

@@ -86,6 +86,22 @@ export interface SiteConfig {
     // itself (see the architecture decision recorded in this project).
     orderSiteUrl: string;
   };
+  reservations: {
+    // Table reservations write straight to Supabase from the browser (see
+    // src/content-pages/ReservationContent.astro) — this site stays fully
+    // static (see astro.config.mjs's `output: 'static'` note), no server of
+    // our own involved. The anon key below is MEANT to be public: it's the
+    // same key Supabase's own JS client ships to the browser, and it can
+    // only ever INSERT into the reservations table (see the row-level-
+    // security policy in the SQL setup) — never read, update or delete
+    // anything, so exposing it here is not a leak. Staff review incoming
+    // reservations in Supabase's own free Table Editor for now; the same
+    // table is what a future in-restaurant tablet screen (orders +
+    // reservations together, still on the roadmap) will read from, so
+    // nothing here gets rebuilt when that's built — same backend, new UI.
+    supabaseUrl: string;
+    supabaseAnonKey: string;
+  };
   social: {
     googleReviewsUrl?: string;
     // Real number from the client's Google Business Profile — NOT computed
@@ -136,6 +152,15 @@ export const siteConfig: SiteConfig = {
   },
   ordering: {
     orderSiteUrl: 'https://indianflavor.pages.dev',
+  },
+  reservations: {
+    // Amplify org's Supabase project "indian-flavors" (free tier). The
+    // publishable key below is Supabase's new anon-key equivalent — safe to
+    // ship in client-side code by design (see the comment on this
+    // interface's supabaseAnonKey field above), it can only INSERT into the
+    // reservations table thanks to that table's row-level-security policy.
+    supabaseUrl: 'https://zzdiibzoalmymgbztepf.supabase.co',
+    supabaseAnonKey: 'sb_publishable_96be9YWDCuHOD9-rmGVkeg_5RTW8Jx7',
   },
   social: {
     // Cleaned Google Maps place link (session/tracking params stripped —
