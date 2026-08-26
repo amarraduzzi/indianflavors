@@ -72,6 +72,22 @@ const copy = {
     en: 'A selection of Indian starters and dishes',
     ar: 'تشكيلة من المقبلات والأطباق الهندية',
   },
+  bombayKicker: { fr: 'Tous les vendredis soir', en: 'Every Friday night', ar: 'كل ليلة جمعة' },
+  bombayTitle: { fr: 'Bombay Lounge', en: 'Bombay Lounge', ar: 'بومباي لاونج' },
+  bombayDescription: {
+    fr: `Chaque vendredi, ${siteConfig.identity.name} se transforme : musique indian lounge, cocktails sans alcool et entertainment, pour une soirée à part.`,
+    en: `Every Friday, ${siteConfig.identity.name} transforms: Indian lounge music, non-alcoholic cocktails and entertainment, for a night apart.`,
+    ar: `كل يوم جمعة، يتحول ${siteConfig.identity.name}: موسيقى إنديان لاونج، كوكتيلات بدون كحول، وترفيه، لأمسية مختلفة.`,
+  },
+  bombayDetail1: { fr: 'Musique indian lounge', en: 'Indian lounge music', ar: 'موسيقى إنديان لاونج' },
+  bombayDetail2: { fr: 'Cocktails sans alcool', en: 'Non-alcoholic cocktails', ar: 'كوكتيلات بدون كحول' },
+  bombayDetail3: { fr: 'Entertainment', en: 'Entertainment', ar: 'ترفيه' },
+  bombayCta: { fr: 'Réserver mon vendredi', en: 'Reserve my Friday', ar: 'احجز ليلة الجمعة' },
+  bombayVideoAlt: {
+    fr: `Ambiance de la soirée Bombay Lounge chez ${siteConfig.identity.name}`,
+    en: `Bombay Lounge night at ${siteConfig.identity.name}`,
+    ar: `أجواء أمسية بومباي لاونج في ${siteConfig.identity.name}`,
+  },
   whyUs: [
     {
       title: { fr: 'Recettes authentiques', en: 'Authentic recipes', ar: 'وصفات أصيلة' },
@@ -341,6 +357,72 @@ const path = localizedPath('/', lang);
       </div>
     ))}
   </section>
+
+  <!-- Bombay Lounge — the weekly Friday-night theme (lounge music,
+       non-alcoholic cocktails, entertainment). The client supplied an
+       already-edited vertical promo reel (captions + end-card baked in by
+       them) rather than raw footage, so this embeds it as-is instead of
+       re-cutting it — a phone-shaped frame keeps a portrait 9:16 clip from
+       just floating oddly in a landscape page layout. Re-encoded to H.264
+       for playback outside Safari (the source was HEVC, which Chrome/
+       Firefox don't decode) and downscaled to 720p — plenty for a
+       contained player, a fraction of the original's file size. Autoplay
+       is muted+loop (browsers block audio autoplay anyway); native
+       controls stay on so a visitor can unmute for the music themselves. -->
+  <!-- .section-tint, not .section-tint-warm — the testimonial carousel
+       right after this is already warm-tinted, and two warm sections back
+       to back is exactly the flat, undifferentiated rhythm the Club page
+       redesign moved away from. Neutral tint here keeps the plain → tint →
+       warm alternation the rest of the page already establishes. -->
+  <div class="section-tint">
+    <section class="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <div class="grid sm:grid-cols-[minmax(0,280px)_1fr] gap-10 sm:gap-14 items-center">
+        <div class="mx-auto sm:mx-0 w-full max-w-[280px]" data-reveal="scale">
+          <div
+            class="relative rounded-[2rem] p-2"
+            style="background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 24px 60px rgba(0,0,0,0.45)"
+          >
+            <video
+              class="w-full aspect-[9/16] rounded-[1.5rem] object-cover"
+              poster="/images/bombay-lounge-poster.webp"
+              autoplay
+              muted
+              loop
+              playsinline
+              controls
+              preload="metadata"
+              aria-label={t(copy.bombayVideoAlt, lang)}
+            >
+              <source src="/videos/bombay-lounge.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+
+        <div data-reveal style="transition-delay: 100ms">
+          <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-3" style="color: var(--color-accent)">
+            {t(copy.bombayKicker, lang)}
+          </span>
+          <h2 class="font-display text-3xl sm:text-4xl font-semibold mb-4" style="color: var(--color-text-primary)">
+            {t(copy.bombayTitle, lang)}
+          </h2>
+          <p class="text-sm sm:text-base leading-relaxed mb-6" style="color: var(--color-text-muted)">
+            {t(copy.bombayDescription, lang)}
+          </p>
+          <ul class="flex flex-wrap gap-x-6 gap-y-3 mb-8">
+            {[copy.bombayDetail1, copy.bombayDetail2, copy.bombayDetail3].map((detail) => (
+              <li class="flex items-center gap-2 text-sm font-semibold" style="color: var(--color-text-primary)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                  <path d="M5 12.5l4.5 4.5L19 7" />
+                </svg>
+                {t(detail, lang)}
+              </li>
+            ))}
+          </ul>
+          <Button href={localizedPath('/reservation', lang)} variant="cta">{t(copy.bombayCta, lang)}</Button>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- Testimonial carousel -->
   <section class="section-tint-warm relative max-w-none px-0 py-16 sm:py-28 overflow-hidden" data-reveal>
