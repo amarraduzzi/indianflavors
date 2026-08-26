@@ -1,0 +1,416 @@
+---
+// See HomeContent.astro's top comment for the shared-body-per-route
+// pattern this and every other src/content-pages/*.astro file follows.
+//
+// Indian Flavor Club: the loyalty concept lives entirely offline —
+// membership is only ever set up in-restaurant (staff walks a QR code to
+// the table for full-paying guests, or offers it after a guest's 2nd
+// promo-driven visit). This page's only job is to explain the club well
+// enough that a guest wants to ask about it — there is deliberately no
+// online opt-in / WhatsApp button here, since adding one would undercut
+// the "you can only get in at the restaurant" exclusivity the club is
+// built on.
+//
+// v2: first pass was pure typography (crest + a flat list of icon rows) —
+// read as "boring" next to every other page's photo bands, galleries and
+// tinted sections (see Home/About's use of .ken-burns spotlights,
+// .photo-frame galleries, .card-lift grids). This pass borrows those exact
+// established motifs instead of inventing new ones, so the page finally
+// carries the same food-forward texture as the rest of the site: a
+// full-bleed photo spotlight for the one automatic perk (the welcome
+// discount), a card grid for the rest, a photo/text split for "how to
+// join", and a small gallery beat for breathing room.
+import Layout from '../layouts/Layout.astro';
+import Ornament from '../components/Ornament.astro';
+import { siteConfig } from '../config/site.config';
+import { t, localizedPath, type Language, type LocalizedText } from '../i18n/languages';
+import { place } from '../i18n/ui';
+
+interface Props {
+  lang?: Language;
+}
+const { lang = 'fr' } = Astro.props;
+
+const { name } = siteConfig.identity;
+const primaryKeyword = t(siteConfig.identity.primaryKeyword, lang);
+const city = t(place.city, lang);
+
+const copy = {
+  metaTitle: {
+    fr: `Indian Flavor Club — ${name}, ${primaryKeyword} à ${city}`,
+    en: `Indian Flavor Club — ${name}, ${primaryKeyword} in ${city}`,
+    ar: `نادي Indian Flavor — ${name}, ${primaryKeyword} في ${city}`,
+  },
+  metaDescription: {
+    fr: `Le Indian Flavor Club : une petite communauté de habitués de ${name} à ${city}, avec des avantages réservés aux membres. Inscription uniquement au restaurant.`,
+    en: `The Indian Flavor Club: a small community of ${name} regulars in ${city}, with member-only perks. Sign-up only at the restaurant.`,
+    ar: `نادي Indian Flavor: مجموعة صغيرة من رواد ${name} في ${city}، مع مزايا حصرية للأعضاء. التسجيل في المطعم فقط.`,
+  },
+  kicker: { fr: 'Une communauté, pas une carte', en: 'A community, not a card', ar: 'مجتمع، لا بطاقة' },
+  heroTitle: { fr: 'Indian Flavor Club', en: 'Indian Flavor Club', ar: 'نادي Indian Flavor' },
+  heroSubtitle: {
+    fr: `Chez ${name}, on ne fait pas dans les cartes de fidélité impersonnelles. Le Club, c'est pour ceux qui aiment vraiment ce qu'on fait ici, et qui reçoivent de temps en temps quelque chose en retour.`,
+    en: `At ${name}, we don't do impersonal loyalty cards. The Club is for people who genuinely love what we do here, and who get something back from time to time.`,
+    ar: `في ${name}، نحن لا نعتمد بطاقات ولاء باردة. النادي مخصص لمن يحب حقًا ما نقدمه هنا، ويحصل بين الحين والآخر على شيء في المقابل.`,
+  },
+  welcomeKicker: { fr: 'Bienvenue', en: 'Welcome', ar: 'مرحبًا بكم' },
+  welcomeQuote: {
+    fr: "-10% sur l'addition, dès votre premier repas en tant que membre.",
+    en: '10% off the bill, from your very first meal as a member.',
+    ar: 'خصم 10% على الفاتورة، منذ أول وجبة لكم كعضو.',
+  },
+  welcomeSub: {
+    fr: "Le seul avantage automatique du club, tout le reste arrive au fil du temps.",
+    en: "The club's only automatic perk, everything else comes over time.",
+    ar: 'الميزة التلقائية الوحيدة في النادي، أما الباقي فيأتي مع الوقت.',
+  },
+  welcomeAlt: {
+    fr: `Poulet tandoori grillé chez ${name}`,
+    en: `Grilled tandoori chicken at ${name}`,
+    ar: `دجاج تندوري مشوي في ${name}`,
+  },
+  benefitsKicker: { fr: 'Et ensuite', en: 'And after that', ar: 'وبعد ذلك' },
+  galleryAlt1: { fr: 'Chicken tikka maison', en: 'House chicken tikka', ar: 'دجاج تيكا منزلي' },
+  galleryAlt2: { fr: 'Pani puri croustillants', en: 'Crisp pani puri', ar: 'باني بوري مقرمش' },
+  galleryAlt3: { fr: 'Samossas faits maison', en: 'Homemade samosas', ar: 'سمبوسة منزلية' },
+  joinTitle: { fr: 'Comment rejoindre le club', en: 'How to join the club', ar: 'كيف تنضم إلى النادي' },
+  joinText: {
+    fr: "L'Indian Flavor Club ne se rejoint pas en ligne. Il n'y a pas de formulaire, pas de compte à créer. Demandez-en simplement à votre serveur lors de votre prochaine visite : il se fera un plaisir de vous expliquer comment ça marche, sur place.",
+    en: 'You can\'t join the Indian Flavor Club online. There\'s no form, no account to create. Just ask your server about it on your next visit, they\'ll be happy to explain how it works, right there at the table.',
+    ar: 'لا يمكن الانضمام إلى نادي Indian Flavor عبر الإنترنت. لا استمارة ولا حساب يجب إنشاؤه. فقط اسأل النادل في زيارتك القادمة، وسيسعد بشرح الطريقة على الطاولة مباشرة.',
+  },
+  joinImageAlt: {
+    fr: `Table dressée dans la salle de ${name}`,
+    en: `A set table inside ${name}`,
+    ar: `طاولة مُعدّة داخل ${name}`,
+  },
+  promiseTitle: { fr: 'Notre engagement', en: 'Our promise', ar: 'التزامنا' },
+  promiseText: {
+    fr: "Pas de spam, pas de sollicitation constante. Les offres personnelles arrivent au moins une fois par mois, jamais moins souvent, et jamais plus que ce qui reste agréable à recevoir.",
+    en: 'No spam, no constant pestering. Personal offers land at least once a month, never less often, and never more than what still feels good to receive.',
+    ar: 'لا رسائل مزعجة ولا إلحاح متكرر. تصلكم العروض الشخصية مرة واحدة على الأقل شهريًا، لا أقل من ذلك أبدًا، ولا أكثر مما يبقى ممتعًا لتلقيه.',
+  },
+  faqKicker: { fr: 'Questions sur le club', en: 'Questions about the club', ar: 'أسئلة حول النادي' },
+  closing: { fr: 'À bientôt à table.', en: 'See you at the table soon.', ar: 'إلى اللقاء قريبًا على الطاولة.' },
+} satisfies Record<string, LocalizedText>;
+
+interface Benefit {
+  icon: string;
+  title: LocalizedText;
+  description: LocalizedText;
+}
+
+// The -10% welcome offer used to open this list — it now has its own photo
+// spotlight above (the club's one automatic, immediate perk), so this list
+// is deliberately everything that comes AFTER that first visit.
+const benefits: Benefit[] = [
+  {
+    icon: 'M4 10h16M6 10V6a2 2 0 012-2h8a2 2 0 012 2v4M5 10v9m14-9v9M5 19h14',
+    title: { fr: 'Priorité pour votre table', en: 'Priority for your table', ar: 'الأولوية لطاولتكم' },
+    description: {
+      fr: 'Même les soirs complets, on fait le maximum pour vous trouver une place.',
+      en: "Even on our busiest nights, we do everything we can to find you a seat.",
+      ar: 'حتى في أكثر الليالي ازدحامًا، نبذل قصارى جهدنا لإيجاد مكان لكم.',
+    },
+  },
+  {
+    icon: 'M3 7h11v8H3zM14 10h3l3 3v2h-6zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM16.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z',
+    title: { fr: 'Offres sur la livraison', en: 'Delivery offers', ar: 'عروض التوصيل' },
+    description: {
+      fr: 'Des réductions ponctuelles sur vos commandes à emporter et livrées.',
+      en: 'Occasional discounts on your takeout and delivery orders.',
+      ar: 'خصومات من حين لآخر على طلبات التوصيل والطلبات الجاهزة.',
+    },
+  },
+  {
+    icon: 'M12 8c-1.5-2-4.5-2.2-4.5 1 0 2.5 4.5 5 4.5 5s4.5-2.5 4.5-5c0-3.2-3-3-4.5-1zM12 21V13',
+    title: { fr: 'Une attention pour votre anniversaire', en: 'A birthday treat', ar: 'مفاجأة في عيد ميلادكم' },
+    description: {
+      fr: 'Un petit geste offert par la maison, le jour J.',
+      en: 'A small gift from the house, on the day itself.',
+      ar: 'هدية صغيرة من المطعم، في يومكم المميز.',
+    },
+  },
+  {
+    icon: 'M5 21V9a7 7 0 0114 0v12M5 21h14M9 21v-6h6v6',
+    title: { fr: 'Les nouveautés en avant-première', en: 'New dishes, first', ar: 'الأطباق الجديدة أولًا' },
+    description: {
+      fr: "Goûtez les nouveaux plats et les plats de saison avant qu'ils n'arrivent sur la carte.",
+      en: "Taste new and seasonal dishes before they make it onto the menu.",
+      ar: 'تذوقوا الأطباق الجديدة والموسمية قبل أن تُدرج في القائمة.',
+    },
+  },
+  {
+    icon: 'M8 2v3M16 2v3M4 8h16M4 6a2 2 0 012-2h12a2 2 0 012 2v13a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM12 12l1.5 1.5L15 12',
+    title: { fr: 'Une soirée réservée aux membres', en: 'A members-only evening', ar: 'أمسية حصرية للأعضاء' },
+    description: {
+      fr: 'Une fois par an, une dégustation exclusive, uniquement pour les membres du club.',
+      en: 'Once a year, an exclusive tasting evening, for club members only.',
+      ar: 'مرة واحدة في السنة، أمسية تذوق حصرية، للأعضاء فقط.',
+    },
+  },
+  {
+    icon: 'M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z',
+    title: {
+      fr: 'Des réductions personnelles, au moins une fois par mois',
+      en: 'Personal offers, at least once a month',
+      ar: 'عروض شخصية، مرة واحدة على الأقل شهريًا',
+    },
+    description: {
+      fr: 'Sur une sélection de plats que nous choisissons, envoyées directement sur votre WhatsApp.',
+      en: "On a selection of dishes we pick ourselves, sent straight to your WhatsApp.",
+      ar: 'على تشكيلة من الأطباق نختارها بأنفسنا، تُرسل مباشرة إلى واتساب الخاص بكم.',
+    },
+  },
+];
+
+interface ClubFaqItem {
+  question: LocalizedText;
+  answer: LocalizedText;
+}
+
+const faqItems: ClubFaqItem[] = [
+  {
+    question: { fr: "Est-ce que le club est payant ?", en: 'Is the club paid?', ar: 'هل الانضمام للنادي مدفوع؟' },
+    answer: {
+      fr: "Non, c'est entièrement gratuit. La seule condition, c'est de nous rendre visite au restaurant.",
+      en: "No, it's entirely free. The only condition is coming to visit us at the restaurant.",
+      ar: 'لا، الانضمام مجاني تمامًا. الشرط الوحيد هو زيارتنا في المطعم.',
+    },
+  },
+  {
+    question: {
+      fr: 'À quelle fréquence vais-je recevoir des offres ?',
+      en: 'How often will I receive offers?',
+      ar: 'كم مرة سأتلقى العروض؟',
+    },
+    answer: {
+      fr: 'Au moins une fois par mois, jamais moins. On préfère vous surprendre plutôt que vous solliciter en permanence.',
+      en: "At least once a month, never less. We'd rather surprise you than pester you constantly.",
+      ar: 'مرة واحدة على الأقل شهريًا، لا أقل من ذلك أبدًا. نفضل أن نفاجئكم بدل إزعاجكم باستمرار.',
+    },
+  },
+  {
+    question: { fr: 'Puis-je me désinscrire ?', en: 'Can I unsubscribe?', ar: 'هل يمكنني إلغاء الاشتراك؟' },
+    answer: {
+      fr: "Oui, à tout moment. Il vous suffit de nous le signaler par WhatsApp.",
+      en: 'Yes, at any time. Just let us know on WhatsApp.',
+      ar: 'نعم، في أي وقت. يكفي إخبارنا عبر واتساب.',
+    },
+  },
+  {
+    question: {
+      fr: 'Dois-je toujours venir au restaurant pour en profiter ?',
+      en: 'Do I always have to come to the restaurant to use it?',
+      ar: 'هل يجب أن أزور المطعم دائمًا للاستفادة؟',
+    },
+    answer: {
+      fr: 'La plupart des avantages sont pour vos visites sur place ; les offres de livraison, elles, sont valables sur vos commandes à emporter et livrées.',
+      en: 'Most perks are for your visits in the restaurant; the delivery offers, however, apply to your takeout and delivery orders.',
+      ar: 'معظم المزايا مخصصة لزياراتكم داخل المطعم؛ أما عروض التوصيل فتنطبق على طلبات التوصيل والطلبات الجاهزة.',
+    },
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: t(item.question, lang),
+    acceptedAnswer: { '@type': 'Answer', text: t(item.answer, lang) },
+  })),
+};
+
+const path = localizedPath('/club', lang);
+---
+<Layout
+  title={t(copy.metaTitle, lang)}
+  description={t(copy.metaDescription, lang)}
+  path={path}
+  lang={lang}
+  jsonLd={faqJsonLd}
+>
+  <!-- Bespoke crest hero instead of the standard PageHero photo-banner:
+       the client supplied an actual gold emblem/wordmark for the club
+       ("INDIAN FLAVORS CLUB", full crest with cutlery + laurel), which
+       already reads as a title on its own. Overlaying PageHero's usual
+       gradient photo + a separate <h1> on top of that would fight the
+       crest for attention and repeat the club's name twice in one
+       glance. The crest becomes the visual anchor instead; the real
+       <h1> stays for SEO/accessibility but is visually hidden. -->
+  <section class="relative overflow-hidden text-center" style="background-color: var(--color-background)">
+    <div class="section-glow" style="width: 420px; height: 420px; background: var(--color-accent); opacity: 0.06; left: 50%; top: -60px; transform: translateX(-50%);"></div>
+    <div class="relative max-w-2xl mx-auto px-5 sm:px-8 pt-16 sm:pt-20 pb-10 sm:pb-12">
+      <h1 class="sr-only">{t(copy.heroTitle, lang)}</h1>
+      <img
+        src="/images/club-emblem.webp"
+        alt={t(copy.heroTitle, lang)}
+        width="700"
+        height="700"
+        class="w-40 h-40 sm:w-52 sm:h-52 mx-auto rounded-full"
+        style="box-shadow: 0 0 0 1px var(--color-border), 0 20px 50px rgba(0,0,0,0.5)"
+      />
+      <span class="block mt-6 text-[11px] font-bold uppercase tracking-[0.25em]" style="color: var(--color-accent)">
+        {t(copy.kicker, lang)}
+      </span>
+      <p class="mt-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+        {t(copy.heroSubtitle, lang)}
+      </p>
+    </div>
+  </section>
+
+  <!-- Welcome-offer spotlight — same full-bleed ken-burns photo band as
+       Home's "signature spotlight" (see HomeContent.astro), reused here
+       instead of listing -10% as just another icon row. It's the club's
+       one automatic, immediate perk, so it gets the one big visual
+       moment on the page. -->
+  <section class="relative min-h-[360px] sm:h-[56vh] overflow-hidden" data-reveal="scale">
+    <div class="ken-burns absolute inset-0">
+      <img
+        src="/images/dish-tandoori-chicken.webp"
+        alt={t(copy.welcomeAlt, lang)}
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      />
+    </div>
+    <div class="absolute inset-0" style="background: linear-gradient(100deg, color-mix(in srgb, var(--color-primary-dark) 30%, var(--color-background)) 0%, color-mix(in srgb, var(--color-primary-dark) 16%, rgba(11,11,12,0.55)) 42%, rgba(11,11,12,0.15) 68%, transparent 100%)"></div>
+    <div class="relative z-10 h-full flex items-center max-w-3xl mx-auto px-5 sm:px-8">
+      <div class="max-w-md">
+        <span class="block text-[10px] font-bold uppercase tracking-[0.25em] mb-4" style="color: var(--color-accent)">
+          {t(copy.welcomeKicker, lang)}
+        </span>
+        <p class="pull-quote">{t(copy.welcomeQuote, lang)}</p>
+        <p class="mt-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+          {t(copy.welcomeSub, lang)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Remaining benefits as a card grid (same .card-lift rounded-2xl
+       treatment as the menu highlights on Home) instead of a flat list of
+       icon rows. -->
+  <div class="section-tint">
+    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+      <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-7" style="color: var(--color-accent)">
+        {t(copy.benefitsKicker, lang)}
+      </h2>
+      <div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
+        {benefits.map((benefit, i) => (
+          <div
+            class="card-lift rounded-2xl p-5 sm:p-6"
+            style={`background-color: var(--color-background); border: 1px solid var(--color-border); transition-delay: ${i * 70}ms`}
+            data-reveal
+          >
+            <span
+              class="inline-flex items-center justify-center w-10 h-10 rounded-full mb-4"
+              style="background-color: color-mix(in srgb, var(--color-accent) 12%, transparent)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.6">
+                <path d={benefit.icon} stroke="var(--color-accent)" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <p class="font-display font-semibold text-base sm:text-lg" style="color: var(--color-text-primary)">
+              {t(benefit.title, lang)}
+            </p>
+            <p class="text-sm mt-1.5 leading-relaxed" style="color: var(--color-text-muted)">
+              {t(benefit.description, lang)}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <!-- Small photo beat for breathing room, same grid/photo-frame/hover-zoom
+       treatment as Home's gallery — different dishes, so it isn't a literal
+       repeat of the Home gallery. -->
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale">
+        <img src="/images/dish-chicken-tikka.webp" alt={t(copy.galleryAlt1, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 100ms">
+        <img src="/images/dish-pani-puri.webp" alt={t(copy.galleryAlt2, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="photo-frame rounded-2xl aspect-square" data-reveal="scale" style="transition-delay: 200ms">
+        <img src="/images/dish-samosa.webp" alt={t(copy.galleryAlt3, lang)} class="w-full h-full object-cover" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- How to join — photo/text split instead of a flat text block, so the
+       page's rhythm varies (spotlight band, then card grid, then this)
+       rather than repeating the same "big photo band" shape twice. -->
+  <div class="section-tint-warm">
+    <section class="max-w-4xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div class="grid sm:grid-cols-2 gap-8 sm:gap-10 items-center">
+        <div class="photo-frame rounded-2xl overflow-hidden aspect-[4/3]" data-reveal="scale">
+          <img src="/images/gallery-curries.webp" alt={t(copy.joinImageAlt, lang)} class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div data-reveal>
+          <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-3" style="color: var(--color-text-primary)">
+            {t(copy.joinTitle, lang)}
+          </h2>
+          <p class="text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+            {t(copy.joinText, lang)}
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="relative max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16 overflow-hidden">
+    <img
+      src="/images/club-emblem.webp"
+      alt=""
+      aria-hidden="true"
+      class="mark-watermark w-[20rem] h-[20rem] -left-24 -bottom-24 hidden sm:block"
+    />
+    <div
+      class="relative rounded-2xl px-6 py-8 sm:px-10 sm:py-10 text-center"
+      style="border: 1px solid var(--color-border); background-color: var(--color-surface)"
+      data-reveal
+    >
+      <p class="text-[11px] font-bold uppercase tracking-[0.2em] mb-3" style="color: var(--color-accent)">
+        {t(copy.promiseTitle, lang)}
+      </p>
+      <p class="font-display text-lg sm:text-xl leading-relaxed max-w-xl mx-auto" style="color: var(--color-text-primary)">
+        {t(copy.promiseText, lang)}
+      </p>
+    </div>
+  </section>
+
+  <div class="section-tint">
+    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+      <h2 class="text-xs font-bold uppercase tracking-[0.2em] mb-5" style="color: var(--color-accent)">
+        {t(copy.faqKicker, lang)}
+      </h2>
+      <div class="space-y-3">
+        {faqItems.map((item, i) => (
+          <details
+            class="group rounded-xl px-5 py-4"
+            style="background-color: var(--color-background); border: 1px solid var(--color-border)"
+            open={i === 0}
+            data-reveal
+          >
+            <summary class="cursor-pointer list-none flex items-center justify-between gap-4 font-display font-semibold" style="color: var(--color-text-primary)">
+              {t(item.question, lang)}
+              <span class="shrink-0 text-lg transition-transform group-open:rotate-45" style="color: var(--color-accent)">+</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed" style="color: var(--color-text-muted)">{t(item.answer, lang)}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <Ornament />
+
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-20 text-center">
+    <p class="font-display text-xl sm:text-2xl font-semibold" style="color: var(--color-text-primary)">
+      {t(copy.closing, lang)}
+    </p>
+  </section>
+</Layout>
