@@ -238,28 +238,28 @@ const path = localizedPath('/club', lang);
   jsonLd={faqJsonLd}
 >
   <!-- Bespoke crest hero instead of the standard PageHero photo-banner:
-       the client supplied an actual gold emblem/wordmark for the club
-       ("INDIAN FLAVORS CLUB", full crest with cutlery + laurel), which
-       already reads as a title on its own. Overlaying PageHero's usual
-       gradient photo + a separate <h1> on top of that would fight the
-       crest for attention and repeat the club's name twice in one
-       glance. The crest becomes the visual anchor instead; the real
-       <h1> stays for SEO/accessibility but is visually hidden. -->
+       the badge is the real Indian Flavors gold mark (see logo-mark.webp),
+       not a bespoke crest — it's icon-only (no baked-in wordmark, so it
+       stays legible cropped into a small circle), which is why the H1
+       below is visible this time instead of sr-only: the badge alone no
+       longer states the page's name, so the heading has to. -->
   <section class="relative overflow-hidden text-center" style="background-color: var(--color-background)">
     <div class="section-glow" style="width: 420px; height: 420px; background: var(--color-accent); opacity: 0.06; left: 50%; top: -60px; transform: translateX(-50%);"></div>
     <div class="relative max-w-2xl mx-auto px-5 sm:px-8 pt-16 sm:pt-20 pb-10 sm:pb-12">
-      <h1 class="sr-only">{t(copy.heroTitle, lang)}</h1>
       <img
         src="/images/club-emblem.webp"
         alt={t(copy.heroTitle, lang)}
         width="700"
         height="700"
-        class="w-40 h-40 sm:w-52 sm:h-52 mx-auto rounded-full"
+        class="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full"
         style="box-shadow: 0 0 0 1px var(--color-border), 0 20px 50px rgba(0,0,0,0.5)"
       />
       <span class="block mt-6 text-[11px] font-bold uppercase tracking-[0.25em]" style="color: var(--color-accent)">
         {t(copy.kicker, lang)}
       </span>
+      <h1 class="font-display text-3xl sm:text-4xl font-semibold mt-3" style="color: var(--color-text-primary)">
+        {t(copy.heroTitle, lang)}
+      </h1>
       <p class="mt-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
         {t(copy.heroSubtitle, lang)}
       </p>
