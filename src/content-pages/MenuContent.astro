@@ -7,7 +7,7 @@ import Ornament from '../components/Ornament.astro';
 import { siteConfig } from '../config/site.config';
 import { getOrderCtaLabel } from '../lib/nav';
 import { menuHighlights } from '../content/menu-highlights';
-import { t, localizedPath, type Language } from '../i18n/languages';
+import { t, localizedPath, arrow, type Language } from '../i18n/languages';
 import { common, place } from '../i18n/ui';
 
 interface Props {
@@ -43,6 +43,11 @@ const copy = {
     ar: 'تشكيلة من أطباقنا المميزة. القائمة الكاملة، بجميع الخيارات والإضافات، متوفرة عند الطلب.',
   },
   readyToOrder: { fr: 'Prêt à commander ?', en: 'Ready to order?', ar: 'جاهز للطلب؟' },
+  // Links from a menu item to its article on /decouvrir — see
+  // src/content/dish-guides.ts and the guideSlug field on
+  // MenuHighlightItem. Deliberately short ("d'où ça vient" rather than a
+  // full sentence) since it sits inline on an already-compact item card.
+  learnMore: { fr: "D'où ça vient ?", en: 'Where does it come from?', ar: 'من أين يأتي؟' },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const menuJsonLd = {
@@ -186,6 +191,15 @@ const path = localizedPath('/menu', lang);
                       {item.vegetarian && <span class="text-xs align-middle" title={t(common.vegetarienUniquement, lang)}>🌱</span>}
                     </h3>
                     <p class="text-sm mt-1" style="color: var(--color-text-muted)">{t(item.description, lang)}</p>
+                    {item.guideSlug && (
+                      <a
+                        href={localizedPath(`/decouvrir/${item.guideSlug}`, lang)}
+                        class="inline-flex items-center gap-1 mt-1.5 text-xs font-bold"
+                        style="color: var(--color-accent)"
+                      >
+                        {t(copy.learnMore, lang)} {arrow(lang)}
+                      </a>
+                    )}
                   </div>
                   <span class="menu-item-price font-bold shrink-0" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
                 </div>

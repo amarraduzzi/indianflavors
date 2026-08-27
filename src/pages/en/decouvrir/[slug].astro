@@ -1,0 +1,11 @@
+---
+import DishGuideContent from '../../../content-pages/DishGuideContent.astro';
+import { dishGuides } from '../../../content/dish-guides';
+
+export function getStaticPaths() {
+  return dishGuides.map((guide) => ({ params: { slug: guide.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+<DishGuideContent slug={slug} lang="en" />

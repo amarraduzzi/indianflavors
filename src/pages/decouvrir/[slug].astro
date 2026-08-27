@@ -1,0 +1,16 @@
+---
+// One dynamic route generates a static page per entry in dish-guides.ts —
+// see that file's top comment. getStaticPaths is required here (not
+// optional) because astro.config.mjs sets output: 'static': every path
+// this returns becomes a real, pre-built HTML file at build time, same as
+// every other page on the site.
+import DishGuideContent from '../../content-pages/DishGuideContent.astro';
+import { dishGuides } from '../../content/dish-guides';
+
+export function getStaticPaths() {
+  return dishGuides.map((guide) => ({ params: { slug: guide.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+<DishGuideContent slug={slug} lang="fr" />

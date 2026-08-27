@@ -1,11 +1,26 @@
 import type { APIRoute } from 'astro';
 import { siteConfig } from '../config/site.config';
+import { dishGuides } from '../content/dish-guides';
 
 // Hand-written static sitemap instead of @astrojs/sitemap (see the comment
 // in astro.config.mjs for why). Update this list if pages are added or
 // removed — it deliberately stays a flat, explicit array rather than a
 // filesystem crawl, so it's obvious at a glance exactly what's in it.
-const PAGES = ['/', '/menu', '/a-propos', '/avis', '/club', '/reservation', '/faq', '/contact'];
+// The one exception is /decouvrir/<slug> — those are generated from
+// dish-guides.ts so a new guide article automatically appears here too,
+// instead of needing this file touched every time one is added.
+const PAGES = [
+  '/',
+  '/menu',
+  '/decouvrir',
+  ...dishGuides.map((g) => `/decouvrir/${g.slug}`),
+  '/a-propos',
+  '/avis',
+  '/club',
+  '/reservation',
+  '/faq',
+  '/contact',
+];
 
 export const GET: APIRoute = () => {
   const base = siteConfig.identity.siteUrl.replace(/\/$/, '');

@@ -1,0 +1,165 @@
+---
+// One shared template for every dish-guide article — see
+// src/content/dish-guides.ts for why this is data-driven instead of one
+// hand-written .astro file per dish (this scales to 20+ dishes with zero
+// further code changes, only new entries in that file).
+//
+// Hero uses a neutral mood image (mood-tile.webp — an abstract geometric
+// pattern, no specific food in it), not a photo of the dish itself: this
+// site doesn't have a genuine photo of every dish yet, and the honesty
+// rule already established in menu-highlights.ts (never substitute a
+// mismatched photo) applies here too — an ambiance shot framed as
+// ambiance is honest, a stock photo of the wrong dish presented as "this
+// is our butter chicken" would not be.
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import PageHero from '../components/PageHero.astro';
+import { siteConfig } from '../config/site.config';
+import { getDishGuide } from '../content/dish-guides';
+import { getOrderCtaLabel } from '../lib/nav';
+import { t, localizedPath, arrow, type Language } from '../i18n/languages';
+import { place } from '../i18n/ui';
+
+interface Props {
+  slug: string;
+  lang?: Language;
+}
+const { slug, lang = 'fr' } = Astro.props;
+
+const guide = getDishGuide(slug);
+if (!guide) {
+  throw new Error(`DishGuideContent: no dish guide found for slug "${slug}"`);
+}
+
+const { name } = siteConfig.identity;
+const primaryKeyword = t(siteConfig.identity.primaryKeyword, lang);
+const city = t(place.city, lang);
+const orderCtaLabel = getOrderCtaLabel(lang);
+
+const copy = {
+  metaTitle: {
+    fr: `${t(guide.metaTitle, lang)} | ${primaryKeyword} à ${city} — ${name}`,
+    en: `${t(guide.metaTitle, lang)} | ${primaryKeyword} in ${city} — ${name}`,
+    ar: `${t(guide.metaTitle, lang)} | ${primaryKeyword} في ${city} — ${name}`,
+  },
+  heroAlt: {
+    fr: 'Motif décoratif orientaliste, ambiance du restaurant',
+    en: 'Decorative Moorish pattern, restaurant ambiance',
+    ar: 'نقش زخرفي مغربي، أجواء المطعم',
+  },
+  backToGuides: { fr: 'Tous les articles', en: 'All articles', ar: 'جميع المقالات' },
+  ctaTitle: {
+    fr: `Envie de le goûter chez ${name} ?`,
+    en: `Ready to try it at ${name}?`,
+    ar: `هل ترغبون بتجربته في ${name}؟`,
+  },
+  ctaBackToMenu: { fr: 'Voir sur le menu', en: 'See it on the menu', ar: 'شاهده في القائمة' },
+} satisfies Record<string, { fr: string; en: string; ar: string }>;
+
+const path = localizedPath(`/decouvrir/${guide.slug}`, lang);
+
+// Article JSON-LD — the structured-data equivalent of everything below,
+// same reasoning as the FAQPage schema on the FAQ page: this is exactly
+// the kind of long-form, factual content AI answer engines (ChatGPT,
+// Google AI Overviews, Perplexity) lift directly, so it's worth emitting
+// in a form they can parse without guessing.
+const guideJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: t(guide.title, lang),
+  description: t(guide.metaDescription, lang),
+  about: t(guide.title, lang),
+  inLanguage: lang,
+  isPartOf: {
+    '@type': 'Restaurant',
+    name,
+    servesCuisine: 'Indian',
+    address: siteConfig.contact.address,
+  },
+  publisher: {
+    '@type': 'Restaurant',
+    name,
+  },
+};
+---
+<Layout
+  title={t(copy.metaTitle, lang)}
+  description={t(guide.metaDescription, lang)}
+  path={path}
+  lang={lang}
+  jsonLd={guideJsonLd}
+>
+  <PageHero
+    kicker={t(guide.kicker, lang)}
+    title={t(guide.title, lang)}
+    image="/images/mood-tile.webp"
+    alt={t(copy.heroAlt, lang)}
+  />
+
+  <article class="max-w-3xl mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-8">
+    <a
+      href={localizedPath('/decouvrir', lang)}
+      class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide mb-8"
+      style="color: var(--color-text-muted)"
+    >
+      {lang === 'ar' ? '' : '←'} {t(copy.backToGuides, lang)} {lang === 'ar' ? '←' : ''}
+    </a>
+
+    <p class="pull-quote mb-10" data-reveal>{t(guide.intro, lang)}</p>
+
+    <section class="mb-12" data-reveal>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-4" style="color: var(--color-text-primary)">
+        {t(guide.originHeading, lang)}
+      </h2>
+      <div class="space-y-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+        {guide.originParagraphs.map((p) => (
+          <p>{t(p, lang)}</p>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-12" data-reveal>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-4" style="color: var(--color-text-primary)">
+        {t(guide.preparationHeading, lang)}
+      </h2>
+      <div class="space-y-4 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+        {guide.preparationParagraphs.map((p) => (
+          <p>{t(p, lang)}</p>
+        ))}
+      </div>
+    </section>
+
+    <section class="mb-4" data-reveal>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-4" style="color: var(--color-text-primary)">
+        {t(guide.funFactsHeading, lang)}
+      </h2>
+      <ul class="space-y-4">
+        {guide.funFacts.map((fact) => (
+          <li class="flex items-start gap-3 text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-1">
+              <path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6-4.9-4.6 6.6-.7z" />
+            </svg>
+            <span>{t(fact, lang)}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </article>
+
+  <!-- Closing the loop: this page exists to help someone decide what to
+       order, so the last thing on it is the two ways to actually act on
+       that — order online, or find the dish back on the Menu page (which
+       itself links here — see menu-highlights.ts's guideSlug field and
+       MenuContent.astro's "En savoir plus" link). -->
+  <div class="section-tint">
+    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-16 text-center" data-reveal>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-6" style="color: var(--color-text-primary)">
+        {t(copy.ctaTitle, lang)}
+      </h2>
+      <div class="flex flex-wrap justify-center gap-3">
+        <Button href={orderCtaLabel.href} external variant="cta">{orderCtaLabel.label}</Button>
+        <Button href={localizedPath('/menu', lang)} variant="outline">{t(copy.ctaBackToMenu, lang)} {arrow(lang)}</Button>
+      </div>
+    </section>
+  </div>
+</Layout>

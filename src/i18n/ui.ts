@@ -7,9 +7,14 @@
 // genuinely repeat (nav, buttons) still have exactly one source of truth.
 import type { LocalizedText } from './languages';
 
-export const nav: Record<'accueil' | 'menu' | 'aPropos' | 'avis' | 'club' | 'reservation' | 'faq' | 'contact', LocalizedText> = {
+export const nav: Record<'accueil' | 'menu' | 'decouvrir' | 'aPropos' | 'avis' | 'club' | 'reservation' | 'faq' | 'contact', LocalizedText> = {
   accueil: { fr: 'Accueil', en: 'Home', ar: 'الرئيسية' },
   menu: { fr: 'Menu', en: 'Menu', ar: 'القائمة' },
+  // New hub of dish-guide articles (origin/history/how-it's-made for each
+  // menu item) — placed right after Menu in the nav since it's the natural
+  // "I want to understand what I'm ordering" next step, not a standalone
+  // destination someone browses to first.
+  decouvrir: { fr: 'Découvrir', en: 'Discover', ar: 'اكتشف' },
   aPropos: { fr: 'À propos', en: 'About', ar: 'من نحن' },
   avis: { fr: 'Avis', en: 'Reviews', ar: 'التقييمات' },
   club: { fr: 'Le Club', en: 'The Club', ar: 'النادي' },

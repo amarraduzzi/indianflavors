@@ -42,6 +42,11 @@ export interface MenuHighlightItem {
   // from this content alone. Same honesty standard as aggregateRating in
   // testimonials.ts: don't claim what isn't confirmed.
   vegetarian?: boolean;
+  // Links this item to its article in the "Découvrir" series (see
+  // src/content/dish-guides.ts) — set only when that article actually
+  // exists (matches a `slug` there), so this never points at a page that
+  // doesn't exist yet as more guides get added over time.
+  guideSlug?: string;
 }
 export interface MenuHighlightCategory {
   label: LocalizedText;
@@ -182,6 +187,7 @@ export const menuHighlights: MenuHighlightCategory[] = [
           ar: 'الطبق الأشهر: دجاج مطهو في صلصة الزبدة والطماطم المخملية.',
         },
         priceMAD: 80,
+        guideSlug: 'butter-chicken',
       },
       {
         name: 'Chicken Tikka Masala',
