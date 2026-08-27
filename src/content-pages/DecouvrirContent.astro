@@ -21,10 +21,11 @@ const primaryKeyword = t(siteConfig.identity.primaryKeyword, lang);
 const city = t(place.city, lang);
 
 const copy = {
+  // Keyword-first, same reasoning as HomeContent.astro's metaTitle.
   metaTitle: {
-    fr: `Découvrir la cuisine indienne — ${primaryKeyword} à ${city} | ${name}`,
-    en: `Discover Indian Cuisine — ${primaryKeyword} in ${city} | ${name}`,
-    ar: `اكتشف المطبخ الهندي — ${primaryKeyword} في ${city} | ${name}`,
+    fr: `${primaryKeyword} à ${city} — Découvrir la cuisine indienne | ${name}`,
+    en: `${primaryKeyword} in ${city} — Discover Indian Cuisine | ${name}`,
+    ar: `${primaryKeyword} في ${city} — اكتشف المطبخ الهندي | ${name}`,
   },
   metaDescription: {
     fr: `Origine, histoire et préparation des grands classiques de la cuisine indienne, expliqués simplement par ${name}, ${primaryKeyword} à ${city}.`,

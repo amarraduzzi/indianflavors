@@ -46,10 +46,11 @@ const faqJsonLd = {
 };
 
 const copy = {
+  // Keyword-first, same reasoning as HomeContent.astro's metaTitle.
   metaTitle: {
-    fr: `Questions fréquentes — ${primaryKeyword} à ${city} | ${name}`,
-    en: `Frequently asked questions — ${primaryKeyword} in ${city} | ${name}`,
-    ar: `الأسئلة الشائعة — ${primaryKeyword} في ${city} | ${name}`,
+    fr: `${primaryKeyword} à ${city} — Questions fréquentes | ${name}`,
+    en: `${primaryKeyword} in ${city} — FAQ | ${name}`,
+    ar: `${primaryKeyword} في ${city} — الأسئلة الشائعة | ${name}`,
   },
   metaDescription: {
     fr: `Horaires, livraison, réservations : les réponses aux questions les plus fréquentes sur ${name}, ${primaryKeyword} à ${city}.`,

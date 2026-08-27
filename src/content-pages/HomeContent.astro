@@ -29,20 +29,26 @@ const orderCtaLabel = getOrderCtaLabel(lang);
 // Page-specific copy — kept next to the markup that uses it rather than in
 // the shared src/i18n/ui.ts, since none of this repeats on other pages.
 const copy = {
+  // Keyword-first: the search term goes as far forward in the title as
+  // possible (Google + AI answer engines both weight this), brand name
+  // last as a trust signal. Was brand-first ("Indian Flavors — restaurant
+  // indien à Rabat") — reordered because almost nobody searches this
+  // restaurant by name yet; they search the service + city.
   metaTitle: {
-    fr: `${siteConfig.identity.name} — ${primaryKeyword} à ${city}`,
-    en: `${siteConfig.identity.name} — ${primaryKeyword} in ${city}`,
-    ar: `${siteConfig.identity.name} — ${primaryKeyword} في ${city}`,
+    fr: `${primaryKeyword} à ${city} — ${siteConfig.identity.name}`,
+    en: `${primaryKeyword} in ${city} — ${siteConfig.identity.name}`,
+    ar: `${primaryKeyword} في ${city} — ${siteConfig.identity.name}`,
   },
   metaDescription: {
     fr: `${siteConfig.identity.name} est un ${primaryKeyword} authentique à ${city}. Currys onctueux, grillades au tandoor traditionnel et pains naan cuits minute, à commander en ligne ou sur place.`,
     en: `${siteConfig.identity.name} is an authentic ${primaryKeyword} in ${city}. Velvety curries, traditional tandoor-grilled meats and naan baked to order, for delivery or pickup.`,
     ar: `${siteConfig.identity.name} هو ${primaryKeyword} أصيل في ${city}. أطباق كاري ناعمة، مشاوٍ تندور تقليدية، وخبز نان طازج، للطلب أونلاين أو في المطعم.`,
   },
+  // Same keyword-first reasoning as metaTitle above, applied to the H1.
   heroTitle: {
-    fr: `${siteConfig.identity.name} — ${primaryKeyword} authentique à ${city}`,
-    en: `${siteConfig.identity.name} — authentic ${primaryKeyword} in ${city}`,
-    ar: `${siteConfig.identity.name} — ${primaryKeyword} أصيل في ${city}`,
+    fr: `${primaryKeyword} authentique à ${city} — ${siteConfig.identity.name}`,
+    en: `Authentic ${primaryKeyword} in ${city} — ${siteConfig.identity.name}`,
+    ar: `${primaryKeyword} أصيل في ${city} — ${siteConfig.identity.name}`,
   },
   heroSubtitle: {
     fr: 'Currys onctueux, grillades au tandoor traditionnel et pains naan cuits minute, au cœur de la ville.',

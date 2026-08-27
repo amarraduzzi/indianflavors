@@ -50,7 +50,8 @@ const googleRatingRounded = siteConfig.social.googleRating ? Math.round(Number(s
 const localeMap = { fr: 'fr-FR', en: 'en-US', ar: 'ar-MA' } as const;
 
 const copy = {
-  metaTitle: { fr: `Avis clients — ${primaryKeyword} à ${city} | ${name}`, en: `Customer reviews — ${primaryKeyword} in ${city} | ${name}`, ar: `آراء العملاء — ${primaryKeyword} في ${city} | ${name}` },
+  // Keyword-first, same reasoning as HomeContent.astro's metaTitle.
+  metaTitle: { fr: `${primaryKeyword} à ${city} — Avis clients | ${name}`, en: `${primaryKeyword} in ${city} — Customer reviews | ${name}`, ar: `${primaryKeyword} في ${city} — آراء العملاء | ${name}` },
   metaDescription: {
     fr: `Ce que disent nos clients de ${name}, ${primaryKeyword} à ${city} : note moyenne ${avg}/5 sur ${aggregateRating.reviewCount} avis vérifiés.`,
     en: `What our customers say about ${name}, ${primaryKeyword} in ${city}: average rating ${avg}/5 across ${aggregateRating.reviewCount} verified reviews.`,

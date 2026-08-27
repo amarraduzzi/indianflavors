@@ -31,10 +31,11 @@ const city = t(place.city, lang);
 const path = localizedPath('/reservation', lang);
 
 const copy = {
+  // Keyword-first, same reasoning as HomeContent.astro's metaTitle.
   metaTitle: {
-    fr: `Réserver une table — ${primaryKeyword} à ${city} | ${name}`,
-    en: `Book a table — ${primaryKeyword} in ${city} | ${name}`,
-    ar: `احجز طاولة — ${primaryKeyword} في ${city} | ${name}`,
+    fr: `${primaryKeyword} à ${city} — Réserver une table | ${name}`,
+    en: `${primaryKeyword} in ${city} — Book a table | ${name}`,
+    ar: `${primaryKeyword} في ${city} — احجز طاولة | ${name}`,
   },
   metaDescription: {
     fr: `Réservez votre table chez ${name}, ${primaryKeyword} à ${city}. Réponse de confirmation par téléphone ou WhatsApp.`,

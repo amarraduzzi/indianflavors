@@ -21,10 +21,11 @@ const city = t(place.city, lang);
 const orderCtaLabel = getOrderCtaLabel(lang);
 
 const copy = {
+  // Keyword-first, same reasoning as HomeContent.astro's metaTitle.
   metaTitle: {
-    fr: `Menu — ${primaryKeyword} à ${city} | ${name}`,
-    en: `Menu — ${primaryKeyword} in ${city} | ${name}`,
-    ar: `القائمة — ${primaryKeyword} في ${city} | ${name}`,
+    fr: `${primaryKeyword} à ${city} — Menu | ${name}`,
+    en: `${primaryKeyword} in ${city} — Menu | ${name}`,
+    ar: `${primaryKeyword} في ${city} — القائمة | ${name}`,
   },
   metaDescription: {
     fr: `Découvrez le menu complet de ${name}, ${primaryKeyword} à ${city} : entrées, plats tandoori, biryani et pains naan. Commandez en ligne ou sur place.`,
@@ -36,7 +37,13 @@ const copy = {
     en: `Dishes from ${name}'s menu`,
     ar: `أطباق من قائمة ${name}`,
   },
-  heroTitle: { fr: `Le menu de notre ${primaryKeyword}`, en: `Our ${primaryKeyword}'s menu`, ar: `قائمة ${primaryKeyword} الخاص بنا` },
+  // Added the city here too — was missing, so this H1 wasn't matching the
+  // local "restaurant indien Rabat" intent as closely as it could.
+  heroTitle: {
+    fr: `Le menu de notre ${primaryKeyword} à ${city}`,
+    en: `The menu at our ${primaryKeyword} in ${city}`,
+    ar: `قائمة ${primaryKeyword} الخاص بنا في ${city}`,
+  },
   heroSubtitle: {
     fr: 'Une sélection de nos plats signature. Le menu complet, avec toutes les options et suppléments, est disponible au moment de la commande.',
     en: 'A selection of our signature dishes. The full menu, with all options and extras, is available at the time of ordering.',
