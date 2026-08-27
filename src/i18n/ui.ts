@@ -49,6 +49,12 @@ export const common = {
   ansExperience: { fr: "ans d'expérience en cuisine indienne", en: 'years of experience in Indian cuisine', ar: 'سنوات خبرة في المطبخ الهندي' } satisfies LocalizedText,
   platsPreparesCommande: { fr: 'plats préparés à la commande', en: 'dishes cooked to order', ar: 'أطباق تُحضّر عند الطلب' } satisfies LocalizedText,
   preparesCommandeLine: { fr: 'de nos plats sont préparés à la commande — jamais réchauffés, jamais à l\'avance.', en: 'of our dishes are cooked to order — never reheated, never made in advance.', ar: 'من أطباقنا تُحضّر عند الطلب — لا تُسخّن أبدًا ولا تُجهّز مسبقًا.' } satisfies LocalizedText,
+
+  // Shared trust badge — used on Home ("why us") and Menu (hero); the FAQ
+  // answer (src/content/faq.ts) states the same claim in full-sentence
+  // form rather than importing this label, since that content lives in its
+  // own file, but the wording is kept in sync by hand.
+  halalBadge: { fr: '100% Halal', en: '100% Halal', ar: '100% حلال' } satisfies LocalizedText,
 };
 
 export const footer = {

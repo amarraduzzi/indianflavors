@@ -86,6 +86,19 @@ export const faqItems: FaqItem[] = [
   },
   {
     question: {
+      fr: 'La nourriture est-elle halal ?',
+      en: 'Is the food halal?',
+      ar: 'هل الطعام حلال؟',
+    },
+    answer: {
+      fr: 'Oui, tous les plats servis chez Indian Flavors sont 100% halal.',
+      en: 'Yes, every dish served at Indian Flavors is 100% halal.',
+      ar: 'نعم، جميع الأطباق التي تُقدَّم في مطعم Indian Flavors حلال 100%.',
+    },
+    category: 'menu',
+  },
+  {
+    question: {
       fr: 'Y a-t-il une salle privée pour les groupes ou événements ?',
       en: 'Is there a private room for groups or events?',
       ar: 'هل توجد قاعة خاصة للمجموعات أو المناسبات؟',
