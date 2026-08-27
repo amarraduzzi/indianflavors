@@ -116,6 +116,7 @@ export const menuHighlights: MenuHighlightCategory[] = [
           ar: 'دجاج متبّل بالبهارات واللبن، مشوي في فرن التندور التقليدي.',
         },
         priceMAD: 100,
+        guideSlug: 'tandoori-chicken',
         image: '/images/dish-tandoori-chicken.webp',
         imageAlt: {
           fr: 'Cuisses de poulet tandoori grillées, servies avec oignons et citron',

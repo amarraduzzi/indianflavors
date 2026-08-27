@@ -4,13 +4,15 @@
 // hand-written .astro file per dish (this scales to 20+ dishes with zero
 // further code changes, only new entries in that file).
 //
-// Hero uses a neutral mood image (mood-tile.webp — an abstract geometric
-// pattern, no specific food in it), not a photo of the dish itself: this
-// site doesn't have a genuine photo of every dish yet, and the honesty
-// rule already established in menu-highlights.ts (never substitute a
-// mismatched photo) applies here too — an ambiance shot framed as
-// ambiance is honest, a stock photo of the wrong dish presented as "this
-// is our butter chicken" would not be.
+// Hero uses the dish's own real photo when one exists (guide.heroImage —
+// see dish-guides.ts), and falls back to the neutral mood image
+// (mood-tile.webp — an abstract geometric pattern, no specific food in it)
+// when it doesn't. Same honesty rule already established in
+// menu-highlights.ts (never substitute a mismatched photo): an ambiance
+// shot framed as ambiance is honest, a stock photo of the wrong dish
+// presented as "this is our butter chicken" would not be — so a guide
+// with no real photo yet gets the neutral fallback, not a placeholder
+// dressed up as the genuine thing.
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/Button.astro';
 import PageHero from '../components/PageHero.astro';
@@ -42,7 +44,9 @@ const copy = {
     en: `${t(guide.metaTitle, lang)} | ${primaryKeyword} in ${city} — ${name}`,
     ar: `${t(guide.metaTitle, lang)} | ${primaryKeyword} في ${city} — ${name}`,
   },
-  heroAlt: {
+  // Fallback alt text, only used when a guide has no heroImage/heroAlt of
+  // its own set (see dish-guides.ts).
+  fallbackHeroAlt: {
     fr: 'Motif décoratif orientaliste, ambiance du restaurant',
     en: 'Decorative Moorish pattern, restaurant ambiance',
     ar: 'نقش زخرفي مغربي، أجواء المطعم',
@@ -92,8 +96,8 @@ const guideJsonLd = {
   <PageHero
     kicker={t(guide.kicker, lang)}
     title={t(guide.title, lang)}
-    image="/images/mood-tile.webp"
-    alt={t(copy.heroAlt, lang)}
+    image={guide.heroImage ?? '/images/mood-tile.webp'}
+    alt={guide.heroAlt ? t(guide.heroAlt, lang) : t(copy.fallbackHeroAlt, lang)}
   />
 
   <article class="max-w-3xl mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-8">
@@ -127,6 +131,15 @@ const guideJsonLd = {
           <p>{t(p, lang)}</p>
         ))}
       </div>
+      {guide.galleryImages && guide.galleryImages.length > 0 && (
+        <div class="grid sm:grid-cols-2 gap-3 sm:gap-4 mt-6">
+          {guide.galleryImages.map((img, i) => (
+            <div class="photo-frame rounded-xl aspect-[4/3]" data-reveal="scale" style={`transition-delay: ${i * 80}ms`}>
+              <img src={img.src} alt={t(img.alt, lang)} class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      )}
     </section>
 
     <section class="mb-4" data-reveal>
