@@ -38,10 +38,22 @@ const copy = {
     en: 'Decorative Moorish pattern, restaurant ambiance',
     ar: 'نقش زخرفي مغربي، أجواء المطعم',
   },
+  // Short version lives in the hero itself (PageHero's subtitle — same
+  // small, unobtrusive treatment every other interior page uses, see
+  // MenuContent/ReservationContent). The old design put this same copy in
+  // a full-width `.pull-quote` block below the hero — a style meant for a
+  // single short line (see global.css), not a 3-sentence paragraph, which
+  // is exactly why it read oversized and out of place. `intro` below is
+  // the longer version, kept as normal body copy under the card grid.
+  heroSubtitle: {
+    fr: "La cuisine indienne reste souvent moins connue au Maroc — cette section vous fait découvrir chaque plat : origine, préparation et anecdotes.",
+    en: 'Indian cuisine is often less familiar in Morocco — this section walks you through each dish: its origin, preparation and fun facts.',
+    ar: 'لا يزال المطبخ الهندي أقل شهرة في المغرب — يقدّم لكم هذا القسم كل طبق: أصله، تحضيره، ومعلومات ممتعة عنه.',
+  },
   intro: {
-    fr: "La cuisine indienne reste souvent moins connue au Maroc que d'autres cuisines internationales — beaucoup de nos clients découvrent certains plats pour la première fois chez nous. Cette section leur est dédiée : d'où vient chaque plat, comment il est préparé traditionnellement, et quelques anecdotes pour l'apprécier encore davantage à table.",
-    en: "Indian cuisine is often less familiar in Morocco than other international cuisines — many of our guests try certain dishes here for the very first time. This section is for them: where each dish comes from, how it's traditionally made, and a few fun facts to enjoy even more at the table.",
-    ar: 'لا يزال المطبخ الهندي أقل شهرة في المغرب مقارنة بمطابخ عالمية أخرى — يكتشف الكثير من زبائننا بعض الأطباق لأول مرة عندنا. هذا القسم مخصص لهم: من أين يأتي كل طبق، وكيف يُحضَّر تقليديًا، وبعض المعلومات الممتعة للاستمتاع به أكثر على الطاولة.',
+    fr: "Beaucoup de nos clients découvrent certains plats pour la première fois chez nous. Cette section leur est dédiée : d'où vient chaque plat, comment il est préparé traditionnellement, et quelques anecdotes pour l'apprécier encore davantage à table.",
+    en: 'Many of our guests try certain dishes here for the very first time. This section is for them: where each dish comes from, how it\'s traditionally made, and a few fun facts to enjoy even more at the table.',
+    ar: 'يكتشف الكثير من زبائننا بعض الأطباق لأول مرة عندنا. هذا القسم مخصص لهم: من أين يأتي كل طبق، وكيف يُحضَّر تقليديًا، وبعض المعلومات الممتعة للاستمتاع به أكثر على الطاولة.',
   },
   readArticle: { fr: "Lire l'article", en: 'Read the article', ar: 'اقرأ المقال' },
   comingSoon: {
@@ -62,35 +74,55 @@ const path = localizedPath('/decouvrir', lang);
   <PageHero
     kicker={t(copy.kicker, lang)}
     title={t(copy.heroTitle, lang)}
+    subtitle={t(copy.heroSubtitle, lang)}
     image="/images/mood-tile.webp"
     alt={t(copy.heroAlt, lang)}
   />
 
-  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-6" data-reveal>
-    <p class="pull-quote max-w-2xl">{t(copy.intro, lang)}</p>
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-12 sm:pt-14 pb-2" data-reveal>
+    <p class="text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+      {t(copy.intro, lang)}
+    </p>
   </section>
 
-  <section class="max-w-5xl mx-auto px-5 sm:px-8 pt-4 pb-20">
+  <!-- Each card now opens with the dish's own real photo (guide.heroImage —
+       same photo used at the top of its article) instead of being pure
+       text — a text-only card grid was the flattest, least appetizing
+       thing on the whole site given every other page leads with food
+       photography. Falls back to the neutral mood-tile.webp for any
+       future guide that doesn't have a real photo yet (same honesty rule
+       as everywhere else: never a mismatched dish photo standing in). -->
+  <section class="max-w-5xl mx-auto px-5 sm:px-8 pt-8 pb-20">
     <div class="grid sm:grid-cols-2 gap-6">
       {dishGuides.map((guide, i) => (
         <a
           href={localizedPath(`/decouvrir/${guide.slug}`, lang)}
-          class="card-lift block rounded-2xl p-6 sm:p-8"
+          class="card-lift block rounded-2xl overflow-hidden"
           style={`background-color: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms`}
           data-reveal
         >
-          <span class="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style="color: var(--color-accent)">
-            {t(guide.kicker, lang)}
-          </span>
-          <h2 class="font-display text-2xl font-semibold mb-3" style="color: var(--color-text-primary)">
-            {t(guide.title, lang)}
-          </h2>
-          <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">
-            {t(guide.teaser, lang)}
-          </p>
-          <span class="inline-flex items-center gap-1.5 text-sm font-bold" style="color: var(--color-accent)">
-            {t(copy.readArticle, lang)} {arrow(lang)}
-          </span>
+          <div class="photo-frame aspect-[4/3]">
+            <img
+              src={guide.heroImage ?? '/images/mood-tile.webp'}
+              alt={guide.heroAlt ? t(guide.heroAlt, lang) : t(guide.title, lang)}
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-6 sm:p-8">
+            <span class="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style="color: var(--color-accent)">
+              {t(guide.kicker, lang)}
+            </span>
+            <h2 class="font-display text-2xl font-semibold mb-3" style="color: var(--color-text-primary)">
+              {t(guide.title, lang)}
+            </h2>
+            <p class="text-sm leading-relaxed mb-4" style="color: var(--color-text-muted)">
+              {t(guide.teaser, lang)}
+            </p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-bold" style="color: var(--color-accent)">
+              {t(copy.readArticle, lang)} {arrow(lang)}
+            </span>
+          </div>
         </a>
       ))}
     </div>
