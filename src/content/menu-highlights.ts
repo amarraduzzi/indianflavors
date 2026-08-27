@@ -158,6 +158,7 @@ export const menuHighlights: MenuHighlightCategory[] = [
           ar: 'أرز بسمتي عطري مطهو مع لحم الضأن الطري وبهارات معتدلة.',
         },
         priceMAD: 110,
+        guideSlug: 'biryani',
       },
       {
         name: 'Chicken Biryani',
@@ -167,7 +168,13 @@ export const menuHighlights: MenuHighlightCategory[] = [
           ar: 'طبق حيدر آباد المميز: دجاج وأرز بسمتي مطهوان معًا على نار هادئة.',
         },
         priceMAD: 95,
+        guideSlug: 'biryani',
       },
+      // Shrimp Biryani and Fish Biryani exist on the real menu (per the
+      // client: "wij hebben lam, garnalen, vis en kip") but aren't added
+      // here yet — no confirmed price/description for either. Add them
+      // once the client provides those; don't guess a price (same honesty
+      // rule as the rest of this file).
     ],
   },
   {

@@ -280,6 +280,123 @@ export const dishGuides: DishGuide[] = [
       },
     ],
   },
+  {
+    slug: 'biryani',
+    dishName: 'Hyderabadi Dum Biryani',
+    title: { fr: 'Hyderabadi Dum Biryani', en: 'Hyderabadi Dum Biryani', ar: 'برياني حيدر آبادي (Dum Biryani)' },
+    kicker: { fr: 'Le plat scellé à la vapeur', en: 'The steam-sealed classic', ar: 'الطبق المختوم بالبخار' },
+    metaTitle: {
+      fr: 'Hyderabadi Dum Biryani : origine, histoire et recette',
+      en: 'Hyderabadi Dum Biryani: Origin, History & Recipe',
+      ar: 'برياني حيدر آبادي: الأصل والتاريخ والوصفة',
+    },
+    metaDescription: {
+      fr: "Découvrez l'histoire du biryani d'Hyderabad et de sa cuisson « dum » scellée à la pâte : origine, technique traditionnelle et anecdotes. À déguster chez Indian Flavors, restaurant indien à Rabat.",
+      en: 'Discover the story behind Hyderabadi biryani and its dough-sealed "dum" cooking technique: its origin, traditional method and fun facts. A classic to try at Indian Flavors, an Indian restaurant in Rabat.',
+      ar: 'اكتشفوا قصة برياني حيدر آباد وتقنية طهيه "دم" المختومة بالعجين: أصله وطريقته التقليدية ومعلومات ممتعة عنه. طبق كلاسيكي يستحق التجربة في مطعم Indian Flavors، المطعم الهندي في الرباط.',
+    },
+    teaser: {
+      fr: "Un couvercle scellé à la pâte, une vapeur parfumée qui s'échappe à l'ouverture — voici le plat le plus théâtral de la cuisine indienne, et son histoire à la cour des Nizams.",
+      en: "A dough-sealed lid, fragrant steam escaping the moment it's cracked open — this is the most theatrical dish in Indian cuisine, and here's its history at the court of the Nizams.",
+      ar: 'غطاء مختوم بالعجين، وبخار عطري يتصاعد لحظة فتحه — هذا هو الطبق الأكثر إثارة في المطبخ الهندي، وإليكم تاريخه في بلاط النظّام.',
+    },
+    heroImage: '/images/guide-biryani-hero.webp',
+    heroAlt: {
+      fr: 'Biryani servi dans une marmite en cuivre, agneau et crevettes grillées sur riz basmati doré',
+      en: 'Biryani served in a copper pot, grilled lamb and shrimp over golden basmati rice',
+      ar: 'برياني يُقدَّم في قدر نحاسي، لحم ضأن وجمبري مشوي فوق أرز بسمتي ذهبي',
+    },
+    galleryImages: [
+      {
+        src: '/images/guide-biryani-dum-seal.webp',
+        alt: {
+          fr: 'La marmite scellée à la pâte à pain avant la cuisson « dum »',
+          en: 'The pot sealed with bread dough before "dum" cooking',
+          ar: 'القدر مختوم بعجين الخبز قبل طهي "دم"',
+        },
+      },
+      {
+        src: '/images/guide-biryani-dum-open.webp',
+        alt: {
+          fr: "L'ouverture du couvercle scellé, libérant la vapeur parfumée du biryani",
+          en: 'The sealed lid being opened, releasing the fragrant steam of the biryani',
+          ar: 'فتح الغطاء المختوم، مع تصاعد بخار البرياني العطري',
+        },
+      },
+      {
+        src: '/images/guide-biryani-spices.webp',
+        alt: {
+          fr: "Les épices entières du biryani : anis étoilé, cannelle, clous de girofle, cardamome et huile de safran",
+          en: 'The whole spices of biryani: star anise, cinnamon, cloves, cardamom and saffron oil',
+          ar: 'التوابل الكاملة للبرياني: اليانسون النجمي، القرفة، القرنفل، الهيل وزيت الزعفران',
+        },
+      },
+    ],
+    intro: {
+      fr: "Le biryani est sans doute le plat le plus spectaculaire de la cuisine indienne : une marmite scellée à la pâte, posée sur braises douces, ouverte au moment de servir dans un nuage de vapeur parfumée. Voici l'histoire de ce plat né à la croisée des cuisines persane et moghole, sa vraie technique de cuisson, et quelques anecdotes.",
+      en: "Biryani is arguably the most theatrical dish in Indian cuisine: a pot sealed with dough, set over gentle embers, opened at the moment of serving in a cloud of fragrant steam. Here's the story of a dish born at the crossroads of Persian and Mughal cuisine, its real cooking technique, and a few facts.",
+      ar: 'يُعدّ البرياني على الأرجح أكثر الأطباق إثارة في المطبخ الهندي: قدر مختوم بالعجين، يُوضع فوق جمر هادئ، ويُفتح لحظة التقديم وسط سحابة من البخار العطري. إليكم قصة طبق وُلد عند ملتقى المطبخين الفارسي والمغولي، وتقنية طهيه الحقيقية، وبعض المعلومات عنه.',
+    },
+    originHeading: { fr: 'Aux origines du plat', en: 'The origins of the dish', ar: 'أصل الطبق' },
+    originParagraphs: [
+      {
+        fr: "Le mot « biryani » viendrait du persan « birinj » (riz) ou du verbe « birian kardan » (frire, rôtir avant cuisson) — deux origines linguistiques qui reflètent bien le plat : du riz, préparé en plusieurs étapes avant d'être assemblé. La cuisine persane du riz aromatique par couches est arrivée en Inde via les routes commerciales et les cours moghole et sultanates, où elle a rencontré les épices et techniques locales.",
+        en: "The word 'biryani' is thought to come from the Persian 'birinj' (rice) or the verb 'birian kardan' (to fry or roast before cooking) — two linguistic roots that reflect the dish well: rice, prepared in several stages before being assembled. Persian layered-rice cooking arrived in India via trade routes and the Mughal and sultanate courts, where it met local spices and techniques.",
+        ar: 'يُعتقد أن كلمة "برياني" مشتقة من الكلمة الفارسية "برنج" (أرز) أو من الفعل "بریان کردن" (القلي أو التحميص قبل الطهي) — وهما أصلان لغويان يعكسان الطبق جيدًا: أرز يُحضَّر على عدة مراحل قبل تجميعه. وصل طهي الأرز الفارسي المُطبَّق إلى الهند عبر طرق التجارة وبلاطات المغول والسلطنات، حيث التقى بالتوابل والتقنيات المحلية.',
+      },
+      {
+        fr: "La version d'Hyderabad naît au XVIIIe siècle, quand Asaf Jah Ier, ancien gouverneur moghol, fonde sa propre dynastie — les Nizams — et installe sa cour à Hyderabad. Les cuisiniers royaux (khansamas) y fusionnent la technique moghole du riz par couches avec les épices et le piment de la cuisine télougoue locale, donnant naissance à un biryani plus relevé et plus parfumé que ses cousins du nord de l'Inde.",
+        en: "Hyderabad's version was born in the 18th century, when Asaf Jah I, a former Mughal governor, founded his own dynasty — the Nizams — and set up his court in Hyderabad. The royal cooks (khansamas) there fused the Mughal layered-rice technique with the spices and chili of local Telugu cuisine, giving rise to a spicier, more fragrant biryani than its northern Indian cousins.",
+        ar: 'وُلدت نسخة حيدر آباد في القرن الثامن عشر، عندما أسّس آصف جاه الأول، الحاكم المغولي السابق، سلالته الخاصة — النظّام — واستقر ببلاطه في حيدر آباد. مزج الطهاة الملكيون (الخانسامة) هناك بين تقنية المغول لطهي الأرز بالطبقات وتوابل وفلفل المطبخ التيلوغوي المحلي، ما أنتج برياني أكثر حرارة وعطرًا من نظيره في شمال الهند.',
+      },
+      {
+        fr: "Ce biryani royal se distingue par sa méthode « kacchi » (« cru ») : contrairement au style « pakki » (viande précuite puis mélangée au riz), la viande crue marinée est ici disposée en couches directement sous le riz mi-cuit, et l'ensemble cuit ensemble — un pari plus risqué, qui demande un vrai savoir-faire pour que la viande et le riz soient cuits à la perfection en même temps.",
+        en: "This royal biryani stands out for its 'kacchi' ('raw') method: unlike the 'pakki' style (meat pre-cooked, then mixed with the rice), raw marinated meat is layered directly under the half-cooked rice here, and the whole thing cooks together — a riskier bet, requiring real skill to have both meat and rice cooked to perfection at the same time.",
+        ar: 'يتميز هذا البرياني الملكي بطريقته "كاتشي" ("النيء"): على عكس أسلوب "باكي" (اللحم المطهو مسبقًا ثم يُخلط بالأرز)، يُوضع هنا اللحم النيء المتبّل مباشرة تحت الأرز نصف المطهو، ويُطهى الجميع معًا — وهو رهان أكثر خطورة، يتطلب مهارة حقيقية لطهي اللحم والأرز بشكل مثالي في الوقت نفسه.',
+      },
+    ],
+    preparationHeading: { fr: 'Comment il est préparé', en: 'How it\'s made', ar: 'طريقة التحضير' },
+    preparationParagraphs: [
+      {
+        fr: "Tout commence par une marinade longue de la viande dans du yaourt, du gingembre, de l'ail et des épices. Le riz basmati est ensuite cuit à part, à peine à mi-cuisson, dans une eau parfumée d'épices entières — cannelle, anis étoilé, cardamome, clous de girofle.",
+        en: 'It all starts with a long marinade of the meat in yogurt, ginger, garlic and spices. The basmati rice is then cooked separately, only to the halfway point, in water fragranced with whole spices — cinnamon, star anise, cardamom, cloves.',
+        ar: 'يبدأ كل شيء بتتبيلة طويلة للحم في اللبن الزبادي والزنجبيل والثوم والتوابل. يُطهى أرز البسمتي بعد ذلك بشكل منفصل، حتى منتصف النضج فقط، في ماء معطّر بتوابل كاملة — القرفة، اليانسون النجمي، الهيل، القرنفل.',
+      },
+      {
+        fr: "Vient ensuite le montage : la viande marinée crue au fond de la marmite, le riz mi-cuit par-dessus, puis une dernière couche de safran infusé dans du lait ou de l'huile, de menthe et de coriandre fraîches, et d'oignons frits. Le couvercle est scellé avec une pâte à pain simple — c'est ce geste, appelé « dum », qui donne son nom à la technique : la vapeur reste entièrement piégée à l'intérieur.",
+        en: "Next comes the assembly: the raw marinated meat at the bottom of the pot, the half-cooked rice on top, then a final layer of milk- or oil-infused saffron, fresh mint and coriander, and fried onions. The lid is sealed with a simple bread dough — this gesture, called 'dum', gives the technique its name: the steam stays entirely trapped inside.",
+        ar: 'يأتي بعد ذلك التجميع: اللحم النيء المتبّل في قاع القدر، الأرز نصف المطهو فوقه، ثم طبقة أخيرة من الزعفران المنقوع في الحليب أو الزيت، والنعناع والكزبرة الطازجين، والبصل المقلي. يُختم الغطاء بعجينة خبز بسيطة — وهذه الحركة، المسماة "دم"، هي التي تمنح التقنية اسمها: يبقى البخار محبوسًا بالكامل بالداخل.',
+      },
+      {
+        fr: "La marmite cuit ensuite très lentement, à feu doux, parfois sur un lit de braises avec des charbons posés sur le couvercle — la vapeur emprisonnée termine de cuire la viande et infuse chaque grain de riz. Chez Indian Flavors, chaque biryani est préparé et scellé à la commande selon ce même principe, jamais réchauffé.",
+        en: "The pot then cooks very slowly over low heat, sometimes over a bed of embers with coals placed on the lid — the trapped steam finishes cooking the meat and infuses every grain of rice. At Indian Flavors, every biryani is prepared and sealed to order following this same principle, never reheated.",
+        ar: 'يُطهى القدر بعدها ببطء شديد على نار هادئة، أحيانًا فوق فراش من الجمر مع وضع الفحم فوق الغطاء — يُكمل البخار المحبوس طهي اللحم ويُشبع كل حبة أرز بالنكهة. في مطعم Indian Flavors، يُحضَّر ويُختم كل برياني عند الطلب وفق هذا المبدأ نفسه، ولا يُسخَّن أبدًا.',
+      },
+    ],
+    funFactsHeading: { fr: 'Le saviez-vous ?', en: 'Did you know?', ar: 'هل تعلم؟' },
+    funFacts: [
+      {
+        fr: "Le geste de sceller la marmite à la pâte est appelé « dum » — un mot d'origine persane évoquant le souffle ou la respiration : la vapeur reste littéralement « retenue » à l'intérieur jusqu'à l'ouverture.",
+        en: "The gesture of sealing the pot with dough is called 'dum' — a word of Persian origin evoking breath: the steam is literally 'held' inside until the pot is opened.",
+        ar: 'تُسمى حركة ختم القدر بالعجين "دم" — وهي كلمة من أصل فارسي تعني النَفَس: يبقى البخار "محبوسًا" حرفيًا بالداخل حتى فتح القدر.',
+      },
+      {
+        fr: "Le biryani existe en de nombreuses variantes régionales à travers l'Inde — Lucknow, Calcutta, Malabar, Sindh — chacune avec ses propres épices et sa propre technique ; celui d'Hyderabad reste l'un des plus connus dans le monde.",
+        en: 'Biryani exists in many regional variants across India — Lucknow, Kolkata, Malabar, Sindh — each with its own spices and technique; the Hyderabadi version remains one of the best known worldwide.',
+        ar: 'يوجد البرياني بأشكال إقليمية عديدة عبر الهند — لكناو، كولكاتا، مالابار، السند — لكل منها توابلها وتقنيتها الخاصة؛ تبقى نسخة حيدر آباد من أشهرها في العالم.',
+      },
+      {
+        fr: "À l'origine préparé surtout avec de l'agneau ou du poulet dans les cuisines des Nizams, le biryani s'est depuis largement décliné selon les régions et les goûts — aujourd'hui, chez Indian Flavors, nous le préparons aussi bien à l'agneau, au poulet, qu'aux crevettes ou au poisson.",
+        en: "Originally prepared mainly with lamb or chicken in the Nizams' kitchens, biryani has since been widely adapted by region and taste — today at Indian Flavors, we prepare it with lamb, chicken, shrimp or fish.",
+        ar: 'كان يُحضَّر في الأصل بشكل رئيسي بلحم الضأن أو الدجاج في مطابخ النظّام، وتنوّع البرياني منذ ذلك الحين بشكل كبير حسب المنطقة والذوق — نُحضّره اليوم في مطعم Indian Flavors بلحم الضأن، الدجاج، الجمبري أو السمك.',
+      },
+      {
+        fr: "La technique de cuisson « dum » ne se limite pas au biryani : elle est utilisée pour bien d'autres plats mijotés de la cuisine moghole, sous le nom plus large de « dum pukht ».",
+        en: "The 'dum' cooking technique isn't limited to biryani: it's used for many other slow-cooked dishes in Mughal cuisine, under the broader name 'dum pukht'.",
+        ar: 'لا تقتصر تقنية طهي "دم" على البرياني: فهي تُستخدم في العديد من الأطباق الأخرى المطهوة ببطء في المطبخ المغولي، تحت الاسم الأوسع "دم پخت".',
+      },
+    ],
+  },
 ];
 
 export function getDishGuide(slug: string): DishGuide | undefined {
