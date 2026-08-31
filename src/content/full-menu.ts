@@ -93,8 +93,19 @@ export const fullMenu: FullMenuCategory[] = [
           en: 'Crispy pastry filled with spiced vegetables.',
           ar: 'معجنات مقرمشة محشوة بخضروات متبّلة.',
         },
+        story: {
+          fr: 'Le samosa est sans doute l\'entrée indienne la plus connue dans le monde : un triangle de pâte frite bien croustillant, farci d\'une préparation de pommes de terre écrasées et petits pois, relevée au cumin, à la coriandre et au garam masala. Il se déguste trempé dans un chutney — ici, un chutney tamarin sucré-acidulé qui vient équilibrer l\'épice.',
+          en: 'The samosa is probably the most famous Indian starter in the world: a crispy fried pastry triangle filled with mashed potato and peas, seasoned with cumin, coriander and garam masala. It\'s eaten dipped in chutney — here, a sweet-and-tangy tamarind chutney that balances the spice.',
+          ar: 'السامبوسة هي على الأرجح أشهر مقبلات هندية في العالم: مثلث من العجين المقلي المقرمش، محشو بخليط من البطاطس المهروسة والبازلاء، متبّل بالكمون والكزبرة والغارام ماسالا. تُؤكل مغموسة في الشطني — هنا شطني التمر الهندي الحلو الحامض الذي يوازن حدة التوابل.',
+        },
+        ingredients: {
+          fr: 'Pomme de terre, petits pois, oignon, cumin, coriandre fraîche, garam masala, gingembre, pâte à samosa, chutney tamarin.',
+          en: 'Potato, peas, onion, cumin, fresh coriander, garam masala, ginger, samosa pastry, tamarind chutney.',
+          ar: 'بطاطس، بازلاء، بصل، كمون، كزبرة طازجة، غارام ماسالا، زنجبيل، عجينة السامبوسة، شطني التمر الهندي.',
+        },
         priceMAD: 25,
         vegetarian: true,
+        image: '/images/carte/vegetable-samosa.webp',
       },
       {
         name: 'Vegetable Pani Puri (6 pcs)',
