@@ -932,6 +932,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق، زبادي، خميرة، جبن، زبدة، ملح.',
         },
         priceMAD: 20,
+        image: '/images/carte/cheese-naan.webp',
         vegetarian: true,
       },
       {
@@ -952,6 +953,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق كامل، ماء، ملح، زيت.',
         },
         priceMAD: 10,
+        image: '/images/carte/roti.webp',
         vegetarian: true,
       },
       {
@@ -972,6 +974,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز بسمتي، سمن، قرفة، هيل، قرنفل، ورق غار.',
         },
         priceMAD: 25,
+        image: '/images/carte/ghee-rice.webp',
         vegetarian: true,
       },
       {
@@ -992,6 +995,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز بسمتي، ماء، ملح.',
         },
         priceMAD: 20,
+        image: '/images/carte/basmati-rice.webp',
         vegetarian: true,
       },
       {
@@ -1012,6 +1016,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز، جزر، بازلاء، بصل أخضر، ملفوف، صلصة صويا، ثوم.',
         },
         priceMAD: 25,
+        image: '/images/carte/veg-fried-rice.webp',
         vegetarian: true,
       },
       {
@@ -1032,6 +1037,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز بسمتي، بذور كمون، سمن، ملح.',
         },
         priceMAD: 25,
+        image: '/images/carte/cumin-rice.webp',
         vegetarian: true,
       },
       {
@@ -1052,6 +1058,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز، دجاج، جزر، بازلاء، بصل أخضر، ملفوف، صلصة صويا، ثوم.',
         },
         priceMAD: 50,
+        image: '/images/carte/chicken-fried-rice.webp',
       },
       {
         name: 'Chicken Hakka Noodles',
@@ -1071,6 +1078,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'نودلز، دجاج، جزر، ملفوف، بصل أخضر، صلصة صويا، ثوم، فلفل أسود.',
         },
         priceMAD: 50,
+        image: '/images/carte/chicken-hakka-noodles.webp',
       },
       {
         name: 'Veg Hakka Noodles',
@@ -1090,6 +1098,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'نودلز، جزر، ملفوف، بصل أخضر، فلفل، صلصة صويا، ثوم.',
         },
         priceMAD: 40,
+        image: '/images/carte/veg-hakka-noodles.webp',
         vegetarian: true,
       },
       {
@@ -1110,6 +1119,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز بسمتي، قرفة، هيل، زعفران، ملح.',
         },
         priceMAD: 40,
+        image: '/images/carte/biryani-plain-rice.webp',
         vegetarian: true,
       },
     ],
