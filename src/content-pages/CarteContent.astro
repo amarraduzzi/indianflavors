@@ -57,6 +57,18 @@ const copy = {
   ingredientsLabel: { fr: 'Ingrédients', en: 'Ingredients', ar: 'المكوّنات' },
   infoLabel: { fr: 'Voir le plat', en: 'View dish', ar: 'عرض الطبق' },
   closeLabel: { fr: 'Fermer', en: 'Close', ar: 'إغلاق' },
+  searchPlaceholder: {
+    fr: 'Rechercher un plat (ex. Biryani, Naan)…',
+    en: 'Search a dish (e.g. Biryani, Naan)…',
+    ar: 'ابحث عن طبق (مثال: برياني، نان)…',
+  },
+  searchClear: { fr: 'Effacer la recherche', en: 'Clear search', ar: 'مسح البحث' },
+  searchNoResults: {
+    fr: 'Aucun plat ne correspond à votre recherche.',
+    en: 'No dish matches your search.',
+    ar: 'لا يوجد طبق يطابق بحثك.',
+  },
+  backToSearch: { fr: 'Retour à la recherche', en: 'Back to search', ar: 'العودة إلى البحث' },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const path = localizedPath('/carte', lang);
@@ -110,8 +122,68 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
     </p>
   </section>
 
+  <!-- Zoekbalk — sticky onder de header, zelfde idee als de "Glovo-stijl"
+       bestelsite maar met het donker/goud vocabulaire van déze site
+       i.p.v. losse felle kleuren. Puur client-side filteren op naam (geen
+       reload, geen server nodig): elke gerecht-knop draagt zijn naam in
+       data-dish-name, het script hieronder verbergt niet-matchende rijen
+       én hele categorieën die daardoor leeg blijven. Dit is ook het
+       "terug naar boven"-ankerpunt voor de linkjes onder elke categorie. -->
+  <div
+    id="carte-search-bar"
+    class="sticky top-16 sm:top-20 z-30"
+    style="background-color: color-mix(in srgb, var(--color-surface) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-border)"
+  >
+    <div class="max-w-3xl mx-auto px-5 sm:px-8 py-3">
+      <div class="relative">
+        <svg
+          width="17"
+          height="17"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="absolute top-1/2 -translate-y-1/2 pointer-events-none rtl:right-4 ltr:left-4"
+          style="color: var(--color-accent)"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          id="carte-search-input"
+          type="search"
+          inputmode="search"
+          autocomplete="off"
+          placeholder={t(copy.searchPlaceholder, lang)}
+          class="carte-search-input w-full rounded-full text-sm rtl:pr-11 rtl:pl-4 ltr:pl-11 ltr:pr-4 py-3"
+          style="background-color: var(--color-surface-muted); border: 1px solid var(--color-border); color: var(--color-text-primary)"
+        />
+        <button
+          type="button"
+          id="carte-search-clear"
+          class="hidden absolute top-1/2 -translate-y-1/2 items-center justify-center w-6 h-6 rounded-full rtl:left-3 ltr:right-3"
+          style="background-color: var(--color-border); color: var(--color-text-primary)"
+          aria-label={t(copy.searchClear, lang)}
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leeg-resultaat melding — verborgen totdat het script hem toont. -->
+  <p id="carte-search-empty" class="hidden max-w-3xl mx-auto px-5 sm:px-8 py-8 text-center text-sm" style="color: var(--color-text-muted)">
+    {t(copy.searchNoResults, lang)}
+  </p>
+
   {fullMenu.map((category, ci) => (
-    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-6">
+    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-6" data-carte-category>
       <h2
         class="font-display text-xl font-semibold mb-1 flex items-center gap-3"
         style="color: var(--color-text-primary)"
@@ -138,6 +210,7 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
                 class="dish-trigger group flex items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left w-full"
                 style={`background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -16px rgba(0,0,0,0.6)${item.image ? ', 0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent)' : ''}`}
                 data-dialog-target={id}
+                data-dish-name={item.name}
                 aria-haspopup="dialog"
               >
                 <span class="flex items-center gap-3.5 min-w-0">
@@ -279,11 +352,69 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
           );
         })}
       </div>
+      <!-- Terug-naar-zoeken: elke categorie eindigt met dezelfde stijlvolle
+           uitnodiging om weer boven aan de zoekbalk te beginnen, i.p.v. dat
+           de gast helemaal terug moet scrollen. -->
+      <div class="flex justify-center mt-5">
+        <a href="#carte-search-bar" class="back-to-search-link" data-back-to-search>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="19" x2="12" y2="5" />
+            <polyline points="6 11 12 5 18 11" />
+          </svg>
+          {t(copy.backToSearch, lang)}
+        </a>
+      </div>
     </section>
   ))}
 </Layout>
 
 <style>
+  /* ---- Zoekbalk: verbergt niet-matchende rijen/categorieën ---- */
+  .is-search-hidden {
+    display: none !important;
+  }
+  .carte-search-input {
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .carte-search-input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .carte-search-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+  .carte-search-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.75;
+  }
+
+  /* ---- Terug-naar-zoeken-link: bewust klein en stijlvol, geen knop die
+     met de "i"-knoppen concurreert ---- */
+  .back-to-search-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    background-color: color-mix(in srgb, var(--color-accent) 6%, transparent);
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+  .back-to-search-link:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  }
+  .back-to-search-link:active {
+    transform: scale(0.97);
+  }
+
   /* ---- Trigger-rij: kleine tik-feedback ---- */
   .dish-trigger {
     cursor: pointer;
@@ -463,4 +594,74 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
   }
 
   document.addEventListener('astro:page-load', setupDishDialogs);
+
+  // ---- Zoekbalk: puur client-side filteren op gerecht-naam, geaccent-
+  // ongevoelig ("naan" vindt ook "Naân") en zonder reload. Verbergt zowel
+  // niet-matchende rijen als hele categorieën die daardoor leeg blijven,
+  // en toont een korte "geen resultaten"-melding i.p.v. een lege pagina.
+  function setupCarteSearch() {
+    const input = document.querySelector<HTMLInputElement>('#carte-search-input');
+    const clearBtn = document.querySelector<HTMLButtonElement>('#carte-search-clear');
+    const emptyMessage = document.querySelector<HTMLElement>('#carte-search-empty');
+    if (!input || input.dataset.bound === 'true') return;
+    input.dataset.bound = 'true';
+
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('.dish-trigger[data-dish-name]'));
+    const categories = Array.from(document.querySelectorAll<HTMLElement>('[data-carte-category]'));
+
+    function normalize(s: string): string {
+      return s
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '');
+    }
+
+    function applySearch(rawQuery: string) {
+      const query = normalize(rawQuery.trim());
+      clearBtn?.classList.toggle('hidden', query.length === 0);
+      clearBtn?.classList.toggle('flex', query.length > 0);
+
+      if (query.length === 0) {
+        triggers.forEach((el) => el.classList.remove('is-search-hidden'));
+        categories.forEach((el) => el.classList.remove('is-search-hidden'));
+        emptyMessage?.classList.add('hidden');
+        return;
+      }
+
+      triggers.forEach((el) => {
+        const name = normalize(el.dataset.dishName ?? '');
+        el.classList.toggle('is-search-hidden', !name.includes(query));
+      });
+
+      let anyVisible = false;
+      categories.forEach((cat) => {
+        const hasMatch = Array.from(cat.querySelectorAll<HTMLElement>('.dish-trigger[data-dish-name]')).some(
+          (el) => !el.classList.contains('is-search-hidden')
+        );
+        cat.classList.toggle('is-search-hidden', !hasMatch);
+        if (hasMatch) anyVisible = true;
+      });
+
+      emptyMessage?.classList.toggle('hidden', anyVisible);
+    }
+
+    input.addEventListener('input', () => applySearch(input.value));
+    clearBtn?.addEventListener('click', () => {
+      input.value = '';
+      applySearch('');
+      input.focus();
+    });
+
+    // "Terug naar zoeken"-links: zacht scrollen + focus op het veld, zodat
+    // de gast meteen verder kan typen zonder opnieuw te tikken.
+    document.querySelectorAll<HTMLAnchorElement>('[data-back-to-search]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('carte-search-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.setTimeout(() => input.focus({ preventScroll: true }), 350);
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupCarteSearch);
 </script>
