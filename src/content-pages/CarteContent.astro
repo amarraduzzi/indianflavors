@@ -1534,11 +1534,21 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       // taal van de gast — dit veld is voor het PERSONEEL leesbaar op het
       // scherm (dat zelf Frans/Engels labelt), niet voor de gast, dus geen
       // Arabische tekst die het personeel daar niet per se kan lezen.
+      //
+      // customer_name mag in de `orders`-tabel NIET leeg zijn (NOT NULL-
+      // constraint, ontdekt via een echte 400-fout in productie: de
+      // order-site raakt dit nooit omdat die altijd een naam vraagt vóór
+      // het bestellen, maar de kaart-pagina bewust niet — zie het gesprek
+      // hierover). Het personeelsscherm gebruikt dit veld bovendien als de
+      // KAARTTITEL van elke bestelling, dus "Table N" hier is niet alleen
+      // de workaround voor de constraint, maar ook precies wat het
+      // personeel als eerste wil zien.
+      const tableLabel = `Table ${tableNumber}`;
       const payload = {
         order_type: 'dinein',
-        customer_name: null,
+        customer_name: tableLabel,
         customer_phone: null,
-        address_or_table: `Table ${tableNumber}`,
+        address_or_table: tableLabel,
         special_notes: notesInput?.value.trim() || null,
         items,
         total: cartTotal(),
