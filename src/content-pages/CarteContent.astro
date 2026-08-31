@@ -1,0 +1,88 @@
+---
+// Tafelkaart via QR-code — bewust géén foto's (zie full-menu.ts), bewust géén
+// hero-afbeelding of Ken Burns-effect zoals MenuContent.astro: een gast die
+// aan tafel scant wil snel de prijs zien, niet scrollen door sfeerbeelden.
+// Toont ALLEEN de restaurantprijs (zie full-menu.ts voor de bron).
+//
+// Volgt hetzelfde i18n/Layout-patroon als MenuContent.astro zodat dit naast
+// de bestaande site past zonder iets anders te breken.
+
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config/site.config';
+import { fullMenu } from '../content/full-menu';
+import { t, localizedPath, type Language } from '../i18n/languages';
+import { place } from '../i18n/ui';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = 'fr' } = Astro.props;
+const { name } = siteConfig.identity;
+const city = t(place.city, lang);
+
+const copy = {
+  metaTitle: {
+    fr: `Notre carte — ${name}`,
+    en: `Our menu — ${name}`,
+    ar: `قائمتنا — ${name}`,
+  },
+  metaDescription: {
+    fr: `La carte complète de ${name} à ${city}, à consulter sur place.`,
+    en: `The full menu of ${name} in ${city}, for dine-in guests.`,
+    ar: `القائمة الكاملة لـ${name} في ${city}، للضيوف داخل المطعم.`,
+  },
+  heroTitle: { fr: 'Notre carte', en: 'Our menu', ar: 'قائمتنا' },
+  heroSubtitle: {
+    fr: 'Prix service à table. Une question sur un plat ? Notre équipe se fera un plaisir de vous conseiller.',
+    en: 'Dine-in prices. Questions about a dish? Our team is happy to help.',
+    ar: 'أسعار الخدمة داخل المطعم. لديك سؤال عن طبق؟ فريقنا سعيد بمساعدتك.',
+  },
+  vegLabel: { fr: 'Végétarien', en: 'Vegetarian', ar: 'نباتي' },
+} satisfies Record<string, { fr: string; en: string; ar: string }>;
+
+const path = localizedPath('/carte', lang);
+---
+
+<Layout
+  title={t(copy.metaTitle, lang)}
+  description={t(copy.metaDescription, lang)}
+  path={path}
+  lang={lang}
+>
+  <!-- Compacte, tekstuele hero — geen beeld, laadt razendsnel op mobiel. -->
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-10 pb-6 text-center">
+    <h1 class="font-display text-3xl sm:text-4xl font-semibold" style="color: var(--color-text-primary)">
+      {t(copy.heroTitle, lang)}
+    </h1>
+    <p class="mt-3 text-sm sm:text-base" style="color: var(--color-text-muted)">
+      {t(copy.heroSubtitle, lang)}
+    </p>
+  </section>
+
+  {fullMenu.map((category, i) => (
+    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-6">
+      <h2
+        class="font-display text-xl font-semibold mb-4 pb-2 flex items-baseline gap-3"
+        style="color: var(--color-text-primary); border-bottom: 1px solid var(--color-border)"
+      >
+        <span class="text-xs font-bold" style="color: var(--color-accent)">{String(i + 1).padStart(2, '0')}</span>
+        {t(category.label, lang)}
+      </h2>
+      <div class="flex flex-col divide-y" style="border-color: var(--color-border)">
+        {category.items.map((item) => (
+          <div class="flex items-baseline justify-between gap-4 py-3">
+            <div class="min-w-0">
+              <span class="font-semibold" style="color: var(--color-text-primary)">
+                {item.name}
+                {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
+              </span>
+              <p class="text-sm mt-0.5" style="color: var(--color-text-muted)">{t(item.description, lang)}</p>
+            </div>
+            <span class="font-bold shrink-0" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  ))}
+</Layout>
