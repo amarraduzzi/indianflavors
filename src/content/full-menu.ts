@@ -763,6 +763,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'لحم ضأن، أرز بسمتي، بصل مقلي، زبادي، زعفران، قرفة، هيل، قرنفل، نعناع طازج.',
         },
         priceMAD: 100,
+        image: '/images/carte/lamb-biryani.webp',
       },
       {
         name: 'Chicken Biryani',
@@ -782,6 +783,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، أرز بسمتي، بصل مقلي، زبادي، زعفران، قرفة، هيل، نعناع طازج.',
         },
         priceMAD: 90,
+        image: '/images/carte/chicken-biryani.webp',
       },
       {
         name: 'Prawn Biryani',
@@ -801,6 +803,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'روبيان، أرز بسمتي، بصل مقلي، زبادي، زعفران، أوراق كاري، نعناع طازج.',
         },
         priceMAD: 110,
+        image: '/images/carte/prawn-biryani.webp',
       },
       {
         name: 'Fish Biryani',
@@ -820,6 +823,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'سمك، أرز بسمتي، بصل مقلي، زبادي، زعفران، أوراق كاري، نعناع طازج.',
         },
         priceMAD: 110,
+        image: '/images/carte/fish-biryani.webp',
       },
       {
         name: 'Vegetable Biryani',
@@ -839,6 +843,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أرز بسمتي، جزر، فاصولياء خضراء، بازلاء، بطاطس، بصل مقلي، زعفران، نعناع طازج.',
         },
         priceMAD: 75,
+        image: '/images/carte/vegetable-biryani.webp',
         vegetarian: true,
       },
     ],
@@ -864,6 +869,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق عدس، زيت للقلي، ملح، كمون.',
         },
         priceMAD: 10,
+        image: '/images/carte/papadoms.webp',
         vegetarian: true,
       },
       {
@@ -884,6 +890,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق، زبادي، خميرة، زبدة، ملح.',
         },
         priceMAD: 15,
+        image: '/images/carte/butter-naan.webp',
         vegetarian: true,
       },
       {
@@ -904,6 +911,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق، زبادي، خميرة، ثوم طازج، زبدة، ملح.',
         },
         priceMAD: 15,
+        image: '/images/carte/garlic-naan.webp',
         vegetarian: true,
       },
       {
