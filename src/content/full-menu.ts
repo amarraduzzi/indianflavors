@@ -1210,6 +1210,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'زبادي، هريس مانجو، سكر، ثلج.',
         },
         priceMAD: 35,
+        image: '/images/carte/mango-lassi.webp',
         vegetarian: true,
       },
       {
@@ -1230,6 +1231,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'زبادي، ماء، سكر أو ملح، كمون محمّص (النسخة المالحة).',
         },
         priceMAD: 30,
+        image: '/images/carte/sweet-salty-lassi.webp',
         vegetarian: true,
       },
       {
@@ -1250,6 +1252,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'ليمون أخضر، نعناع طازج، سكر، ماء غازي، ثلج.',
         },
         priceMAD: 30,
+        image: '/images/carte/virgin-mojito.webp',
         vegetarian: true,
       },
       {
@@ -1270,6 +1273,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'برتقال طازج معصور.',
         },
         priceMAD: 35,
+        image: '/images/carte/fresh-orange-juice.webp',
         vegetarian: true,
       },
       {
@@ -1290,6 +1294,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'عصير ليمون طازج، سكر، ماء، نعناع طازج، ثلج.',
         },
         priceMAD: 30,
+        image: '/images/carte/lemon-glow.webp',
         vegetarian: true,
       },
       {
@@ -1310,6 +1315,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'حسب العلامة التجارية المتوفرة.',
         },
         priceMAD: 15,
+        image: '/images/carte/soda.webp',
         vegetarian: true,
       },
       {
@@ -1330,6 +1336,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'مياه معدنية طبيعية.',
         },
         priceMAD: 10,
+        image: '/images/carte/eau-minerale.webp',
         vegetarian: true,
       },
       {
@@ -1350,6 +1357,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'مياه معدنية غازية طبيعية.',
         },
         priceMAD: 10,
+        image: '/images/carte/eau-gazeuse.webp',
         vegetarian: true,
       },
     ],
@@ -1375,6 +1383,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'حبوب بن محمّصة، ماء.',
         },
         priceMAD: 20,
+        image: '/images/carte/espresso.webp',
         vegetarian: true,
       },
       {
@@ -1395,6 +1404,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'حبوب بن محمّصة، حليب، ماء.',
         },
         priceMAD: 25,
+        image: '/images/carte/latte.webp',
         vegetarian: true,
       },
       {
@@ -1415,6 +1425,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'شاي أسود، حليب، هيل، قرفة، زنجبيل، قرنفل، سكر.',
         },
         priceMAD: 25,
+        image: '/images/carte/masala-chai.webp',
         vegetarian: true,
       },
       {
@@ -1435,6 +1446,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أعشاب منقوعة (حسب التوفر)، ماء ساخن.',
         },
         priceMAD: 25,
+        image: '/images/carte/infusion.webp',
         vegetarian: true,
       },
     ],
