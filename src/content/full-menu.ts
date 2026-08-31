@@ -1145,6 +1145,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'حليب كامل الدسم، سكر، مانجو أو فستق أو هيل (حسب النكهة)، لوز.',
         },
         priceMAD: 35,
+        image: '/images/carte/kulfi.webp',
         vegetarian: true,
       },
       {
@@ -1165,6 +1166,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق حمص، سكر، سمن، هيل، لوز، زعفران.',
         },
         priceMAD: 35,
+        image: '/images/carte/boondi-ladoo.webp',
         vegetarian: true,
       },
       {
@@ -1185,6 +1187,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'فواكه طازجة موسمية (تختلف حسب التوفر).',
         },
         priceMAD: 45,
+        image: '/images/carte/fruit-platter.webp',
         vegetarian: true,
       },
     ],
