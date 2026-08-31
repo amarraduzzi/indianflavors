@@ -254,6 +254,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، فلفل أخضر، بصل، ثوم، زنجبيل، صلصة صويا، صلصة فلفل حار، خل، نشا الذرة.',
         },
         priceMAD: 50,
+        image: '/images/carte/chilli-chicken-boneless.webp',
       },
       {
         name: 'Chicken Manchurian (Boneless)',
@@ -273,6 +274,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، ثوم، زنجبيل، بصل أخضر، صلصة صويا، صلصة طماطم، خل، نشا الذرة، مرقة دجاج.',
         },
         priceMAD: 50,
+        image: '/images/carte/chicken-manchurian-boneless.webp',
       },
     ],
   },
@@ -297,6 +299,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج تندوري، طماطم، زبدة، قشدة طازجة، ثوم، زنجبيل، غارام ماسالا، حلبة مجففة، هيل.',
         },
         priceMAD: 75,
+        image: '/images/carte/butter-chicken.webp',
       },
       {
         name: 'Chicken Tikka Masala',
@@ -316,6 +319,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، زبادي، طماطم، قشدة طازجة، ثوم، زنجبيل، غارام ماسالا، بابريكا، كزبرة مطحونة.',
         },
         priceMAD: 75,
+        image: '/images/carte/chicken-tikka-masala.webp',
       },
       {
         name: 'Kadai Chicken',
@@ -335,6 +339,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، فلفل أخضر، بصل، طماطم، ثوم، زنجبيل، بذور كزبرة، كمون، فلفل مجفف.',
         },
         priceMAD: 75,
+        image: '/images/carte/kadai-chicken.webp',
       },
       {
         name: 'Prawn Curry',
