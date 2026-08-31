@@ -399,7 +399,7 @@ function categoryId(categoryIndex: number, labelFr: string): string {
            uitnodiging om weer boven aan de zoekbalk te beginnen, i.p.v. dat
            de gast helemaal terug moet scrollen. -->
       <div class="flex justify-center mt-5">
-        <a href="#carte-search-bar" class="back-to-search-link" data-back-to-search>
+        <a href="#top" class="back-to-search-link" data-back-to-search>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="12" y1="19" x2="12" y2="5" />
             <polyline points="6 11 12 5 18 11" />
@@ -760,13 +760,16 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       input.focus();
     });
 
-    // "Terug naar zoeken"-links: zacht scrollen + focus op het veld, zodat
-    // de gast meteen verder kan typen zonder opnieuw te tikken.
+    // "Terug naar zoeken"-links: helemaal naar de bovenkant van de pagina,
+    // niet alleen "naar het element scrollen" — de zoekbalk is sticky en
+    // staat dus vaak al ergens in beeld, waardoor scrollIntoView() dan
+    // niets zichtbaars meer doet. window.scrollTo(0,0) werkt altijd, ook
+    // als de balk al zichtbaar was.
     document.querySelectorAll<HTMLAnchorElement>('[data-back-to-search]').forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        document.getElementById('carte-search-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.setTimeout(() => input.focus({ preventScroll: true }), 350);
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.setTimeout(() => input.focus({ preventScroll: true }), 450);
       });
     });
   }
