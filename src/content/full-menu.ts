@@ -146,6 +146,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دقيق حمص، بصل، بطاطس، سبانخ، كمون، كزبرة مطحونة، فلفل أحمر، أجوين، بيكربونات، زيت للقلي.',
         },
         priceMAD: 30,
+        image: '/images/carte/vegetable-pakoras.webp',
         vegetarian: true,
       },
       {
@@ -166,6 +167,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'خيار، طماطم، بصل أحمر، عصير ليمون، كزبرة طازجة، ملح، فلفل أسود.',
         },
         priceMAD: 20,
+        image: '/images/carte/kashumber-salad.webp',
         vegetarian: true,
       },
       {
@@ -186,6 +188,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'زبادي طبيعي، خيار، كمون محمّص مطحون، كزبرة طازجة، ملح.',
         },
         priceMAD: 20,
+        image: '/images/carte/raita.webp',
         vegetarian: true,
       },
     ],
@@ -211,6 +214,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، زبادي، ثوم، زنجبيل، فلفل أحمر مطحون، أوراق كاري، عصير ليمون، نشا الذرة، زيت للقلي.',
         },
         priceMAD: 50,
+        image: '/images/carte/chicken-65-boneless.webp',
       },
       {
         name: 'Chicken Lollipop',
@@ -230,6 +234,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'أجنحة دجاج، ثوم، زنجبيل، صلصة صويا، فلفل أحمر، نشا الذرة، عصير ليمون، زيت للقلي.',
         },
         priceMAD: 45,
+        image: '/images/carte/chicken-lollipop.webp',
       },
       {
         name: 'Chilli Chicken (Boneless)',
