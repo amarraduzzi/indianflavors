@@ -21,8 +21,14 @@ import { nav as navUi } from '../i18n/ui';
 
 interface Props {
   lang?: Language;
+  // Minimale modus voor de QR-tafelkaart (/carte/): geen hoofdmenu, geen
+  // hamburger, geen "bestellen"-CTA — alleen logo + taalwissel. Die pagina
+  // wordt uitsluitend gescand aan tafel; we willen gasten daar niet naar de
+  // rest van de site trekken (dat gebeurt via de eigen link onderaan de
+  // kaart, zie CarteContent.astro), en minder chrome = sneller scannen.
+  minimal?: boolean;
 }
-const { lang = 'fr' } = Astro.props;
+const { lang = 'fr', minimal = false } = Astro.props;
 const orderCtaLabel = getOrderCtaLabel(lang);
 
 const nav = [
@@ -52,17 +58,19 @@ const langLinks = LANGUAGES.map((l) => ({ lang: l, href: localizedPath(currentPa
       </span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-7 shrink-0">
-      {nav.map((item) => (
-        <a
-          href={item.href}
-          class="text-sm font-semibold transition-colors"
-          style={`color: ${currentPath === item.href ? 'var(--color-accent)' : 'var(--color-text-primary)'}`}
-        >
-          {item.label}
-        </a>
-      ))}
-    </nav>
+    {!minimal && (
+      <nav class="hidden md:flex items-center gap-7 shrink-0">
+        {nav.map((item) => (
+          <a
+            href={item.href}
+            class="text-sm font-semibold transition-colors"
+            style={`color: ${currentPath === item.href ? 'var(--color-accent)' : 'var(--color-text-primary)'}`}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    )}
 
     <!-- Language switcher — real links to the same page's other-language
          URL (see langLinks above), not a JS toggle: each is an actual
@@ -87,44 +95,50 @@ const langLinks = LANGUAGES.map((l) => ({ lang: l, href: localizedPath(currentPa
       ))}
     </div>
 
-    <a
-      href={orderCtaLabel.href}
-      target="_blank"
-      rel="noreferrer"
-      class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold shrink-0"
-      style="color: var(--color-accent)"
-    >
-      {orderCtaLabel.label} {arrow(lang)}
-    </a>
-
-    <!-- Mobile nav toggle -->
-    <button id="mobile-nav-toggle" class="md:hidden shrink-0" aria-label="Menu" aria-expanded="false">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--color-text-primary)">
-        <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
-      </svg>
-    </button>
-  </div>
-
-  <!-- Mobile nav panel -->
-  <div id="mobile-nav-panel" class="md:hidden hidden flex-col px-4 pb-4" style="background-color: var(--color-surface)">
-    {nav.map((item) => (
-      <a href={item.href} class="py-2.5 text-sm font-semibold" style="color: var(--color-text-primary)">
-        {item.label}
+    {!minimal && (
+      <a
+        href={orderCtaLabel.href}
+        target="_blank"
+        rel="noreferrer"
+        class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold shrink-0"
+        style="color: var(--color-accent)"
+      >
+        {orderCtaLabel.label} {arrow(lang)}
       </a>
-    ))}
-    <!-- Language pills are no longer repeated here — they're always visible
-         in the header bar itself now (see above), including on mobile, so
-         duplicating them inside this panel would just be clutter. -->
-    <a
-      href={orderCtaLabel.href}
-      target="_blank"
-      rel="noreferrer"
-      class="mt-3 pt-3 py-2.5 text-sm font-bold"
-      style="border-top: 1px solid var(--color-border); color: var(--color-accent)"
-    >
-      {orderCtaLabel.label} {arrow(lang)}
-    </a>
+    )}
+
+    {!minimal && (
+      <!-- Mobile nav toggle -->
+      <button id="mobile-nav-toggle" class="md:hidden shrink-0" aria-label="Menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--color-text-primary)">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+        </svg>
+      </button>
+    )}
   </div>
+
+  {!minimal && (
+    <!-- Mobile nav panel -->
+    <div id="mobile-nav-panel" class="md:hidden hidden flex-col px-4 pb-4" style="background-color: var(--color-surface)">
+      {nav.map((item) => (
+        <a href={item.href} class="py-2.5 text-sm font-semibold" style="color: var(--color-text-primary)">
+          {item.label}
+        </a>
+      ))}
+      <!-- Language pills are no longer repeated here — they're always visible
+           in the header bar itself now (see above), including on mobile, so
+           duplicating them inside this panel would just be clutter. -->
+      <a
+        href={orderCtaLabel.href}
+        target="_blank"
+        rel="noreferrer"
+        class="mt-3 pt-3 py-2.5 text-sm font-bold"
+        style="border-top: 1px solid var(--color-border); color: var(--color-accent)"
+      >
+        {orderCtaLabel.label} {arrow(lang)}
+      </a>
+    </div>
+  )}
 
   <div class="h-px w-full transition-colors duration-300" id="header-track">
     <div id="header-progress" class="h-full" style="width: 0%; background-color: var(--color-accent)"></div>

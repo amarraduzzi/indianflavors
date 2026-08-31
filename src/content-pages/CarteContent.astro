@@ -69,6 +69,12 @@ const copy = {
     ar: 'لا يوجد طبق يطابق بحثك.',
   },
   backToSearch: { fr: 'Retour à la recherche', en: 'Back to search', ar: 'العودة إلى البحث' },
+  visitWebsite: {
+    fr: 'Envie d’en savoir plus sur nous ?',
+    en: 'Want to know more about us?',
+    ar: 'هل تريد معرفة المزيد عنا؟',
+  },
+  visitWebsiteCta: { fr: 'Visitez notre site', en: 'Visit our website', ar: 'زوروا موقعنا' },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const path = localizedPath('/carte', lang);
@@ -124,6 +130,8 @@ function categoryId(categoryIndex: number, labelFr: string): string {
   description={t(copy.metaDescription, lang)}
   path={path}
   lang={lang}
+  minimalHeader
+  showFooter={false}
 >
   <!-- Compacte, tekstuele hero — geen beeld, laadt razendsnel op mobiel. -->
   <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-10 pb-6 text-center">
@@ -409,6 +417,24 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       </div>
     </section>
   ))}
+
+  <!-- Geen volledige site-footer op de tafelkaart (zie showFooter={false}
+       hierboven) — enkel deze subtiele, stijlvolle uitnodiging naar de
+       hoofdsite, voor gasten die na hun bezoek meer willen weten. -->
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-4 pb-14 text-center">
+    <div class="carte-site-invite">
+      <p class="text-sm" style="color: var(--color-text-muted)">
+        {t(copy.visitWebsite, lang)}
+      </p>
+      <a href={localizedPath('/', lang)} class="carte-site-invite-link">
+        {t(copy.visitWebsiteCta, lang)}
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="rtl:rotate-180">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -521,6 +547,30 @@ function categoryId(categoryIndex: number, labelFr: string): string {
   }
   .back-to-search-link:active {
     transform: scale(0.97);
+  }
+
+  /* ---- Uitnodiging naar de hoofdsite, onderaan de kaart (vervangt de
+     volledige site-footer op deze pagina, zie showFooter={false}) ---- */
+  .carte-site-invite {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .carte-site-invite-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    padding-bottom: 0.15rem;
+    transition: border-color 0.15s ease, gap 0.15s ease;
+  }
+  .carte-site-invite-link:hover {
+    gap: 0.6rem;
+    border-color: var(--color-accent);
   }
 
   /* ---- Trigger-rij: kleine tik-feedback ---- */

@@ -16,8 +16,14 @@ interface Props {
   jsonLd?: object | object[];
   noindex?: boolean;
   lang?: Language;
+  // Beide voor de QR-tafelkaart (/carte/): geen hoofdmenu in de header en
+  // geen volledige site-footer, zodat die pagina op zichzelf staat voor
+  // gasten aan tafel. CarteContent.astro voegt zelf een kleine "bezoek
+  // onze website"-link toe onderaan i.p.v. de volledige Footer.
+  minimalHeader?: boolean;
+  showFooter?: boolean;
 }
-const { title, description, path, ogImage, jsonLd, noindex, lang = 'fr' } = Astro.props;
+const { title, description, path, ogImage, jsonLd, noindex, lang = 'fr', minimalHeader = false, showFooter = true } = Astro.props;
 const rtl = isRTL(lang);
 
 // Wires site.config.ts's `colors` into the actual CSS custom properties
@@ -64,11 +70,11 @@ const colorOverrides = `:root{--color-primary:${siteConfig.colors.primary};--col
   </head>
   <body>
     <div class="grain-overlay"></div>
-    <Header lang={lang} />
+    <Header lang={lang} minimal={minimalHeader} />
     <main>
       <slot />
     </main>
-    <Footer lang={lang} />
+    {showFooter && <Footer lang={lang} />}
     <WhatsAppButton lang={lang} />
 
     <script>
