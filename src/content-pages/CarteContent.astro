@@ -119,6 +119,12 @@ const copy = {
   },
   orderRetry: { fr: 'Réessayer', en: 'Try again', ar: 'إعادة المحاولة' },
   cartClose: { fr: 'Fermer', en: 'Close', ar: 'إغلاق' },
+  cartClearAll: { fr: 'Vider le panier', en: 'Empty cart', ar: 'إفراغ السلة' },
+  cartClearConfirm: {
+    fr: 'Vider tout le panier ?',
+    en: 'Empty the whole cart?',
+    ar: 'هل تريد إفراغ السلة بالكامل؟',
+  },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const path = localizedPath('/carte', lang);
@@ -540,6 +546,27 @@ function categoryId(categoryIndex: number, labelFr: string): string {
         </svg>
       </button>
 
+      <!-- Alles-in-1x-wissen: naast de sluitknop, alleen zichtbaar zodra er
+           iets in het mandje zit (zelfde data-cart-has-items-mechanisme als
+           het tafelnummer-veld/totaalregel hieronder). Vraagt eerst
+           bevestiging (native confirm()) — dit wist het hele mandje, dus
+           geen per-ongeluk-tik zonder terugvraag. -->
+      <button
+        type="button"
+        class="cart-clear-btn"
+        data-cart-clear-all
+        data-cart-has-items
+        hidden
+        aria-label={t(copy.cartClearAll, lang)}
+        data-confirm-msg={t(copy.cartClearConfirm, lang)}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+          <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+        </svg>
+      </button>
+
       <div class="dish-dialog-body cart-dialog-body">
         <h2 id="carte-cart-title" class="font-display text-2xl font-semibold" style="color: var(--color-text-primary)">
           {t(copy.cartTitle, lang)}
@@ -954,6 +981,15 @@ function categoryId(categoryIndex: number, labelFr: string): string {
   .carte-cart-bar:active {
     transform: scale(0.98);
   }
+  /* De balk moet pas verschijnen zodra er iets in het mandje zit (zie
+     renderBar() hieronder, die de Tailwind-utility "hidden" toggelt) —
+     maar zonder deze regel bleef de balk altijd zichtbaar: Astro's scoped
+     styling maakt ".carte-cart-bar { display:flex }" hierboven specifieker
+     dan de kale ".hidden { display:none }" van Tailwind, dus die laatste
+     verloor stilzwijgend het gevecht. !important hier wint dat altijd. */
+  .carte-cart-bar.hidden {
+    display: none !important;
+  }
   @media (min-width: 640px) {
     .carte-cart-bar {
       left: auto;
@@ -1008,6 +1044,34 @@ function categoryId(categoryIndex: number, labelFr: string): string {
     border-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
     color: var(--color-accent);
     backdrop-filter: none;
+  }
+  /* Prullenbak-knop: zelfde positionering als .dish-dialog-close hierboven,
+     maar één plek naar links geschoven zodat ze niet overlappen. Rood/roze
+     getint i.p.v. het gebruikelijke goud — dit is de enige destructieve
+     actie in de kaart-dialoog, dus mag er ook zo uitzien. */
+  .cart-clear-btn {
+    position: absolute;
+    top: 14px;
+    right: 58px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(224, 138, 138, 0.12);
+    border: 1px solid rgba(224, 138, 138, 0.35);
+    color: #e08a8a;
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+  .cart-clear-btn:hover {
+    background-color: rgba(224, 138, 138, 0.22);
+  }
+  .cart-clear-btn:active {
+    transform: scale(0.92);
+  }
+  .cart-clear-btn[hidden] {
+    display: none;
   }
 
   .cart-items {
@@ -1498,6 +1562,29 @@ function categoryId(categoryIndex: number, labelFr: string): string {
     });
     cartDialog.querySelectorAll('[data-cart-close]').forEach((btn) => btn.addEventListener('click', closeCartDialog));
     cartDialog.querySelector('[data-cart-success-close]')?.addEventListener('click', closeCartDialog);
+
+    // Alles-in-1x wissen: hergebruikt ook ná een geslaagde verzending
+    // hieronder (zelfde opruim-logica, of het nu de gast zelf is die het
+    // mandje leegt, of de app die het leegt nadat de bestelling weg is).
+    function resetCart() {
+      cart.clear();
+      renderBar();
+      document.querySelectorAll<HTMLElement>('[data-qty-stepper]').forEach((stepper) => {
+        stepper.dataset.qty = '0';
+        const v = stepper.querySelector<HTMLElement>('[data-qty-value]');
+        if (v) v.textContent = '0';
+      });
+      if (tableInput) tableInput.value = '';
+      if (notesInput) notesInput.value = '';
+      renderCartItems();
+    }
+
+    const clearAllBtn = cartDialog.querySelector<HTMLButtonElement>('[data-cart-clear-all]');
+    clearAllBtn?.addEventListener('click', () => {
+      if (cart.size === 0) return;
+      const msg = clearAllBtn.dataset.confirmMsg || 'Empty the whole cart?';
+      if (window.confirm(msg)) resetCart();
+    });
     cartDialog.addEventListener('click', (e) => {
       if (e.target === cartDialog) closeCartDialog();
     });
@@ -1577,15 +1664,7 @@ function categoryId(categoryIndex: number, labelFr: string): string {
         });
         if (!res.ok) throw new Error(`carte order: Supabase insert failed (${res.status})`);
 
-        cart.clear();
-        renderBar();
-        document.querySelectorAll<HTMLElement>('[data-qty-stepper]').forEach((stepper) => {
-          stepper.dataset.qty = '0';
-          const v = stepper.querySelector<HTMLElement>('[data-qty-value]');
-          if (v) v.textContent = '0';
-        });
-        if (tableInput) tableInput.value = '';
-        if (notesInput) notesInput.value = '';
+        resetCart();
         viewItems?.setAttribute('hidden', '');
         viewSuccess?.removeAttribute('hidden');
       } catch (err) {
