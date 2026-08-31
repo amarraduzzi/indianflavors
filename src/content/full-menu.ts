@@ -24,6 +24,10 @@ export interface FullMenuItem {
   // keuken niet kent (dus: wat het IS, niet alleen hoe het heet).
   story?: LocalizedText;
   ingredients?: LocalizedText;
+  // Korte badge(s) op de kaart (bv. "Populaire", "Épicé", "Signature") —
+  // zelfde idee als de order-engine's item.tags, maar hier gewoon platte
+  // tekst per taal i.p.v. een aparte vertaaltabel, want het zijn er weinig.
+  tags?: LocalizedText[];
 }
 
 export interface FullMenuCategory {
@@ -54,6 +58,7 @@ export const fullMenu: FullMenuCategory[] = [
         },
         priceMAD: 35,
         image: '/images/carte/chicken-manchow-soup.webp',
+        tags: [{ fr: 'Populaire', en: 'Popular', ar: 'الأكثر طلباً' }],
       },
       {
         name: 'Vegetarian Manchow Soup',

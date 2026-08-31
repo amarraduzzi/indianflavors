@@ -6,10 +6,18 @@
 // lijst zelf compact en overzichtelijk blijft.
 // Toont ALLEEN de restaurantprijs (zie full-menu.ts voor de bron).
 //
+// v2 (visueel herontwerp): elk gerecht is nu een eigen "kaartje" i.p.v. een
+// rij in een platte lijst, met een vloeiende open/dicht-animatie (vanilla
+// JS, zelfde `astro:page-load`-patroon als Header.astro), een gradient
+// placeholder voor gerechten die nog geen foto hebben (zodat de kaart nooit
+// "half af" oogt terwijl foto's geleidelijk binnenkomen), optionele badges
+// (bv. "Populaire") en een klein icoon + Ornament-divider per categorie.
+//
 // Volgt hetzelfde i18n/Layout-patroon als MenuContent.astro zodat dit naast
 // de bestaande site past zonder iets anders te breken.
 
 import Layout from '../layouts/Layout.astro';
+import Ornament from '../components/Ornament.astro';
 import { siteConfig } from '../config/site.config';
 import { fullMenu } from '../content/full-menu';
 import { t, localizedPath, type Language } from '../i18n/languages';
@@ -45,6 +53,26 @@ const copy = {
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const path = localizedPath('/carte', lang);
+
+// Eén klein lijn-icoon per categorie — puur decoratief (aria-hidden), dus
+// geen vertaling nodig. Gekoppeld op het FR-label (de brontaal van de data)
+// zodat dit blijft werken ongeacht welke taal er gerenderd wordt. Onbekende
+// categorieën vallen terug op het bestek-icoon, dus dit breekt nooit als er
+// later een categorie bijkomt.
+const categoryIcons: Record<string, string> = {
+  Soupes: 'M4 12h16M4 12a8 8 0 0016 0M4 12l1-5h14l1 5M9 4v2M12 3v2.5M15 4v2',
+  'Entrées Végétariennes': 'M12 21c-4-2-7-6-7-11a7 7 0 0114 0c0 5-3 9-7 11z',
+  'Entrées Non-Végétariennes': 'M8 3c2 1 3 3 3 5l7 7a2.5 2.5 0 01-3.5 3.5L7 11c-2 0-4-1-5-3',
+  'Plats Principaux': 'M4 13a8 8 0 0016 0H4z M12 3v2 M8 4l.5 1.5 M16 4l-.5 1.5',
+  'Spécialités Tandoori': 'M12 3c-1.5 3-4.5 4.5-4.5 8.5a4.5 4.5 0 009 0C16.5 7.5 13.5 6 12 3z',
+  'Plats Principaux Végétariens': 'M12 21c-4-2-7-6-7-11a7 7 0 0114 0c0 5-3 9-7 11z',
+  "Biryani Dum d'Hyderabad": 'M5 11h14l-1 8a2 2 0 01-2 2H8a2 2 0 01-2-2l-1-8z M4 11a8 3 0 0016 0',
+  'Naan, Riz & Nouilles': 'M4 8c4-3 12-3 16 0-2 2-2 5 0 7-4 3-12 3-16 0 2-2 2-5 0-7z',
+  Desserts: 'M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z M6 18h12',
+  'Boissons Fraîches': 'M7 4h10l-1 15a2 2 0 01-2 2h-4a2 2 0 01-2-2L7 4z M6 4h12 M9 9h6',
+  'Boissons Chaudes': 'M4 9h13v5a4 4 0 01-4 4H8a4 4 0 01-4-4V9z M17 10h1.5a2 2 0 010 4H17 M8 4c0 1-1 1-1 2 M12 4c0 1-1 1-1 2',
+};
+const fallbackIconPath = 'M8 3v6a2 2 0 002 2h0a2 2 0 002-2V3 M12 3v18 M16 3c-1.5 0-3 1.5-3 4s1.5 4 3 4v10';
 ---
 
 <Layout
@@ -66,20 +94,28 @@ const path = localizedPath('/carte', lang);
   {fullMenu.map((category, i) => (
     <section class="max-w-3xl mx-auto px-5 sm:px-8 py-6">
       <h2
-        class="font-display text-xl font-semibold mb-4 pb-2 flex items-baseline gap-3"
-        style="color: var(--color-text-primary); border-bottom: 1px solid var(--color-border)"
+        class="font-display text-xl font-semibold mb-1 flex items-center gap-3"
+        style="color: var(--color-text-primary)"
       >
-        <span class="text-xs font-bold" style="color: var(--color-accent)">{String(i + 1).padStart(2, '0')}</span>
+        <span
+          class="flex items-center justify-center w-9 h-9 rounded-full shrink-0"
+          style="background-color: color-mix(in srgb, var(--color-accent) 14%, transparent)"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent)" aria-hidden="true">
+            <path d={categoryIcons[category.label.fr] ?? fallbackIconPath} />
+          </svg>
+        </span>
         {t(category.label, lang)}
       </h2>
-      <div class="flex flex-col divide-y" style="border-color: var(--color-border)">
+      <Ornament />
+      <div class="flex flex-col gap-3 mt-2">
         {category.items.map((item) => (
-          <details class="group py-3">
+          <details class="menu-item group rounded-2xl overflow-hidden" style="background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -16px rgba(0,0,0,0.6)">
             <summary
-              class="flex items-center justify-between gap-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden"
+              class="flex items-center justify-between gap-4 cursor-pointer list-none px-4 py-3 [&::-webkit-details-marker]:hidden"
             >
               <div class="flex items-center gap-3 min-w-0">
-                {item.image && (
+                {item.image ? (
                   <img
                     src={item.image}
                     alt={item.name}
@@ -87,10 +123,34 @@ const path = localizedPath('/carte', lang);
                     class="w-14 h-14 rounded-lg object-cover shrink-0"
                     style="border: 1px solid var(--color-border)"
                   />
+                ) : (
+                  <span
+                    class="w-14 h-14 rounded-lg shrink-0 flex items-center justify-center"
+                    style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 22%, transparent), color-mix(in srgb, var(--color-primary-dark) 35%, var(--color-surface)))"
+                    aria-hidden="true"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent)">
+                      <path d={fallbackIconPath} />
+                    </svg>
+                  </span>
                 )}
-                <span class="font-semibold" style="color: var(--color-text-primary)">
-                  {item.name}
-                  {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
+                <span class="min-w-0">
+                  <span class="block font-semibold" style="color: var(--color-text-primary)">
+                    {item.name}
+                    {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
+                  </span>
+                  {item.tags && item.tags.length > 0 && (
+                    <span class="flex flex-wrap gap-1 mt-1">
+                      {item.tags.map((tag) => (
+                        <span
+                          class="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                          style="color: var(--color-background); background-color: var(--color-accent)"
+                        >
+                          {t(tag, lang)}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </span>
               </div>
               <div class="flex items-center gap-2 shrink-0">
@@ -104,26 +164,38 @@ const path = localizedPath('/carte', lang);
                 </span>
               </div>
             </summary>
-            <div class="mt-3 pl-0">
-              {item.image && (
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  loading="lazy"
-                  class="w-full max-h-64 sm:max-h-80 rounded-xl object-cover mb-3"
-                />
-              )}
-              <p class="text-sm leading-relaxed" style="color: var(--color-text-muted)">
-                {t(item.story ?? item.description, lang)}
-              </p>
-              {item.ingredients && (
-                <p class="text-sm mt-2" style="color: var(--color-text-muted)">
-                  <span class="font-semibold" style="color: var(--color-text-primary)">
-                    {t(copy.ingredientsLabel, lang)} :
-                  </span>{' '}
-                  {t(item.ingredients, lang)}
+            <div class="exp-body px-4 overflow-hidden">
+              <div class="pb-4">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    loading="lazy"
+                    class="w-full max-h-64 sm:max-h-80 rounded-xl object-cover mb-3"
+                  />
+                ) : (
+                  <div
+                    class="w-full h-32 rounded-xl mb-3 flex items-center justify-center"
+                    style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 18%, transparent), color-mix(in srgb, var(--color-primary-dark) 30%, var(--color-surface)))"
+                    aria-hidden="true"
+                  >
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); opacity: 0.7">
+                      <path d={fallbackIconPath} />
+                    </svg>
+                  </div>
+                )}
+                <p class="text-sm leading-relaxed" style="color: var(--color-text-muted)">
+                  {t(item.story ?? item.description, lang)}
                 </p>
-              )}
+                {item.ingredients && (
+                  <p class="text-sm mt-2" style="color: var(--color-text-muted)">
+                    <span class="font-semibold" style="color: var(--color-text-primary)">
+                      {t(copy.ingredientsLabel, lang)} :
+                    </span>{' '}
+                    {t(item.ingredients, lang)}
+                  </p>
+                )}
+              </div>
             </div>
           </details>
         ))}
@@ -131,3 +203,70 @@ const path = localizedPath('/carte', lang);
     </section>
   ))}
 </Layout>
+
+<style>
+  /* exp-body start dichtgeklapt; JS hieronder animeert max-height bij
+     open/dicht. Zonder JS (uitzondering) valt dit terug op de kale
+     <details>-standaard (direct open/dicht, geen animatie) omdat het
+     'open' attribuut van <details> dan gewoon zijn eigen werk doet. */
+  .menu-item .exp-body {
+    max-height: 0;
+    transition: max-height 0.28s ease;
+  }
+  .menu-item[open] .exp-body {
+    max-height: none;
+  }
+</style>
+
+<script>
+  // Vloeiende open/dicht-animatie voor de menu-kaartjes. Zelfde
+  // `astro:page-load`-patroon als Header.astro (fire bij eerste load EN na
+  // elke client-side navigatie via View Transitions), en dezelfde
+  // "onEvent -> rebind" aanpak omdat de DOM-nodes na een navigatie vervangen
+  // zijn. Techniek: <details> blijft de bron van waarheid voor
+  // open/dicht (toegankelijk, werkt zonder JS), maar de klik wordt
+  // onderschept om het openen/sluiten zelf te animeren via max-height in
+  // plaats van de abrupte browser-standaard.
+  function setupMenuAnimations() {
+    document.querySelectorAll('details.menu-item').forEach((details) => {
+      const body = details.querySelector('.exp-body');
+      const summary = details.querySelector('summary');
+      if (!body || !summary || details.dataset.animBound === 'true') return;
+      details.dataset.animBound = 'true';
+
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (details.classList.contains('animating')) return;
+
+        if (!details.hasAttribute('open')) {
+          details.setAttribute('open', '');
+          body.style.maxHeight = '0px';
+          requestAnimationFrame(() => {
+            details.classList.add('animating');
+            body.style.maxHeight = body.scrollHeight + 'px';
+          });
+          const onOpenEnd = () => {
+            body.style.maxHeight = 'none';
+            details.classList.remove('animating');
+            body.removeEventListener('transitionend', onOpenEnd);
+          };
+          body.addEventListener('transitionend', onOpenEnd);
+        } else {
+          details.classList.add('animating');
+          body.style.maxHeight = body.scrollHeight + 'px';
+          requestAnimationFrame(() => {
+            body.style.maxHeight = '0px';
+          });
+          const onCloseEnd = () => {
+            details.removeAttribute('open');
+            details.classList.remove('animating');
+            body.removeEventListener('transitionend', onCloseEnd);
+          };
+          body.addEventListener('transitionend', onCloseEnd);
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupMenuAnimations);
+</script>
