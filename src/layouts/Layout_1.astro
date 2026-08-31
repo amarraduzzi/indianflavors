@@ -22,8 +22,23 @@ interface Props {
   // onze website"-link toe onderaan i.p.v. de volledige Footer.
   minimalHeader?: boolean;
   showFooter?: boolean;
+  // Ook uit op de QR-tafelkaart: een vaste WhatsApp-knop bovenop een pagina
+  // die zelf straks een eigen bestel-flow krijgt (cart-knop rechtsonder)
+  // zou beide met elkaar laten concurreren voor dezelfde duim-ruimte.
+  showWhatsApp?: boolean;
 }
-const { title, description, path, ogImage, jsonLd, noindex, lang = 'fr', minimalHeader = false, showFooter = true } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  ogImage,
+  jsonLd,
+  noindex,
+  lang = 'fr',
+  minimalHeader = false,
+  showFooter = true,
+  showWhatsApp = true,
+} = Astro.props;
 const rtl = isRTL(lang);
 
 // Wires site.config.ts's `colors` into the actual CSS custom properties
@@ -75,7 +90,7 @@ const colorOverrides = `:root{--color-primary:${siteConfig.colors.primary};--col
       <slot />
     </main>
     {showFooter && <Footer lang={lang} />}
-    <WhatsAppButton lang={lang} />
+    {showWhatsApp && <WhatsAppButton lang={lang} />}
 
     <script>
       // Sitewide scroll-reveal — see the [data-reveal] rules in global.css

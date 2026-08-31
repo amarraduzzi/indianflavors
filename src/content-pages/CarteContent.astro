@@ -75,6 +75,50 @@ const copy = {
     ar: 'هل تريد معرفة المزيد عنا؟',
   },
   visitWebsiteCta: { fr: 'Visitez notre site', en: 'Visit our website', ar: 'زوروا موقعنا' },
+  // ---- Bestellen aan tafel: mandje verstuurd naar het personeelsscherm
+  // (zelfde Supabase `orders`-tabel als de order-site) ----
+  addToOrder: { fr: 'Ajouter', en: 'Add', ar: 'إضافة' },
+  decreaseQty: { fr: 'Diminuer la quantité', en: 'Decrease quantity', ar: 'إنقاص الكمية' },
+  increaseQty: { fr: 'Augmenter la quantité', en: 'Increase quantity', ar: 'زيادة الكمية' },
+  cartBarLabel: { fr: 'Voir ma commande', en: 'View my order', ar: 'عرض طلبي' },
+  cartTitle: { fr: 'Ma commande', en: 'My order', ar: 'طلبي' },
+  cartEmpty: {
+    fr: 'Votre panier est vide. Touchez « Ajouter » sur un plat pour commencer.',
+    en: 'Your cart is empty. Tap "Add" on a dish to get started.',
+    ar: 'سلتك فارغة. اضغط على "إضافة" بجانب أي طبق للبدء.',
+  },
+  cartItemTotal: { fr: 'Sous-total', en: 'Subtotal', ar: 'المجموع الفرعي' },
+  removeItem: { fr: 'Retirer', en: 'Remove', ar: 'إزالة' },
+  tableNumberLabel: { fr: 'Numéro de table', en: 'Table number', ar: 'رقم الطاولة' },
+  tableNumberPlaceholder: { fr: 'Ex : 5', en: 'e.g. 5', ar: 'مثال: 5' },
+  tableNumberRequired: {
+    fr: 'Merci d’indiquer votre numéro de table.',
+    en: 'Please enter your table number.',
+    ar: 'يرجى إدخال رقم طاولتك.',
+  },
+  tablePrefix: { fr: 'Table', en: 'Table', ar: 'طاولة' },
+  notesLabel: { fr: 'Remarque (facultatif)', en: 'Note (optional)', ar: 'ملاحظة (اختياري)' },
+  notesPlaceholder: {
+    fr: 'Ex : sans piment, allergie…',
+    en: 'e.g. no chili, allergy…',
+    ar: 'مثال: بدون فلفل حار، حساسية…',
+  },
+  submitOrder: { fr: 'Envoyer la commande', en: 'Send order', ar: 'إرسال الطلب' },
+  sendingOrder: { fr: 'Envoi en cours…', en: 'Sending…', ar: 'جارٍ الإرسال…' },
+  orderSuccessTitle: { fr: 'Commande envoyée !', en: 'Order sent!', ar: 'تم إرسال الطلب!' },
+  orderSuccessBody: {
+    fr: 'Notre équipe a bien reçu votre commande et arrive à votre table.',
+    en: 'Our team has received your order and is on their way to your table.',
+    ar: 'استلم فريقنا طلبك وهو في طريقه إلى طاولتك.',
+  },
+  orderSuccessClose: { fr: 'Continuer à parcourir la carte', en: 'Keep browsing the menu', ar: 'متابعة تصفح القائمة' },
+  orderErrorBody: {
+    fr: 'Impossible d’envoyer la commande. Vérifiez votre connexion et réessayez, ou appelez notre équipe.',
+    en: 'Could not send the order. Check your connection and try again, or call our team over.',
+    ar: 'تعذّر إرسال الطلب. تحقّق من اتصالك وحاول مجددًا، أو نادِ فريقنا.',
+  },
+  orderRetry: { fr: 'Réessayer', en: 'Try again', ar: 'إعادة المحاولة' },
+  cartClose: { fr: 'Fermer', en: 'Close', ar: 'إغلاق' },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const path = localizedPath('/carte', lang);
@@ -132,6 +176,7 @@ function categoryId(categoryIndex: number, labelFr: string): string {
   lang={lang}
   minimalHeader
   showFooter={false}
+  showWhatsApp={false}
 >
   <!-- Compacte, tekstuele hero — geen beeld, laadt razendsnel op mobiel. -->
   <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-10 pb-6 text-center">
@@ -255,11 +300,17 @@ function categoryId(categoryIndex: number, labelFr: string): string {
           const id = dishId(ci, ii, item.name);
           return (
             <>
-              <!-- Rij: het hele blok is de trigger die de dialog opent. -->
+              <!-- Kaart per gerecht: bovenste deel is de trigger die de
+                   infodialog opent (button-in-button mag niet in HTML, dus
+                   de bestel-stepper hieronder staat als sibling, niet
+                   genest, in dezelfde kaart-wrapper). -->
+              <div
+                class="dish-card rounded-2xl"
+                style={`background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -16px rgba(0,0,0,0.6)${item.image ? ', 0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent)' : ''}`}
+              >
               <button
                 type="button"
-                class="dish-trigger group flex items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left w-full"
-                style={`background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -16px rgba(0,0,0,0.6)${item.image ? ', 0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent)' : ''}`}
+                class="dish-trigger group flex items-center justify-between gap-4 px-4 pt-3 pb-2 text-left w-full"
                 data-dialog-target={id}
                 data-dish-name={item.name}
                 aria-haspopup="dialog"
@@ -332,6 +383,37 @@ function categoryId(categoryIndex: number, labelFr: string): string {
                 </span>
                 <span class="sr-only">{t(copy.infoLabel, lang)}</span>
               </button>
+
+              <!-- Bestel-stepper: apart van de infoknop hierboven, zodat een
+                   tik hierop niet ook nog het infoscherm opent. Standaard
+                   toont dit alleen de "Ajouter"-pil; zodra de gast tikt
+                   verschijnt de volledige −/aantal/+ stepper (zie CSS,
+                   gestuurd via data-qty op de wrapper). -->
+              <div
+                class="qty-stepper flex items-center justify-between px-4 pb-3 pt-2"
+                style="border-top: 1px dashed var(--color-border)"
+                data-qty-stepper
+                data-qty="0"
+                data-item-name={item.name}
+                data-item-price={item.priceMAD}
+              >
+                <span class="text-[11px] font-semibold uppercase tracking-wide" style="color: var(--color-text-muted)">
+                  {t(copy.addToOrder, lang)}
+                </span>
+                <button type="button" class="qty-add-btn" data-qty-add>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  {t(copy.addToOrder, lang)}
+                </button>
+                <div class="qty-full items-center gap-3">
+                  <button type="button" class="qty-btn" data-qty-minus aria-label={t(copy.decreaseQty, lang)}>−</button>
+                  <span class="qty-value font-bold text-sm" data-qty-value style="color: var(--color-text-primary)">0</span>
+                  <button type="button" class="qty-btn" data-qty-plus aria-label={t(copy.increaseQty, lang)}>+</button>
+                </div>
+              </div>
+              </div>
 
               <!-- Fullscreen infoscherm voor dit gerecht. -->
               <dialog id={id} class="dish-dialog" aria-labelledby={`${id}-title`}>
@@ -435,6 +517,105 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       </a>
     </div>
   </section>
+
+  <!-- Zwevende mandje-balk: verborgen zolang het mandje leeg is (zie
+       data-cart-bar / JS hieronder), verschijnt zodra de gast iets
+       toevoegt. Zelfde plek als de WhatsApp-knop elders op de site nam
+       (die is hier uitgezet, zie showWhatsApp={false} hierboven) zodat
+       er geen twee zwevende knoppen om dezelfde duim-ruimte concurreren. -->
+  <button type="button" id="carte-cart-bar" class="carte-cart-bar hidden" data-cart-bar aria-haspopup="dialog">
+    <span class="carte-cart-bar-count" data-cart-count>0</span>
+    <span class="carte-cart-bar-label">{t(copy.cartBarLabel, lang)}</span>
+    <span class="carte-cart-bar-total" data-cart-total>0 MAD</span>
+  </button>
+
+  <!-- Mandje + afreken-dialog: zelfde native <dialog>-patroon als de
+       gerecht-infoschermen hierboven (focus-trap/Escape gratis mee). -->
+  <dialog id="carte-cart-dialog" class="dish-dialog cart-dialog" aria-labelledby="carte-cart-title">
+    <div class="dish-dialog-card cart-dialog-card">
+      <button type="button" class="dish-dialog-close" data-cart-close aria-label={t(copy.cartClose, lang)}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <div class="dish-dialog-body cart-dialog-body">
+        <h2 id="carte-cart-title" class="font-display text-2xl font-semibold" style="color: var(--color-text-primary)">
+          {t(copy.cartTitle, lang)}
+        </h2>
+
+        <!-- Staat 1: mandje bewerken -->
+        <div data-cart-view-items>
+          <p class="text-sm mt-4" data-cart-empty-msg style="color: var(--color-text-muted)">
+            {t(copy.cartEmpty, lang)}
+          </p>
+          <div class="cart-items mt-2" data-cart-items></div>
+
+          <div class="cart-total-row" data-cart-has-items hidden>
+            <span style="color: var(--color-text-muted)">{t(copy.cartItemTotal, lang)}</span>
+            <span class="font-bold" data-cart-dialog-total style="color: var(--color-accent)">0 MAD</span>
+          </div>
+
+          <div class="mt-5" data-cart-has-items hidden>
+            <label class="block text-xs font-bold uppercase tracking-wide mb-1.5" style="color: var(--color-text-muted)" for="cart-table-number">
+              {t(copy.tableNumberLabel, lang)}
+            </label>
+            <input
+              id="cart-table-number"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder={t(copy.tableNumberPlaceholder, lang)}
+              class="cart-input"
+              data-cart-table-input
+            />
+            <p class="cart-field-error" data-cart-table-error hidden>{t(copy.tableNumberRequired, lang)}</p>
+
+            <label class="block text-xs font-bold uppercase tracking-wide mb-1.5 mt-4" style="color: var(--color-text-muted)" for="cart-notes">
+              {t(copy.notesLabel, lang)}
+            </label>
+            <textarea
+              id="cart-notes"
+              rows="2"
+              placeholder={t(copy.notesPlaceholder, lang)}
+              class="cart-input"
+              data-cart-notes-input
+            ></textarea>
+
+            <button
+              type="button"
+              class="cart-submit-btn mt-5"
+              data-cart-submit
+              data-submit-label={t(copy.submitOrder, lang)}
+              data-sending-label={t(copy.sendingOrder, lang)}
+            >
+              <span data-cart-submit-label>{t(copy.submitOrder, lang)}</span>
+            </button>
+            <p class="cart-field-error" data-cart-submit-error hidden>{t(copy.orderErrorBody, lang)}</p>
+          </div>
+        </div>
+
+        <!-- Staat 2: bevestiging na succesvol versturen -->
+        <div data-cart-view-success hidden class="cart-success">
+          <span class="cart-success-icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 12 9 17 20 6" />
+            </svg>
+          </span>
+          <h3 class="font-display text-xl font-semibold mt-3" style="color: var(--color-text-primary)">
+            {t(copy.orderSuccessTitle, lang)}
+          </h3>
+          <p class="text-sm mt-2" style="color: var(--color-text-muted)">
+            {t(copy.orderSuccessBody, lang)}
+          </p>
+          <button type="button" class="cart-submit-btn mt-5" data-cart-success-close>
+            {t(copy.orderSuccessClose, lang)}
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
 </Layout>
 
 <style>
@@ -582,6 +763,66 @@ function categoryId(categoryIndex: number, labelFr: string): string {
     transform: scale(0.99);
   }
 
+  /* ---- Bestel-stepper onder elke gerecht-kaart ---- */
+  .qty-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    color: var(--color-background);
+    background-color: var(--color-accent);
+    border: none;
+    transition: transform 0.12s ease, filter 0.15s ease;
+  }
+  .qty-add-btn:hover {
+    filter: brightness(1.08);
+  }
+  .qty-add-btn:active {
+    transform: scale(0.95);
+  }
+  .qty-full {
+    display: none;
+  }
+  .qty-stepper[data-qty="0"] .qty-full {
+    display: none;
+  }
+  .qty-stepper:not([data-qty="0"]) .qty-full {
+    display: flex;
+  }
+  .qty-stepper:not([data-qty="0"]) .qty-add-btn {
+    display: none;
+  }
+  .qty-value {
+    min-width: 1.2rem;
+    text-align: center;
+  }
+  .qty-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+  .qty-btn:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+  .qty-btn:active {
+    transform: scale(0.92);
+  }
+
   /* ---- Dialog: native <dialog>, zelf volledig scherm-gevuld gemaakt zodat
      een klik "ernaast" (op het dialog-element zelf, niet op de kaart erin)
      als backdrop-klik gedetecteerd kan worden. De ::backdrop geeft de
@@ -690,6 +931,230 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       padding: 24px;
     }
   }
+
+  /* ---- Zwevende mandje-balk: zelfde hoek als de WhatsApp-knop elders op
+     de site innam (die staat hier uit, zie showWhatsApp={false}), maar in
+     de eigen goud/donker taal i.p.v. WhatsApp-groen. ---- */
+  .carte-cart-bar {
+    position: fixed;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 999px;
+    background-color: var(--color-accent);
+    color: var(--color-background);
+    box-shadow: 0 10px 28px -6px rgba(0, 0, 0, 0.55), 0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent);
+    transition: transform 0.15s ease;
+  }
+  .carte-cart-bar:active {
+    transform: scale(0.98);
+  }
+  @media (min-width: 640px) {
+    .carte-cart-bar {
+      left: auto;
+      right: 28px;
+      bottom: 28px;
+      max-width: 360px;
+    }
+  }
+  .carte-cart-bar-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: var(--color-background);
+    color: var(--color-accent);
+    font-weight: 800;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .carte-cart-bar-label {
+    flex: 1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+  .carte-cart-bar-total {
+    font-weight: 800;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  /* ---- Mandje-dialog: hergebruikt .dish-dialog/.dish-dialog-card voor het
+     openings-/sluitgedrag en de animatie, maar heeft geen hero-foto — dus
+     de sluitknop staat hier los gepositioneerd i.p.v. bovenop een foto. ---- */
+  .cart-dialog-card {
+    position: relative;
+    border-radius: 24px 24px 0 0;
+  }
+  @media (min-width: 640px) {
+    .cart-dialog-card {
+      border-radius: 24px;
+    }
+  }
+  .cart-dialog-body {
+    padding-top: 44px;
+  }
+  .cart-dialog .dish-dialog-close {
+    background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    color: var(--color-accent);
+    backdrop-filter: none;
+  }
+
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  /* :global() hier is bewust: deze rijen worden client-side aangemaakt via
+     innerHTML in setupCarteCart() (zie <script> hieronder), en Astro voegt
+     zijn scoping-attribuut alleen toe aan elementen die het zélf tijdens de
+     build rendert — dynamisch aangemaakte DOM-nodes missen dat attribuut,
+     dus een gewone scoped regel (".cart-item-row {...}") zou hier stil
+     niets doen. Zonder deze fix bleven de mandje-rijen in de dialog kaal,
+     ongestyled tekst i.p.v. de kaartjes die overal elders op deze pagina
+     staan. */
+  :global(.cart-item-row) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 14px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+  }
+  :global(.cart-item-info) {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  :global(.cart-item-name) {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+  }
+  :global(.cart-item-line) {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+  :global(.cart-item-actions) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+  }
+  /* Zelfde reden: .qty-btn/.qty-value bestaan al hierboven (scoped, voor de
+     server-gerenderde steppers per gerecht) maar die regels raken de
+     dynamisch aangemaakte +/− knoppen in het mandje niet — dus hier
+     dezelfde look opnieuw, maar dan global. */
+  :global(.cart-item-actions .qty-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+  :global(.cart-item-actions .qty-btn:hover) {
+    background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+  :global(.cart-item-actions .qty-btn:active) {
+    transform: scale(0.92);
+  }
+  :global(.cart-item-actions .qty-value) {
+    min-width: 1.2rem;
+    text-align: center;
+  }
+
+  .cart-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.95rem;
+  }
+
+  .cart-input {
+    width: 100%;
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+    background-color: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    resize: vertical;
+  }
+  .cart-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+  .cart-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.75;
+  }
+  .cart-field-error {
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #e08a8a;
+  }
+
+  .cart-submit-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-align: center;
+    background-color: var(--color-accent);
+    color: var(--color-background);
+    border: none;
+    transition: transform 0.12s ease, filter 0.15s ease;
+  }
+  .cart-submit-btn:hover {
+    filter: brightness(1.08);
+  }
+  .cart-submit-btn:active {
+    transform: scale(0.98);
+  }
+  .cart-submit-btn:disabled {
+    opacity: 0.65;
+  }
+
+  .cart-success {
+    text-align: center;
+    padding: 1.5rem 0 0.5rem;
+  }
+  .cart-success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    color: var(--color-accent);
+  }
 </style>
 
 <script>
@@ -780,7 +1245,7 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       clearBtn?.classList.toggle('flex', query.length > 0);
 
       if (query.length === 0) {
-        triggers.forEach((el) => el.classList.remove('is-search-hidden'));
+        triggers.forEach((el) => (el.closest<HTMLElement>('.dish-card') ?? el).classList.remove('is-search-hidden'));
         categories.forEach((el) => el.classList.remove('is-search-hidden'));
         emptyMessage?.classList.add('hidden');
         return;
@@ -788,13 +1253,19 @@ function categoryId(categoryIndex: number, labelFr: string): string {
 
       triggers.forEach((el) => {
         const name = normalize(el.dataset.dishName ?? '');
-        el.classList.toggle('is-search-hidden', !name.includes(query));
+        // Verberg de hele kaart (foto+naam+prijs ÉN de bestel-stepper
+        // eronder), niet alleen de trigger-knop — anders blijft er bij een
+        // niet-matchend gerecht een lege omkaderde strook met een losse
+        // stepper staan (zie .dish-card in de markup hierboven, sinds de
+        // bestel-stepper naast i.p.v. in de trigger-button zit).
+        const card = el.closest<HTMLElement>('.dish-card') ?? el;
+        card.classList.toggle('is-search-hidden', !name.includes(query));
       });
 
       let anyVisible = false;
       categories.forEach((cat) => {
         const hasMatch = Array.from(cat.querySelectorAll<HTMLElement>('.dish-trigger[data-dish-name]')).some(
-          (el) => !el.classList.contains('is-search-hidden')
+          (el) => !(el.closest<HTMLElement>('.dish-card') ?? el).classList.contains('is-search-hidden')
         );
         cat.classList.toggle('is-search-hidden', !hasMatch);
         if (hasMatch) anyVisible = true;
@@ -867,4 +1338,245 @@ function categoryId(categoryIndex: number, labelFr: string): string {
 
   document.addEventListener('astro:page-load', setupCarteSearch);
   document.addEventListener('astro:page-load', setupCarteChips);
+
+  // ---- Bestellen aan tafel: mandje + versturen naar het personeelsscherm.
+  // Zelfde Supabase-project + `orders`-tabel + publieke insert-only
+  // "publishable key" als de order-site (indianflavor.pages.dev) al
+  // gebruikt voor precies hetzelfde doel — dus geen nieuwe backend nodig.
+  // Het personeelsscherm (indianflavors-personeelsscherm) heeft al een
+  // live Realtime-abonnement op die tabel, dus een insert hiervandaan
+  // verschijnt daar vanzelf, net als een bestelling via de order-site nu
+  // al doet. Anders dan de order-site (waar dit "fire-and-forget" is naast
+  // de WhatsApp-boodschap als bron van waarheid) is dit HIER de enige weg
+  // die de bestelling aflegt — dus wél op de respons wachten en een echte
+  // fout tonen i.p.v.'m stil te negeren.
+  const CARTE_ORDER_SUPABASE_URL = 'https://zzdiibzoalmymgbztepf.supabase.co';
+  const CARTE_ORDER_SUPABASE_ANON_KEY = 'sb_publishable_96be9YWDCuHOD9-rmGVkeg_5RTW8Jx7';
+
+  interface CartLine {
+    name: string;
+    unitPrice: number;
+    qty: number;
+  }
+
+  function setupCarteCart() {
+    const cartBar = document.querySelector<HTMLButtonElement>('[data-cart-bar]');
+    const cartDialog = document.querySelector<HTMLDialogElement>('#carte-cart-dialog');
+    if (!cartBar || !(cartDialog instanceof HTMLDialogElement) || cartBar.dataset.bound === 'true') return;
+    cartBar.dataset.bound = 'true';
+
+    const cart = new Map<string, CartLine>();
+
+    const countEl = cartBar.querySelector<HTMLElement>('[data-cart-count]');
+    const totalEl = cartBar.querySelector<HTMLElement>('[data-cart-total]');
+    const dialogTotalEl = cartDialog.querySelector<HTMLElement>('[data-cart-dialog-total]');
+    const itemsEl = cartDialog.querySelector<HTMLElement>('[data-cart-items]');
+    const emptyMsgEl = cartDialog.querySelector<HTMLElement>('[data-cart-empty-msg]');
+    const hasItemsEls = cartDialog.querySelectorAll<HTMLElement>('[data-cart-has-items]');
+    const tableInput = cartDialog.querySelector<HTMLInputElement>('[data-cart-table-input]');
+    const notesInput = cartDialog.querySelector<HTMLTextAreaElement>('[data-cart-notes-input]');
+    const tableError = cartDialog.querySelector<HTMLElement>('[data-cart-table-error]');
+    const submitBtn = cartDialog.querySelector<HTMLButtonElement>('[data-cart-submit]');
+    const submitLabel = cartDialog.querySelector<HTMLElement>('[data-cart-submit-label]');
+    const submitError = cartDialog.querySelector<HTMLElement>('[data-cart-submit-error]');
+    const viewItems = cartDialog.querySelector<HTMLElement>('[data-cart-view-items]');
+    const viewSuccess = cartDialog.querySelector<HTMLElement>('[data-cart-view-success]');
+
+    function cartTotal(): number {
+      let sum = 0;
+      cart.forEach((line) => (sum += line.unitPrice * line.qty));
+      return sum;
+    }
+    function cartCount(): number {
+      let sum = 0;
+      cart.forEach((line) => (sum += line.qty));
+      return sum;
+    }
+
+    function renderBar() {
+      const count = cartCount();
+      if (countEl) countEl.textContent = String(count);
+      if (totalEl) totalEl.textContent = `${cartTotal()} MAD`;
+      cartBar.classList.toggle('hidden', count === 0);
+    }
+
+    function renderStepperFor(name: string) {
+      document.querySelectorAll<HTMLElement>('[data-qty-stepper]').forEach((stepper) => {
+        if (stepper.dataset.itemName !== name) return;
+        const qty = cart.get(name)?.qty ?? 0;
+        stepper.dataset.qty = String(qty);
+        const valueEl = stepper.querySelector<HTMLElement>('[data-qty-value]');
+        if (valueEl) valueEl.textContent = String(qty);
+      });
+    }
+
+    function escapeHtml(s: string): string {
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    function renderCartItems() {
+      if (!itemsEl) return;
+      const lines = Array.from(cart.values());
+      if (emptyMsgEl) emptyMsgEl.classList.toggle('hidden', lines.length > 0);
+      hasItemsEls.forEach((el) => {
+        el.hidden = lines.length === 0;
+      });
+      itemsEl.innerHTML = '';
+      lines.forEach((line) => {
+        const row = document.createElement('div');
+        row.className = 'cart-item-row';
+        row.innerHTML = `
+          <div class="cart-item-info">
+            <span class="cart-item-name">${escapeHtml(line.name)}</span>
+            <span class="cart-item-line">${line.unitPrice} MAD × ${line.qty}</span>
+          </div>
+          <div class="cart-item-actions">
+            <button type="button" class="qty-btn" data-line-minus>−</button>
+            <span class="qty-value font-bold text-sm" style="color: var(--color-text-primary)">${line.qty}</span>
+            <button type="button" class="qty-btn" data-line-plus>+</button>
+          </div>
+        `;
+        row.querySelector('[data-line-minus]')?.addEventListener('click', () => changeQty(line.name, -1));
+        row.querySelector('[data-line-plus]')?.addEventListener('click', () => changeQty(line.name, 1));
+        itemsEl.appendChild(row);
+      });
+      if (dialogTotalEl) dialogTotalEl.textContent = `${cartTotal()} MAD`;
+    }
+
+    function changeQty(name: string, delta: number, unitPrice?: number) {
+      const existing = cart.get(name);
+      const nextQty = Math.max(0, (existing?.qty ?? 0) + delta);
+      if (nextQty === 0) {
+        cart.delete(name);
+      } else {
+        cart.set(name, { name, unitPrice: existing?.unitPrice ?? unitPrice ?? 0, qty: nextQty });
+      }
+      renderBar();
+      renderStepperFor(name);
+      renderCartItems();
+    }
+
+    // Steppers onder elke gerecht-kaart.
+    document.querySelectorAll<HTMLElement>('[data-qty-stepper]').forEach((stepper) => {
+      if (stepper.dataset.bound === 'true') return;
+      stepper.dataset.bound = 'true';
+      const name = stepper.dataset.itemName ?? '';
+      const price = Number(stepper.dataset.itemPrice ?? '0');
+      stepper.querySelector('[data-qty-add]')?.addEventListener('click', () => changeQty(name, 1, price));
+      stepper.querySelector('[data-qty-plus]')?.addEventListener('click', () => changeQty(name, 1, price));
+      stepper.querySelector('[data-qty-minus]')?.addEventListener('click', () => changeQty(name, -1, price));
+    });
+
+    // Dialog open/close — zelfde animatiepatroon als de gerecht-infoschermen
+    // (zie setupDishDialogs hierboven), hier los gehouden om die functie
+    // niet afhankelijk te maken van het mandje.
+    function openCartDialog() {
+      cartDialog.showModal();
+      requestAnimationFrame(() => requestAnimationFrame(() => cartDialog.classList.add('is-visible')));
+    }
+    function closeCartDialog() {
+      cartDialog.classList.remove('is-visible');
+      const onEnd = () => {
+        cartDialog.close();
+        cartDialog.removeEventListener('transitionend', onEnd);
+      };
+      cartDialog.addEventListener('transitionend', onEnd);
+      setTimeout(() => {
+        if (cartDialog.open) cartDialog.close();
+      }, 400);
+    }
+
+    cartBar.addEventListener('click', () => {
+      // Terug naar de mandje-weergave, mocht de vorige keer geëindigd zijn
+      // op het bevestigingsscherm van een net verstuurde bestelling.
+      viewSuccess?.setAttribute('hidden', '');
+      viewItems?.removeAttribute('hidden');
+      renderCartItems();
+      openCartDialog();
+    });
+    cartDialog.querySelectorAll('[data-cart-close]').forEach((btn) => btn.addEventListener('click', closeCartDialog));
+    cartDialog.querySelector('[data-cart-success-close]')?.addEventListener('click', closeCartDialog);
+    cartDialog.addEventListener('click', (e) => {
+      if (e.target === cartDialog) closeCartDialog();
+    });
+    cartDialog.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      closeCartDialog();
+    });
+
+    // Versturen naar het personeelsscherm.
+    submitBtn?.addEventListener('click', async () => {
+      const tableNumber = tableInput?.value.trim() ?? '';
+      if (!tableNumber) {
+        tableError?.removeAttribute('hidden');
+        tableInput?.focus();
+        return;
+      }
+      tableError?.setAttribute('hidden', '');
+      submitError?.setAttribute('hidden', '');
+
+      const lines = Array.from(cart.values());
+      if (lines.length === 0) return;
+
+      submitBtn.disabled = true;
+      if (submitLabel) submitLabel.textContent = submitBtn.dataset.sendingLabel ?? submitLabel.textContent;
+
+      const items = lines.map((line) => ({
+        name: line.name,
+        quantity: line.qty,
+        unitPrice: line.unitPrice,
+        lineTotal: line.unitPrice * line.qty,
+      }));
+
+      // "Table N" bewust altijd in dit neutrale/Franse formaat, ongeacht de
+      // taal van de gast — dit veld is voor het PERSONEEL leesbaar op het
+      // scherm (dat zelf Frans/Engels labelt), niet voor de gast, dus geen
+      // Arabische tekst die het personeel daar niet per se kan lezen.
+      const payload = {
+        order_type: 'dinein',
+        customer_name: null,
+        customer_phone: null,
+        address_or_table: `Table ${tableNumber}`,
+        special_notes: notesInput?.value.trim() || null,
+        items,
+        total: cartTotal(),
+      };
+
+      try {
+        const res = await fetch(`${CARTE_ORDER_SUPABASE_URL}/rest/v1/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: CARTE_ORDER_SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${CARTE_ORDER_SUPABASE_ANON_KEY}`,
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`carte order: Supabase insert failed (${res.status})`);
+
+        cart.clear();
+        renderBar();
+        document.querySelectorAll<HTMLElement>('[data-qty-stepper]').forEach((stepper) => {
+          stepper.dataset.qty = '0';
+          const v = stepper.querySelector<HTMLElement>('[data-qty-value]');
+          if (v) v.textContent = '0';
+        });
+        if (tableInput) tableInput.value = '';
+        if (notesInput) notesInput.value = '';
+        viewItems?.setAttribute('hidden', '');
+        viewSuccess?.removeAttribute('hidden');
+      } catch (err) {
+        console.error('carte order: failed to send order to staff screen', err);
+        submitError?.removeAttribute('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        if (submitLabel) submitLabel.textContent = submitBtn.dataset.submitLabel ?? submitLabel.textContent;
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupCarteCart);
 </script>
