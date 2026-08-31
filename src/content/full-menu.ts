@@ -569,6 +569,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'بانير، فلفل أخضر، بصل، طماطم، ثوم، زنجبيل، بذور كزبرة، كمون، فلفل مجفف.',
         },
         priceMAD: 75,
+        image: '/images/carte/kadai-paneer.webp',
         vegetarian: true,
       },
       {
@@ -589,6 +590,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'بانير، طماطم، زبدة، قشدة طازجة، ثوم، زنجبيل، غارام ماسالا، حلبة مجففة.',
         },
         priceMAD: 75,
+        image: '/images/carte/paneer-makhni.webp',
         vegetarian: true,
       },
       {
@@ -609,6 +611,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'فطر، طماطم، بصل، ثوم، زنجبيل، غارام ماسالا، فلفل أحمر، كزبرة طازجة.',
         },
         priceMAD: 70,
+        image: '/images/carte/mushroom-masala.webp',
         vegetarian: true,
       },
       {
@@ -629,6 +632,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'فطر، فلفل أخضر، بصل، طماطم، ثوم، زنجبيل، بذور كزبرة، كمون.',
         },
         priceMAD: 70,
+        image: '/images/carte/mushroom-kadai.webp',
         vegetarian: true,
       },
       {
@@ -649,6 +653,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'عدس أصفر، بصل، طماطم، ثوم، زنجبيل، كمون، كركم، سمن، فلفل مجفف.',
         },
         priceMAD: 60,
+        image: '/images/carte/tadka-daal.webp',
         vegetarian: true,
       },
       {
