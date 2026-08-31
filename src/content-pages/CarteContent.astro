@@ -1,7 +1,9 @@
 ---
-// Tafelkaart via QR-code — bewust géén foto's (zie full-menu.ts), bewust géén
-// hero-afbeelding of Ken Burns-effect zoals MenuContent.astro: een gast die
-// aan tafel scant wil snel de prijs zien, niet scrollen door sfeerbeelden.
+// Tafelkaart via QR-code — nog steeds géén hero-afbeelding of Ken Burns-effect
+// zoals MenuContent.astro (snel laden, snel scannen), maar elk gerecht kan nu
+// een eigen foto tonen (zie full-menu.ts, `image` veld, optioneel/geleidelijk
+// ingevuld) en de beschrijving klapt pas open als de gast erop tikt, zodat de
+// lijst zelf compact en overzichtelijk blijft.
 // Toont ALLEEN de restaurantprijs (zie full-menu.ts voor de bron).
 //
 // Volgt hetzelfde i18n/Layout-patroon als MenuContent.astro zodat dit naast
@@ -71,16 +73,48 @@ const path = localizedPath('/carte', lang);
       </h2>
       <div class="flex flex-col divide-y" style="border-color: var(--color-border)">
         {category.items.map((item) => (
-          <div class="flex items-baseline justify-between gap-4 py-3">
-            <div class="min-w-0">
-              <span class="font-semibold" style="color: var(--color-text-primary)">
-                {item.name}
-                {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
-              </span>
-              <p class="text-sm mt-0.5" style="color: var(--color-text-muted)">{t(item.description, lang)}</p>
+          <details class="group py-3">
+            <summary
+              class="flex items-center justify-between gap-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    loading="lazy"
+                    class="w-14 h-14 rounded-lg object-cover shrink-0"
+                    style="border: 1px solid var(--color-border)"
+                  />
+                )}
+                <span class="font-semibold" style="color: var(--color-text-primary)">
+                  {item.name}
+                  {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
+                </span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="font-bold" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
+                <span
+                  class="text-xs transition-transform duration-200 group-open:rotate-180"
+                  style="color: var(--color-text-muted)"
+                  aria-hidden="true"
+                >
+                  ▾
+                </span>
+              </div>
+            </summary>
+            <div class="mt-2 pl-0 sm:pl-[68px]">
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  loading="lazy"
+                  class="w-full max-w-xs rounded-xl object-cover mb-2 sm:hidden"
+                />
+              )}
+              <p class="text-sm" style="color: var(--color-text-muted)">{t(item.description, lang)}</p>
             </div>
-            <span class="font-bold shrink-0" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
-          </div>
+          </details>
         ))}
       </div>
     </section>

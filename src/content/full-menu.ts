@@ -1,7 +1,9 @@
-// Volledige restaurantkaart (dine-in) — GEEN foto's, bewust: dit is de kaart
-// die via de QR-code op tafel getoond wordt, dus snelheid en overzicht gaan
-// voor esthetiek. Alleen de RESTAURANTPRIJS (niet site/Glovo) staat hier —
-// die twee kanalen hebben eigen, hogere prijzen elders.
+// Volledige restaurantkaart (dine-in) — QR-kaart op tafel. Elk gerecht kan een
+// foto hebben (`image`, optioneel: wordt geleidelijk per gerecht toegevoegd)
+// en de beschrijving wordt pas getoond als de gast op het gerecht tikt (zie
+// CarteContent.astro), zodat de lijst zelf overzichtelijk blijft. Alleen de
+// RESTAURANTPRIJS (niet site/Glovo) staat hier — die twee kanalen hebben
+// eigen, hogere prijzen elders.
 //
 // Bron: "Plan Complet de Croissance et de Tarification" (Amplify Growth
 // Studio, sept. 2026), sectie 2 — nieuwe prijzen, kolom "Restaurant".
@@ -16,6 +18,7 @@ export interface FullMenuItem {
   description: LocalizedText;
   priceMAD: number;
   vegetarian?: boolean;
+  image?: string;
 }
 
 export interface FullMenuCategory {
@@ -35,6 +38,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'شوربة هندية-صينية متبّلة بالدجاج والخضار.',
         },
         priceMAD: 35,
+        image: '/images/carte/chicken-manchow-soup.webp',
       },
       {
         name: 'Vegetarian Manchow Soup',
