@@ -459,6 +459,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'لحم ضأن، فلفل أخضر، بصل، طماطم، ثوم، زنجبيل، بذور كزبرة، كمون، فلفل مجفف.',
         },
         priceMAD: 90,
+        image: '/images/carte/lamb-kadai.webp',
       },
       {
         name: 'Lamb Keema',
@@ -478,6 +479,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'لحم ضأن مفروم، بصل، طماطم، بازلاء، ثوم، زنجبيل، غارام ماسالا، كمون، كزبرة مطحونة.',
         },
         priceMAD: 90,
+        image: '/images/carte/lamb-keema.webp',
       },
     ],
   },
@@ -502,6 +504,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، زبادي، ثوم، زنجبيل، عصير ليمون، بابريكا، غارام ماسالا، لون طبيعي للتندوري.',
         },
         priceMAD: 90,
+        image: '/images/carte/tandoori-chicken.webp',
       },
       {
         name: 'Chicken Tikka',
@@ -521,6 +524,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'دجاج، زبادي، ثوم، زنجبيل، عصير ليمون، غارام ماسالا، بابريكا، زيت.',
         },
         priceMAD: 75,
+        image: '/images/carte/chicken-tikka.webp',
       },
       {
         name: 'Boti Kabab',
@@ -540,6 +544,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'لحم مكعبات، زبادي، ثوم، زنجبيل، غارام ماسالا، فلفل أحمر، عصير ليمون.',
         },
         priceMAD: 90,
+        image: '/images/carte/boti-kabab.webp',
       },
     ],
   },
