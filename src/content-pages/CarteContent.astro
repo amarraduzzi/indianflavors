@@ -1,17 +1,22 @@
 ---
 // Tafelkaart via QR-code — nog steeds géén hero-afbeelding of Ken Burns-effect
-// zoals MenuContent.astro (snel laden, snel scannen), maar elk gerecht kan nu
-// een eigen foto tonen (zie full-menu.ts, `image` veld, optioneel/geleidelijk
-// ingevuld) en de beschrijving klapt pas open als de gast erop tikt, zodat de
-// lijst zelf compact en overzichtelijk blijft.
+// zoals MenuContent.astro (snel laden, snel scannen). Elk gerecht toont een
+// compacte rij (foto/placeholder, naam, badge, prijs) met een duidelijk
+// "i" info-icoon; een tik erop opent een ECHT fullscreen infoscherm (native
+// <dialog>, dus toegankelijk + Escape/backdrop-klik werkt gratis mee) met
+// grote foto, het verhaal van het gerecht en de ingrediënten. Dit *is* het
+// educatieve stuk van de kaart: de doelgroep kent de Indiase keuken niet, dus
+// dit scherm moet overtuigen, niet alleen informeren.
 // Toont ALLEEN de restaurantprijs (zie full-menu.ts voor de bron).
 //
-// v2 (visueel herontwerp): elk gerecht is nu een eigen "kaartje" i.p.v. een
-// rij in een platte lijst, met een vloeiende open/dicht-animatie (vanilla
-// JS, zelfde `astro:page-load`-patroon als Header.astro), een gradient
-// placeholder voor gerechten die nog geen foto hebben (zodat de kaart nooit
-// "half af" oogt terwijl foto's geleidelijk binnenkomen), optionele badges
-// (bv. "Populaire") en een klein icoon + Ornament-divider per categorie.
+// v3 (modal-herontwerp, vervangt de v2 inline-accordion): elk gerecht heeft
+// nu een eigen <dialog id="dish-...">, geopend via vanilla JS
+// (`astro:page-load`, zelfde patroon als Header.astro). Geen client
+// framework nodig — <dialog>.showModal() geeft focus-trap, Escape-to-close
+// en een ::backdrop gratis; de fade/scale-animatie zelf gaat via een CSS-
+// klasse die na showModal() wordt toegevoegd (dialogs animeren niet
+// vanzelf bij het openen zonder @starting-style, en dat heeft nog geen
+// brede iOS Safari-steun).
 //
 // Volgt hetzelfde i18n/Layout-patroon als MenuContent.astro zodat dit naast
 // de bestaande site past zonder iets anders te breken.
@@ -50,6 +55,8 @@ const copy = {
   },
   vegLabel: { fr: 'Végétarien', en: 'Vegetarian', ar: 'نباتي' },
   ingredientsLabel: { fr: 'Ingrédients', en: 'Ingredients', ar: 'المكوّنات' },
+  infoLabel: { fr: 'Voir le plat', en: 'View dish', ar: 'عرض الطبق' },
+  closeLabel: { fr: 'Fermer', en: 'Close', ar: 'إغلاق' },
 } satisfies Record<string, { fr: string; en: string; ar: string }>;
 
 const path = localizedPath('/carte', lang);
@@ -73,6 +80,18 @@ const categoryIcons: Record<string, string> = {
   'Boissons Chaudes': 'M4 9h13v5a4 4 0 01-4 4H8a4 4 0 01-4-4V9z M17 10h1.5a2 2 0 010 4H17 M8 4c0 1-1 1-1 2 M12 4c0 1-1 1-1 2',
 };
 const fallbackIconPath = 'M8 3v6a2 2 0 002 2h0a2 2 0 002-2V3 M12 3v18 M16 3c-1.5 0-3 1.5-3 4s1.5 4 3 4v10';
+
+// Stabiele, url-veilige id per gerecht voor de dialog (fr-naam is uniek
+// genoeg in deze kaart; géén diakrieten/spaties toegestaan in een id).
+function dishId(categoryIndex: number, itemIndex: number, itemName: string): string {
+  const slug = itemName
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  return `dish-${categoryIndex}-${itemIndex}-${slug}`;
+}
 ---
 
 <Layout
@@ -91,7 +110,7 @@ const fallbackIconPath = 'M8 3v6a2 2 0 002 2h0a2 2 0 002-2V3 M12 3v18 M16 3c-1.5
     </p>
   </section>
 
-  {fullMenu.map((category, i) => (
+  {fullMenu.map((category, ci) => (
     <section class="max-w-3xl mx-auto px-5 sm:px-8 py-6">
       <h2
         class="font-display text-xl font-semibold mb-1 flex items-center gap-3"
@@ -109,164 +128,321 @@ const fallbackIconPath = 'M8 3v6a2 2 0 002 2h0a2 2 0 002-2V3 M12 3v18 M16 3c-1.5
       </h2>
       <Ornament />
       <div class="flex flex-col gap-3 mt-2">
-        {category.items.map((item) => (
-          <details class="menu-item group rounded-2xl overflow-hidden" style="background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -16px rgba(0,0,0,0.6)">
-            <summary
-              class="flex items-center justify-between gap-4 cursor-pointer list-none px-4 py-3 [&::-webkit-details-marker]:hidden"
-            >
-              <div class="flex items-center gap-3 min-w-0">
-                {item.image ? (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading="lazy"
-                    class="w-14 h-14 rounded-lg object-cover shrink-0"
-                    style="border: 1px solid var(--color-border)"
-                  />
-                ) : (
-                  <span
-                    class="w-14 h-14 rounded-lg shrink-0 flex items-center justify-center"
-                    style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 22%, transparent), color-mix(in srgb, var(--color-primary-dark) 35%, var(--color-surface)))"
-                    aria-hidden="true"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent)">
-                      <path d={fallbackIconPath} />
-                    </svg>
-                  </span>
-                )}
-                <span class="min-w-0">
-                  <span class="block font-semibold" style="color: var(--color-text-primary)">
-                    {item.name}
-                    {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
-                  </span>
-                  {item.tags && item.tags.length > 0 && (
-                    <span class="flex flex-wrap gap-1 mt-1">
-                      {item.tags.map((tag) => (
-                        <span
-                          class="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
-                          style="color: var(--color-background); background-color: var(--color-accent)"
-                        >
-                          {t(tag, lang)}
-                        </span>
-                      ))}
+        {category.items.map((item, ii) => {
+          const id = dishId(ci, ii, item.name);
+          return (
+            <>
+              <!-- Rij: het hele blok is de trigger die de dialog opent. -->
+              <button
+                type="button"
+                class="dish-trigger group flex items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left w-full"
+                style="background-color: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -16px rgba(0,0,0,0.6)"
+                data-dialog-target={id}
+                aria-haspopup="dialog"
+              >
+                <span class="flex items-center gap-3 min-w-0">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt=""
+                      loading="lazy"
+                      class="w-14 h-14 rounded-lg object-cover shrink-0"
+                      style="border: 1px solid var(--color-border)"
+                    />
+                  ) : (
+                    <span
+                      class="w-14 h-14 rounded-lg shrink-0 flex items-center justify-center"
+                      style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 22%, transparent), color-mix(in srgb, var(--color-primary-dark) 35%, var(--color-surface)))"
+                      aria-hidden="true"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent)">
+                        <path d={fallbackIconPath} />
+                      </svg>
                     </span>
                   )}
+                  <span class="min-w-0">
+                    <span class="block font-semibold" style="color: var(--color-text-primary)">
+                      {item.name}
+                      {item.vegetarian && <span class="text-xs align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
+                    </span>
+                    {item.tags && item.tags.length > 0 && (
+                      <span class="flex flex-wrap gap-1 mt-1">
+                        {item.tags.map((tag) => (
+                          <span
+                            class="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                            style="color: var(--color-background); background-color: var(--color-accent)"
+                          >
+                            {t(tag, lang)}
+                          </span>
+                        ))}
+                      </span>
+                    )}
+                  </span>
                 </span>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="font-bold" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
-                <span
-                  class="text-xs transition-transform duration-200 group-open:rotate-180"
-                  style="color: var(--color-text-muted)"
-                  aria-hidden="true"
-                >
-                  ▾
-                </span>
-              </div>
-            </summary>
-            <div class="exp-body px-4 overflow-hidden">
-              <div class="pb-4">
-                {item.image ? (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading="lazy"
-                    class="w-full max-h-64 sm:max-h-80 rounded-xl object-cover mb-3"
-                  />
-                ) : (
-                  <div
-                    class="w-full h-32 rounded-xl mb-3 flex items-center justify-center"
-                    style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 18%, transparent), color-mix(in srgb, var(--color-primary-dark) 30%, var(--color-surface)))"
+                <span class="flex items-center gap-2.5 shrink-0">
+                  <span class="font-bold" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
+                  <!-- Info-icoon: de expliciete uitnodiging om het gerecht te openen. -->
+                  <span
+                    class="flex items-center justify-center w-7 h-7 rounded-full transition-transform duration-150 group-active:scale-90"
+                    style="border: 1px solid var(--color-accent); color: var(--color-accent)"
                     aria-hidden="true"
                   >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); opacity: 0.7">
-                      <path d={fallbackIconPath} />
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                      <circle cx="12" cy="12" r="10" stroke-width="1.6" />
+                      <line x1="12" y1="11" x2="12" y2="16.5" />
+                      <circle cx="12" cy="7.7" r="1.1" fill="currentColor" stroke="none" />
                     </svg>
+                  </span>
+                </span>
+                <span class="sr-only">{t(copy.infoLabel, lang)}</span>
+              </button>
+
+              <!-- Fullscreen infoscherm voor dit gerecht. -->
+              <dialog id={id} class="dish-dialog" aria-labelledby={`${id}-title`}>
+                <div class="dish-dialog-card">
+                  <div class="dish-dialog-hero">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} class="dish-dialog-hero-img" />
+                    ) : (
+                      <div
+                        class="dish-dialog-hero-img flex items-center justify-center"
+                        style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 24%, transparent), color-mix(in srgb, var(--color-primary-dark) 40%, var(--color-surface)))"
+                        aria-hidden="true"
+                      >
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); opacity: 0.75">
+                          <path d={fallbackIconPath} />
+                        </svg>
+                      </div>
+                    )}
+                    <div class="dish-dialog-hero-fade" aria-hidden="true"></div>
+                    <button type="button" class="dish-dialog-close" data-dialog-close aria-label={t(copy.closeLabel, lang)}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                        <line x1="5" y1="5" x2="19" y2="19" />
+                        <line x1="19" y1="5" x2="5" y2="19" />
+                      </svg>
+                    </button>
+                    <div class="dish-dialog-hero-caption">
+                      {item.tags && item.tags.length > 0 && (
+                        <span class="flex flex-wrap gap-1 mb-2">
+                          {item.tags.map((tag) => (
+                            <span
+                              class="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full"
+                              style="color: var(--color-background); background-color: var(--color-accent)"
+                            >
+                              {t(tag, lang)}
+                            </span>
+                          ))}
+                        </span>
+                      )}
+                      <h3 id={`${id}-title`} class="font-display text-2xl sm:text-3xl font-semibold" style="color: #fff">
+                        {item.name}
+                        {item.vegetarian && <span class="text-base align-middle ml-1" title={t(copy.vegLabel, lang)}>🌱</span>}
+                      </h3>
+                      <span class="font-bold text-lg" style="color: var(--color-accent)">{item.priceMAD} MAD</span>
+                    </div>
                   </div>
-                )}
-                <p class="text-sm leading-relaxed" style="color: var(--color-text-muted)">
-                  {t(item.story ?? item.description, lang)}
-                </p>
-                {item.ingredients && (
-                  <p class="text-sm mt-2" style="color: var(--color-text-muted)">
-                    <span class="font-semibold" style="color: var(--color-text-primary)">
-                      {t(copy.ingredientsLabel, lang)} :
-                    </span>{' '}
-                    {t(item.ingredients, lang)}
-                  </p>
-                )}
-              </div>
-            </div>
-          </details>
-        ))}
+                  <div class="dish-dialog-body">
+                    <p class="text-sm sm:text-base leading-relaxed" style="color: var(--color-text-muted)">
+                      {t(item.story ?? item.description, lang)}
+                    </p>
+                    {item.ingredients && (
+                      <div class="mt-4 pt-4" style="border-top: 1px solid var(--color-border)">
+                        <span class="text-xs font-bold uppercase tracking-wide" style="color: var(--color-accent)">
+                          {t(copy.ingredientsLabel, lang)}
+                        </span>
+                        <p class="text-sm mt-1.5" style="color: var(--color-text-muted)">
+                          {t(item.ingredients, lang)}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </dialog>
+            </>
+          );
+        })}
       </div>
     </section>
   ))}
 </Layout>
 
 <style>
-  /* exp-body start dichtgeklapt; JS hieronder animeert max-height bij
-     open/dicht. Zonder JS (uitzondering) valt dit terug op de kale
-     <details>-standaard (direct open/dicht, geen animatie) omdat het
-     'open' attribuut van <details> dan gewoon zijn eigen werk doet. */
-  .menu-item .exp-body {
-    max-height: 0;
-    transition: max-height 0.28s ease;
+  /* ---- Trigger-rij: kleine tik-feedback ---- */
+  .dish-trigger {
+    cursor: pointer;
+    transition: transform 0.12s ease;
   }
-  .menu-item[open] .exp-body {
-    max-height: none;
+  .dish-trigger:active {
+    transform: scale(0.99);
+  }
+
+  /* ---- Dialog: native <dialog>, zelf volledig scherm-gevuld gemaakt zodat
+     een klik "ernaast" (op het dialog-element zelf, niet op de kaart erin)
+     als backdrop-klik gedetecteerd kan worden. De ::backdrop geeft de
+     donkere, vervaagde achtergrond. ---- */
+  .dish-dialog {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .dish-dialog[open] {
+    display: flex;
+  }
+  @media (min-width: 640px) {
+    .dish-dialog[open] {
+      align-items: center;
+      padding: 24px;
+    }
+  }
+  .dish-dialog::backdrop {
+    background: rgba(6, 6, 8, 0.72);
+    backdrop-filter: blur(6px);
+  }
+
+  .dish-dialog-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    background-color: var(--color-background);
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -12px 40px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.26s ease, transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (min-width: 640px) {
+    .dish-dialog-card {
+      max-width: 560px;
+      border-radius: 24px;
+      transform: translateY(12px) scale(0.97);
+    }
+  }
+  .dish-dialog.is-visible .dish-dialog-card {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .dish-dialog-hero {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+  }
+  @media (min-width: 640px) {
+    .dish-dialog-hero {
+      height: 300px;
+      border-radius: 24px 24px 0 0;
+    }
+  }
+  .dish-dialog-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .dish-dialog-hero-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.05) 100%);
+  }
+  .dish-dialog-hero-caption {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 16px;
+  }
+  .dish-dialog-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(11,11,12,0.55);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .dish-dialog-body {
+    padding: 20px;
+  }
+  @media (min-width: 640px) {
+    .dish-dialog-body {
+      padding: 24px;
+    }
   }
 </style>
 
 <script>
-  // Vloeiende open/dicht-animatie voor de menu-kaartjes. Zelfde
-  // `astro:page-load`-patroon als Header.astro (fire bij eerste load EN na
-  // elke client-side navigatie via View Transitions), en dezelfde
-  // "onEvent -> rebind" aanpak omdat de DOM-nodes na een navigatie vervangen
-  // zijn. Techniek: <details> blijft de bron van waarheid voor
-  // open/dicht (toegankelijk, werkt zonder JS), maar de klik wordt
-  // onderschept om het openen/sluiten zelf te animeren via max-height in
-  // plaats van de abrupte browser-standaard.
-  function setupMenuAnimations() {
-    document.querySelectorAll('details.menu-item').forEach((details) => {
-      const body = details.querySelector('.exp-body');
-      const summary = details.querySelector('summary');
-      if (!body || !summary || details.dataset.animBound === 'true') return;
-      details.dataset.animBound = 'true';
+  // Vanilla JS voor de gerecht-dialogs. Zelfde `astro:page-load`-patroon als
+  // Header.astro (fire bij eerste load EN na client-side navigatie).
+  // Rebind-guard (`data-bound`) omdat de DOM-nodes na een navigatie
+  // vervangen zijn maar het event soms dubbel afgaat.
+  function setupDishDialogs() {
+    const triggers = document.querySelectorAll<HTMLButtonElement>('.dish-trigger[data-dialog-target]');
 
-      summary.addEventListener('click', (e) => {
+    function openDialog(dialog: HTMLDialogElement) {
+      dialog.showModal();
+      // Twee frames wachten zodat de browser de 'display:flex' + startstaat
+      // eerst laat renderen, vóórdat de overgangs-klasse erbij komt —
+      // anders slaat de CSS-transition over (geen echte 'van-naar' meer).
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => dialog.classList.add('is-visible'));
+      });
+    }
+
+    function closeDialog(dialog: HTMLDialogElement) {
+      dialog.classList.remove('is-visible');
+      const onEnd = () => {
+        dialog.close();
+        dialog.removeEventListener('transitionend', onEnd);
+      };
+      dialog.addEventListener('transitionend', onEnd);
+      // Vangnet: als er om wat voor reden geen transitionend komt (bv. card
+      // had geen overgang omdat 'm nooit zichtbaar werd), toch sluiten.
+      setTimeout(() => {
+        if (dialog.open) dialog.close();
+      }, 400);
+    }
+
+    triggers.forEach((trigger) => {
+      if (trigger.dataset.bound === 'true') return;
+      trigger.dataset.bound = 'true';
+      const targetId = trigger.dataset.dialogTarget;
+      const dialog = targetId ? document.getElementById(targetId) : null;
+      if (!(dialog instanceof HTMLDialogElement)) return;
+
+      trigger.addEventListener('click', () => openDialog(dialog));
+
+      dialog.querySelectorAll('[data-dialog-close]').forEach((btn) => {
+        btn.addEventListener('click', () => closeDialog(dialog));
+      });
+
+      // Klik op de dialog zelf (dus buiten de kaart) = backdrop-klik.
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) closeDialog(dialog);
+      });
+
+      // Esc sluit de <dialog> al standaard, maar dan zonder onze
+      // uitloop-animatie — dus die onderscheppen we ook.
+      dialog.addEventListener('cancel', (e) => {
         e.preventDefault();
-        if (details.classList.contains('animating')) return;
-
-        if (!details.hasAttribute('open')) {
-          details.setAttribute('open', '');
-          body.style.maxHeight = '0px';
-          requestAnimationFrame(() => {
-            details.classList.add('animating');
-            body.style.maxHeight = body.scrollHeight + 'px';
-          });
-          const onOpenEnd = () => {
-            body.style.maxHeight = 'none';
-            details.classList.remove('animating');
-            body.removeEventListener('transitionend', onOpenEnd);
-          };
-          body.addEventListener('transitionend', onOpenEnd);
-        } else {
-          details.classList.add('animating');
-          body.style.maxHeight = body.scrollHeight + 'px';
-          requestAnimationFrame(() => {
-            body.style.maxHeight = '0px';
-          });
-          const onCloseEnd = () => {
-            details.removeAttribute('open');
-            details.classList.remove('animating');
-            body.removeEventListener('transitionend', onCloseEnd);
-          };
-          body.addEventListener('transitionend', onCloseEnd);
-        }
+        closeDialog(dialog);
       });
     });
   }
 
-  document.addEventListener('astro:page-load', setupMenuAnimations);
+  document.addEventListener('astro:page-load', setupDishDialogs);
 </script>
