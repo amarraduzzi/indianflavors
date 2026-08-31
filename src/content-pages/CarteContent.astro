@@ -104,6 +104,19 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
     .replace(/(^-|-$)/g, '');
   return `dish-${categoryIndex}-${itemIndex}-${slug}`;
 }
+
+// Zelfde soort stabiele id, maar dan voor de categorie-secties zelf \u2014 het
+// ankerpunt voor de horizontaal swipebare chip-rij hieronder (op het FR-
+// label, om dezelfde reden als categoryIcons hierboven).
+function categoryId(categoryIndex: number, labelFr: string): string {
+  const slug = labelFr
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  return `cat-${categoryIndex}-${slug}`;
+}
 ---
 
 <Layout
@@ -174,6 +187,32 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
           </svg>
         </button>
       </div>
+
+      <!-- Categorie-chips: horizontaal swipebaar (native overflow-scroll,
+           dus vinger-swipe werkt zonder JS), zelfde idee als de
+           bestelsite's categorie-pillen maar in het donker/goud vocabulaire
+           van déze site. Springt naar de sectie (native anchor-scroll,
+           scroll-margin-top op elke sectie compenseert voor deze sticky
+           balk) en licht de categorie op waar de gast net aan het scrollen
+           is via IntersectionObserver in het script hieronder. -->
+      <div class="carte-chip-row mt-3" role="tablist" aria-label={t(copy.heroTitle, lang)}>
+        {fullMenu.map((category, ci) => {
+          const cid = categoryId(ci, category.label.fr);
+          return (
+            <a
+              href={`#${cid}`}
+              class="carte-chip"
+              data-chip-target={cid}
+              role="tab"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d={categoryIcons[category.label.fr] ?? fallbackIconPath} />
+              </svg>
+              <span>{t(category.label, lang)}</span>
+            </a>
+          );
+        })}
+      </div>
     </div>
   </div>
 
@@ -183,7 +222,11 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
   </p>
 
   {fullMenu.map((category, ci) => (
-    <section class="max-w-3xl mx-auto px-5 sm:px-8 py-6" data-carte-category>
+    <section
+      id={categoryId(ci, category.label.fr)}
+      class="carte-category-section max-w-3xl mx-auto px-5 sm:px-8 py-6"
+      data-carte-category
+    >
       <h2
         class="font-display text-xl font-semibold mb-1 flex items-center gap-3"
         style="color: var(--color-text-primary)"
@@ -369,6 +412,71 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
 </Layout>
 
 <style>
+  /* ---- Categorie-chips: horizontaal swipebaar, scrollbar verborgen maar
+     scroll-snap zodat een chip nooit halverwege blijft hangen na een
+     swipe-vinger-vlug. ---- */
+  .carte-chip-row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .carte-chip-row {
+      margin-inline: -2rem;
+      padding-inline: 2rem;
+    }
+  }
+  .carte-chip-row::-webkit-scrollbar {
+    display: none;
+  }
+  .carte-chip {
+    scroll-snap-align: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-muted);
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .carte-chip svg {
+    color: var(--color-accent);
+    opacity: 0.85;
+    flex-shrink: 0;
+  }
+  .carte-chip.is-active {
+    color: var(--color-background);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .carte-chip.is-active svg {
+    color: var(--color-background);
+    opacity: 1;
+  }
+
+  /* ---- Elke categorie-sectie springt netjes onder de sticky header +
+     zoek/chip-balk uit i.p.v. er half achter verstopt te blijven. ---- */
+  .carte-category-section {
+    scroll-margin-top: 172px;
+  }
+  @media (min-width: 640px) {
+    .carte-category-section {
+      scroll-margin-top: 196px;
+    }
+  }
+
   /* ---- Zoekbalk: verbergt niet-matchende rijen/categorieën ---- */
   .is-search-hidden {
     display: none !important;
@@ -663,5 +771,47 @@ function dishId(categoryIndex: number, itemIndex: number, itemName: string): str
     });
   }
 
+  // ---- Categorie-chips: lichten op afhankelijk van welke sectie net in
+  // beeld scrolt (IntersectionObserver, geen scroll-event-gepolder nodig),
+  // en houden zichzelf mee-gescrold in hun eigen rij zodat de actieve chip
+  // nooit buiten beeld staat. Een tik op een chip zet 'm meteen actief
+  // (i.p.v. te wachten tot de observer het bevestigt) — de sprong zelf
+  // gaat gratis via de native `href="#..."` + de globale smooth-scroll.
+  function setupCarteChips() {
+    const chipRow = document.querySelector<HTMLElement>('.carte-chip-row');
+    const chips = Array.from(document.querySelectorAll<HTMLAnchorElement>('.carte-chip[data-chip-target]'));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('.carte-category-section[id]'));
+    if (!chipRow || chips.length === 0 || chipRow.dataset.bound === 'true') return;
+    chipRow.dataset.bound = 'true';
+
+    function setActive(id: string) {
+      chips.forEach((chip) => chip.classList.toggle('is-active', chip.dataset.chipTarget === id));
+      const activeChip = chips.find((chip) => chip.dataset.chipTarget === id);
+      activeChip?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        if (chip.dataset.chipTarget) setActive(chip.dataset.chipTarget);
+      });
+    });
+
+    if (sections.length > 0 && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible[0]?.target.id) setActive(visible[0].target.id);
+        },
+        // Smalle band net onder de sticky header/zoekbalk: een sectie telt
+        // pas als "actief" zodra 'm daar echt voorbij scrolt.
+        { rootMargin: '-180px 0px -70% 0px', threshold: 0 }
+      );
+      sections.forEach((section) => observer.observe(section));
+    } else if (sections[0]?.id) {
+      setActive(sections[0].id);
+    }
+  }
+
   document.addEventListener('astro:page-load', setupCarteSearch);
+  document.addEventListener('astro:page-load', setupCarteChips);
 </script>
