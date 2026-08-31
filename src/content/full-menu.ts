@@ -19,6 +19,11 @@ export interface FullMenuItem {
   priceMAD: number;
   vegetarian?: boolean;
   image?: string;
+  // Uitgebreide uitleg + ingrediëntenlijst, getoond zodra de gast op het
+  // gerecht tikt — geschreven voor een Marokkaanse klant die de Indiase
+  // keuken niet kent (dus: wat het IS, niet alleen hoe het heet).
+  story?: LocalizedText;
+  ingredients?: LocalizedText;
 }
 
 export interface FullMenuCategory {
@@ -36,6 +41,16 @@ export const fullMenu: FullMenuCategory[] = [
           fr: 'Soupe indo-chinoise épicée au poulet et légumes.',
           en: 'Spiced Indo-Chinese chicken and vegetable soup.',
           ar: 'شوربة هندية-صينية متبّلة بالدجاج والخضار.',
+        },
+        story: {
+          fr: 'La Manchow Soup est un classique indo-chinois que l\'on trouve dans presque tous les restaurants indiens : une rencontre entre les épices indiennes et la cuisine chinoise (sauce soja, ail, gingembre). Le poulet effiloché mijote dans un bouillon épais et poivré avec des légumes croquants, puis on ajoute des nouilles frites bien croustillantes sur le dessus juste avant de servir, pour le contraste de texture.',
+          en: 'Manchow Soup is an Indo-Chinese classic found in almost every Indian restaurant — a meeting point between Indian spices and Chinese cooking (soy sauce, garlic, ginger). Shredded chicken simmers in a thick, peppery broth with crunchy vegetables, topped just before serving with crispy fried noodles for a contrast in texture.',
+          ar: 'شوربة مانشو من الأطباق الهندية الصينية الكلاسيكية الموجودة في معظم المطاعم الهندية: لقاء بين التوابل الهندية والمطبخ الصيني (صلصة الصويا، الثوم، الزنجبيل). يُطهى الدجاج المقطّع ببطء في مرقة سميكة ومتبّلة بالفلفل مع خضروات مقرمشة، وتُضاف في الأعلى نودلز مقلية مقرمشة قبل التقديم مباشرة لإضفاء قوام مختلف.',
+        },
+        ingredients: {
+          fr: 'Poulet effiloché, bouillon de poulet, ail, gingembre, sauce soja, vinaigre, carotte, chou, oignon nouveau, poivre noir, fécule de maïs, nouilles frites croustillantes.',
+          en: 'Shredded chicken, chicken broth, garlic, ginger, soy sauce, vinegar, carrot, cabbage, spring onion, black pepper, cornstarch, crispy fried noodles.',
+          ar: 'دجاج مقطّع، مرقة دجاج، ثوم، زنجبيل، صلصة صويا، خل، جزر، ملفوف، بصل أخضر، فلفل أسود، نشا الذرة، نودلز مقلية مقرمشة.',
         },
         priceMAD: 35,
         image: '/images/carte/chicken-manchow-soup.webp',
