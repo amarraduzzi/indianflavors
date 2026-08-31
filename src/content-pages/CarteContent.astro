@@ -1535,21 +1535,31 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       // scherm (dat zelf Frans/Engels labelt), niet voor de gast, dus geen
       // Arabische tekst die het personeel daar niet per se kan lezen.
       //
-      // customer_name mag in de `orders`-tabel NIET leeg zijn (NOT NULL-
-      // constraint, ontdekt via een echte 400-fout in productie: de
-      // order-site raakt dit nooit omdat die altijd een naam vraagt vóór
-      // het bestellen, maar de kaart-pagina bewust niet — zie het gesprek
-      // hierover). Het personeelsscherm gebruikt dit veld bovendien als de
-      // KAARTTITEL van elke bestelling, dus "Table N" hier is niet alleen
-      // de workaround voor de constraint, maar ook precies wat het
-      // personeel als eerste wil zien.
+      // customer_name ÉN customer_phone mogen in de `orders`-tabel NIET
+      // leeg (NULL) zijn — twee losse NOT NULL-constraints, allebei pas
+      // ontdekt via echte 400-fouten in productie tijdens het testen. De
+      // order-site raakt dit blijkbaar nooit (orderSync.ts stuurt daar óók
+      // gewoon `null` als een veld leeg is — een sluimerende bug die
+      // simpelweg nog nooit is geraakt, waarschijnlijk omdat klanten daar
+      // in de praktijk altijd een telefoonnummer invullen), maar de
+      // kaart-pagina heeft bewust geen naam/telefoon-veld — dus hier moet
+      // expliciet een lege string ('') i.p.v. `null` mee, dat voldoet wél
+      // aan "niet leeg" zonder de gast iets extra te laten invullen.
+      // customer_name krijgt daarnaast bewust "Table N": het personeels-
+      // scherm gebruikt dat veld als KAARTTITEL van elke bestelling, dus
+      // dit is niet alleen de workaround voor de constraint, maar ook
+      // precies wat het personeel als eerste wil zien.
       const tableLabel = `Table ${tableNumber}`;
       const payload = {
         order_type: 'dinein',
         customer_name: tableLabel,
-        customer_phone: null,
+        customer_phone: '',
         address_or_table: tableLabel,
-        special_notes: notesInput?.value.trim() || null,
+        // Zelfde voorzorg als hierboven bij customer_phone: '' i.p.v. null
+        // voor het geval deze kolom ook een NOT NULL-constraint blijkt te
+        // hebben (nog niet apart bevestigd, maar gezien de twee vorige
+        // verrassingen hier geen derde testronde voor riskeren).
+        special_notes: notesInput?.value.trim() || '',
         items,
         total: cartTotal(),
       };
