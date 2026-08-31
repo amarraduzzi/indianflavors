@@ -359,6 +359,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'روبيان، حليب جوز الهند، طماطم، بصل، ثوم، زنجبيل، أوراق كاري، كركم، فلفل حار.',
         },
         priceMAD: 110,
+        image: '/images/carte/prawn-curry.webp',
       },
       {
         name: 'Fish Curry',
@@ -378,6 +379,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'سمك، حليب جوز الهند، طماطم، بصل، ثوم، زنجبيل، أوراق كاري، كركم، فلفل حار.',
         },
         priceMAD: 110,
+        image: '/images/carte/fish-curry.webp',
       },
       {
         name: 'Prawn Masala',
@@ -397,6 +399,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'روبيان، طماطم، بصل، ثوم، زنجبيل، غارام ماسالا، فلفل أحمر، كزبرة طازجة.',
         },
         priceMAD: 110,
+        image: '/images/carte/prawn-masala.webp',
       },
       {
         name: 'Fish Masala',
@@ -416,6 +419,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'سمك، طماطم، بصل، ثوم، زنجبيل، غارام ماسالا، فلفل أحمر، كزبرة طازجة.',
         },
         priceMAD: 110,
+        image: '/images/carte/fish-masala.webp',
       },
       {
         name: 'Lamb Roghan Josh',
@@ -435,6 +439,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'لحم ضأن، زبادي، بصل، ثوم، زنجبيل، فلفل كشمير، شمر مطحون، هيل، قرفة.',
         },
         priceMAD: 90,
+        image: '/images/carte/lamb-roghan-josh.webp',
       },
       {
         name: 'Lamb Kadai',
