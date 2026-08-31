@@ -114,8 +114,19 @@ export const fullMenu: FullMenuCategory[] = [
           en: 'Crispy puris with tangy spiced water and chutneys.',
           ar: 'كرات مقرمشة بماء حامض متبّل وصلصات.',
         },
+        story: {
+          fr: "Le pani puri est un classique de la street food indienne, pensé pour être mangé en une bouchée : une petite boule de semoule soufflée et croustillante, garnie de pois chiches, pomme de terre, oignon et épices, puis remplie au dernier moment d'une eau ('pani') fraîche et acidulée à la menthe et à la coriandre. Le contraste croustillant/liquide-épicé est l'attrait du plat — on le mange donc tout de suite après le service, avant qu'il ne ramollisse.",
+          en: "Pani puri is a beloved Indian street food classic, meant to be eaten in one bite: a small, crispy puffed semolina shell filled with chickpeas, potato, onion and spices, then topped just before serving with a cool, tangy mint-and-coriander water ('pani'). The crunch-meets-spiced-liquid contrast is the whole point — best eaten right away, before the shell softens.",
+          ar: 'باني بوري من أشهر أطباق الشارع الهندية، ويُؤكل بلقمة واحدة: كرة صغيرة مقرمشة من السميد المنفوخ، محشوة بالحمص والبطاطس والبصل والتوابل، ثم تُملأ في اللحظة الأخيرة بماء منعش وحامض بالنعناع والكزبرة ("باني"). التباين بين المقرمش والسائل المتبّل هو سر هذا الطبق — لذلك يُؤكل مباشرة بعد التقديم قبل أن يلين.',
+        },
+        ingredients: {
+          fr: "Semoule soufflée (puri), pois chiches, pomme de terre, oignon, eau à la menthe et coriandre, tamarin, chaat masala, piment.",
+          en: 'Puffed semolina shell (puri), chickpeas, potato, onion, mint-coriander water, tamarind, chaat masala, chili.',
+          ar: 'قشرة السميد المنفوخة (بوري)، حمص، بطاطس، بصل، ماء النعناع والكزبرة، تمر هندي، شاط ماسالا، فلفل حار.',
+        },
         priceMAD: 40,
         vegetarian: true,
+        image: '/images/carte/vegetable-pani-puri.webp',
       },
       {
         name: 'Vegetable Pakoras',
