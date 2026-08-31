@@ -674,6 +674,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'فاصولياء حمراء، طماطم، بصل، ثوم، زنجبيل، كمون، غارام ماسالا، كزبرة طازجة.',
         },
         priceMAD: 65,
+        image: '/images/carte/rajma-daal.webp',
         vegetarian: true,
       },
       {
@@ -694,6 +695,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'بانير، سبانخ، ثوم، زنجبيل، بصل، طماطم، قشدة طازجة، غارام ماسالا.',
         },
         priceMAD: 75,
+        image: '/images/carte/palak-paneer.webp',
         vegetarian: true,
       },
       {
@@ -714,6 +716,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'جزر، فاصولياء خضراء، بطاطس، قرنبيط، بازلاء، طماطم، بصل، ثوم، زنجبيل، غارام ماسالا.',
         },
         priceMAD: 60,
+        image: '/images/carte/mixed-vegetable-curry.webp',
         vegetarian: true,
       },
       {
@@ -734,6 +737,7 @@ export const fullMenu: FullMenuCategory[] = [
           ar: 'بطاطس، قرنبيط، كركم، كمون، كزبرة مطحونة، زنجبيل، كزبرة طازجة.',
         },
         priceMAD: 60,
+        image: '/images/carte/aloo-gobi.webp',
         vegetarian: true,
       },
     ],
