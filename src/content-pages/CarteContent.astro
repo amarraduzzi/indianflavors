@@ -26,7 +26,7 @@ import Ornament from '../components/Ornament.astro';
 import { siteConfig } from '../config/site.config';
 import { fullMenu } from '../content/full-menu';
 import { t, localizedPath, type Language } from '../i18n/languages';
-import { place } from '../i18n/ui';
+import { place, common } from '../i18n/ui';
 
 interface Props {
   lang?: Language;
@@ -112,6 +112,15 @@ const copy = {
     ar: 'استلم فريقنا طلبك وهو في طريقه إلى طاولتك.',
   },
   orderSuccessClose: { fr: 'Continuer à parcourir la carte', en: 'Keep browsing the menu', ar: 'متابعة تصفح القائمة' },
+  // ---- Google-avis: twee plekken, zie de uitleg bij elke plek in de markup
+  // hieronder voor waarom precies dáár. ----
+  reviewSuccessPrompt: {
+    fr: 'Vous appréciez votre visite ?',
+    en: 'Enjoying your visit?',
+    ar: 'هل تستمتعون بزيارتكم؟',
+  },
+  reviewSuccessCta: { fr: 'Laissez-nous un avis Google', en: 'Leave us a Google review', ar: 'اتركوا لنا تقييمًا على Google' },
+  reviewFooterCta: { fr: 'Laisser un avis Google', en: 'Leave a Google review', ar: 'اتركوا تقييمًا على Google' },
   orderErrorBody: {
     fr: 'Impossible d’envoyer la commande. Vérifiez votre connexion et réessayez, ou appelez notre équipe.',
     en: 'Could not send the order. Check your connection and try again, or call our team over.',
@@ -185,7 +194,63 @@ function categoryId(categoryIndex: number, labelFr: string): string {
   showWhatsApp={false}
 >
   <!-- Compacte, tekstuele hero — geen beeld, laadt razendsnel op mobiel. -->
-  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-10 pb-6 text-center">
+  <section class="max-w-3xl mx-auto px-5 sm:px-8 pt-8 pb-6 text-center">
+    <!-- 100% Halal-embleem: een echt medaillon i.p.v. de tekst-pil die
+         elders op de site staat (zie HomeContent.astro) — de gast vraagt
+         hier expliciet om iets VISUEELS, meteen bovenaan, dus dit is geen
+         hergebruik van die pil maar een eigen zegel: dubbele ring, wassende
+         maan in het midden, "100% HALAL" gebogen langs de bovenkant en het
+         Arabische woord "حلال" eronder voor herkenbaarheid ook zonder de
+         Latijnse tekst te hoeven lezen. -->
+    <div class="flex justify-center mb-4" data-reveal>
+      <svg
+        width="84"
+        height="84"
+        viewBox="0 0 120 120"
+        class="halal-seal"
+        role="img"
+        aria-label={t(common.halalBadge, lang)}
+      >
+        <defs>
+          <path id="halal-arc" d="M20,62 A40,40 0 0 1 100,62" fill="none" />
+          <mask id="halal-crescent-mask">
+            <rect x="0" y="0" width="120" height="120" fill="white" />
+            <circle cx="65" cy="53" r="10.5" fill="black" />
+          </mask>
+        </defs>
+        <circle cx="60" cy="60" r="55" fill="none" stroke="var(--color-accent)" stroke-width="1.4" opacity="0.9" />
+        <circle cx="60" cy="60" r="48" fill="none" stroke="var(--color-accent)" stroke-width="1" opacity="0.5" />
+        <circle cx="60" cy="53" r="11.5" fill="var(--color-accent)" mask="url(#halal-crescent-mask)" />
+        <!-- direction="ltr" + unicode-bidi hier is bewust: op de /ar/carte/
+             pagina staat dir="rtl" op <html>, en zonder deze override
+             draait de browser "100% HALAL" om tot "HALAL 100%" langs de
+             boog — dit is een universele/Latijnse zegeltekst, die moet er
+             in alle drie de talen identiek uitzien. -->
+        <text
+          font-size="12.5"
+          font-weight="800"
+          letter-spacing="2.5"
+          fill="var(--color-accent)"
+          direction="ltr"
+          style="unicode-bidi: bidi-override;"
+        >
+          <textPath href="#halal-arc" startOffset="50%" text-anchor="middle">100% HALAL</textPath>
+        </text>
+        <circle cx="42" cy="88" r="1.6" fill="var(--color-accent)" opacity="0.7" />
+        <circle cx="78" cy="88" r="1.6" fill="var(--color-accent)" opacity="0.7" />
+        <text
+          x="60"
+          y="93"
+          text-anchor="middle"
+          font-size="15"
+          font-family="'Noto Naskh Arabic', serif"
+          font-weight="700"
+          fill="var(--color-accent)"
+        >
+          حلال
+        </text>
+      </svg>
+    </div>
     <h1 class="font-display text-3xl sm:text-4xl font-semibold" style="color: var(--color-text-primary)">
       {t(copy.heroTitle, lang)}
     </h1>
@@ -514,13 +579,28 @@ function categoryId(categoryIndex: number, labelFr: string): string {
       <p class="text-sm" style="color: var(--color-text-muted)">
         {t(copy.visitWebsite, lang)}
       </p>
-      <a href={localizedPath('/', lang)} class="carte-site-invite-link">
-        {t(copy.visitWebsiteCta, lang)}
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="rtl:rotate-180">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </a>
+      <div class="carte-site-invite-links">
+        <a href={localizedPath('/', lang)} class="carte-site-invite-link">
+          {t(copy.visitWebsiteCta, lang)}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="rtl:rotate-180">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+        <!-- Google-avis, plek 2: hier onderaan bereikt de gasten die de
+             hele kaart doorbladeren zonder (nog) te bestellen — een groep
+             die plek 1 (het bestel-bevestigingsscherm) nooit ziet. Zelfde
+             visuele gewicht als de website-link ernaast, geen van beide
+             domineert. -->
+        {siteConfig.social.googleReviewsUrl && (
+          <a href={siteConfig.social.googleReviewsUrl} target="_blank" rel="noreferrer" class="carte-site-invite-link">
+            {t(copy.reviewFooterCta, lang)}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17l-6.1 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+            </svg>
+          </a>
+        )}
+      </div>
     </div>
   </section>
 
@@ -636,6 +716,27 @@ function categoryId(categoryIndex: number, labelFr: string): string {
           <p class="text-sm mt-2" style="color: var(--color-text-muted)">
             {t(copy.orderSuccessBody, lang)}
           </p>
+
+          <!-- Google-avis, plek 1: dit bevestigingsscherm — het moment vlak
+               ná een geslaagde actie (bestelling verstuurd), wanneer de
+               gast nog positief betrokken is. Bewust een stille tweede
+               link, niet de hoofdknop: er is nog niet gegeten, dus dit
+               vráágt niet "hoe was het eten", het geeft alleen de optie
+               vast klaar te zetten voor wie na afloop terug wil komen. -->
+          {siteConfig.social.googleReviewsUrl && (
+            <div class="review-nudge mt-5">
+              <p class="text-xs" style="color: var(--color-text-muted)">
+                {t(copy.reviewSuccessPrompt, lang)}
+              </p>
+              <a href={siteConfig.social.googleReviewsUrl} target="_blank" rel="noreferrer" class="review-nudge-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17l-6.1 3.5 1.5-6.8L2.2 9l6.9-.7L12 2z" />
+                </svg>
+                {t(copy.reviewSuccessCta, lang)}
+              </a>
+            </div>
+          )}
+
           <button type="button" class="cart-submit-btn mt-5" data-cart-success-close>
             {t(copy.orderSuccessClose, lang)}
           </button>
@@ -763,6 +864,14 @@ function categoryId(categoryIndex: number, labelFr: string): string {
     padding-top: 1.5rem;
     border-top: 1px solid var(--color-border);
   }
+  .carte-site-invite-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: 1.75rem;
+    row-gap: 0.4rem;
+  }
   .carte-site-invite-link {
     display: inline-flex;
     align-items: center;
@@ -779,6 +888,35 @@ function categoryId(categoryIndex: number, labelFr: string): string {
   .carte-site-invite-link:hover {
     gap: 0.6rem;
     border-color: var(--color-accent);
+  }
+
+  /* ---- Halal-zegel bovenaan de hero ---- */
+  .halal-seal {
+    filter: drop-shadow(0 2px 10px color-mix(in srgb, var(--color-accent) 25%, transparent));
+  }
+  @media (min-width: 640px) {
+    .halal-seal {
+      width: 96px;
+      height: 96px;
+    }
+  }
+
+  /* ---- Google-avis-uitnodiging in het bestel-bevestigingsscherm ---- */
+  .review-nudge {
+    padding-top: 1rem;
+    border-top: 1px dashed var(--color-border);
+  }
+  .review-nudge-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .review-nudge-link:hover {
+    text-decoration: underline;
   }
 
   /* ---- Trigger-rij: kleine tik-feedback ---- */
