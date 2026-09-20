@@ -1190,6 +1190,26 @@ export const fullMenu: FullMenuCategory[] = [
         image: '/images/carte/fruit-platter.webp',
         vegetarian: true,
       },
+      {
+        name: 'Birthday Cake',
+        description: {
+          fr: "Gâteau d'anniversaire, servi avec bougie sur demande.",
+          en: 'Birthday cake, served with a candle on request.',
+          ar: 'كعكة عيد ميلاد، تُقدَّم مع شمعة عند الطلب.',
+        },
+        story: {
+          fr: "Pour fêter une occasion spéciale à table : un gâteau moelleux, préparé pour être partagé, avec une bougie sur demande pour souffler avant de le déguster.",
+          en: 'To celebrate a special occasion at the table: a soft, shareable cake, with a candle on request to blow out before digging in.',
+          ar: 'للاحتفال بمناسبة خاصة على الطاولة: كعكة طرية للمشاركة، مع شمعة عند الطلب لإطفائها قبل التذوق.',
+        },
+        ingredients: {
+          fr: 'Génoise, crème, sucre, œufs, beurre (préparation variable selon disponibilité).',
+          en: 'Sponge cake, cream, sugar, eggs, butter (recipe may vary by availability).',
+          ar: 'كيك إسفنجي، كريمة، سكر، بيض، زبدة (قد تختلف المقادير حسب التوفر).',
+        },
+        priceMAD: 180,
+        vegetarian: true,
+      },
     ],
   },
   {
