@@ -543,7 +543,7 @@ export const fullMenu: FullMenuCategory[] = [
           en: 'Cubed meat, yoghurt, garlic, ginger, garam masala, red chilli, lemon juice.',
           ar: 'لحم مكعبات، زبادي، ثوم، زنجبيل، غارام ماسالا، فلفل أحمر، عصير ليمون.',
         },
-        priceMAD: 90,
+        priceMAD: 100,
         image: '/images/carte/boti-kabab.webp',
       },
     ],
