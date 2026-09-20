@@ -117,6 +117,19 @@
   }
   .chart-tooltip.show{opacity:1;}
   .chart-axis-label{font-size:10px;fill:var(--text-dimmer);}
+  /* Real HTML labels below the SVG — the SVG uses preserveAspectRatio="none"
+     so its own <text> gets squashed horizontally on narrow screens (viewBox
+     units don't scale 1:1 with physical pixels once width and height scale
+     differently). Rendering labels as normal DOM text keeps them legible at
+     any viewport width. */
+  .chart-labels{display:flex;margin-top:2px;}
+  /* Each span is one day-wide flex cell so spacing lines up with the bars,
+     but most cells are empty (see labelEvery in drawChart) — the text in a
+     labeled cell is allowed to visually overflow into its empty neighbors
+     rather than being clipped to its own sliver of a cell, which matters a
+     lot on narrow phones where a month view can be 30+ cells wide. */
+  .chart-labels span{flex:1;position:relative;height:1.2em;font-size:10.5px;color:var(--text-dimmer);}
+  .chart-labels span::after{content:attr(data-label);position:absolute;left:50%;top:0;transform:translateX(-50%);white-space:nowrap;}
 
   /* channel bars */
   .channel-row{display:flex;align-items:center;gap:12px;padding:9px 0;}
@@ -138,6 +151,28 @@
   .empty-note{color:var(--text-dimmer);font-size:13px;padding:16px 14px;}
 
   .loading{padding:60px 0;text-align:center;color:var(--text-dimmer);font-size:14px;}
+
+  /* --- mobile --- */
+  @media (max-width:640px){
+    .login-box{padding:32px 22px 26px;}
+    header{padding:12px 16px;gap:10px;}
+    .brand-title{font-size:17px;}
+    main{padding:18px 14px 44px;}
+    .section-title{font-size:12px;margin:26px 0 10px;}
+    .kpi-card{padding:16px 16px;}
+    .kpi-value{font-size:22px;}
+    .chart-panel{padding:14px 12px 8px;}
+    #revenueChart{height:170px;}
+    .channel-row{flex-wrap:wrap;gap:4px 10px;padding:11px 0;}
+    .channel-name{width:auto;flex:1 1 auto;order:1;}
+    .channel-value{width:auto;order:2;}
+    .channel-bar-track{flex-basis:100%;order:3;}
+    .gold-table th,.gold-table td{padding:9px 10px;font-size:12.5px;}
+    .header-right{width:100%;justify-content:flex-start;}
+    .range-controls{width:100%;}
+    .range-controls input[type="date"]{flex:1;min-width:0;}
+    .signout-btn{margin-left:auto;}
+  }
 </style>
 </head>
 <body>
@@ -536,7 +571,8 @@
       <div class="section-title">Revenue by day</div>
       <div class="panel chart-panel">
         <div class="chart-wrap">
-          <svg id="revenueChart" viewBox="0 0 1000 220" preserveAspectRatio="none"></svg>
+          <svg id="revenueChart" viewBox="0 0 1000 200" preserveAspectRatio="none"></svg>
+          <div class="chart-labels" id="chartLabels"></div>
           <div class="chart-tooltip" id="chartTooltip"></div>
         </div>
       </div>
@@ -638,19 +674,21 @@
   function drawChart(dayKeys, byDay, maxDay) {
     const svg = document.getElementById("revenueChart");
     const tooltip = document.getElementById("chartTooltip");
+    const labelsRow = document.getElementById("chartLabels");
     if (!svg) return;
     svg.innerHTML = "";
+    if (labelsRow) labelsRow.innerHTML = "";
     if (!dayKeys.length) {
       const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
       t.setAttribute("x", "500");
-      t.setAttribute("y", "110");
+      t.setAttribute("y", "100");
       t.setAttribute("text-anchor", "middle");
       t.setAttribute("class", "chart-axis-label");
       t.textContent = "No revenue in this period";
       svg.appendChild(t);
       return;
     }
-    const W = 1000, H = 220, padBottom = 24, padTop = 10;
+    const W = 1000, H = 200, padBottom = 4, padTop = 10;
     const barGap = 3;
     const barW = Math.max(2, W / dayKeys.length - barGap);
     const usableH = H - padBottom - padTop;
@@ -667,32 +705,46 @@
       rect.setAttribute("height", String(Math.max(1, h)));
       rect.setAttribute("rx", "3");
       rect.setAttribute("class", "chart-bar");
-      rect.addEventListener("mouseenter", (e) => {
+      const showTooltip = (clientX, clientY) => {
         tooltip.textContent = `${day}: ${money(val)}`;
         tooltip.classList.add("show");
-      });
-      rect.addEventListener("mousemove", (e) => {
         const wrapRect = svg.parentElement.getBoundingClientRect();
-        tooltip.style.left = e.clientX - wrapRect.left + "px";
-        tooltip.style.top = e.clientY - wrapRect.top + "px";
-      });
+        tooltip.style.left = clientX - wrapRect.left + "px";
+        tooltip.style.top = clientY - wrapRect.top + "px";
+      };
+      rect.addEventListener("mouseenter", (e) => showTooltip(e.clientX, e.clientY));
+      rect.addEventListener("mousemove", (e) => showTooltip(e.clientX, e.clientY));
       rect.addEventListener("mouseleave", () => tooltip.classList.remove("show"));
+      // Touch devices don't fire hover events — tap a bar to show its
+      // tooltip, tap elsewhere on the chart to dismiss it.
+      rect.addEventListener(
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          const t = e.touches[0];
+          showTooltip(t.clientX, t.clientY);
+        },
+        { passive: false }
+      );
       svg.appendChild(rect);
     });
-
-    // sparse day labels (avoid overlap on wide ranges)
-    const labelEvery = Math.ceil(dayKeys.length / 8);
-    dayKeys.forEach((day, i) => {
-      if (i % labelEvery !== 0) return;
-      const x = i * (W / dayKeys.length) + barW / 2;
-      const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      t.setAttribute("x", String(x));
-      t.setAttribute("y", String(H - 6));
-      t.setAttribute("text-anchor", "middle");
-      t.setAttribute("class", "chart-axis-label");
-      t.textContent = day.slice(5); // MM-DD
-      svg.appendChild(t);
+    svg.addEventListener("touchstart", (e) => {
+      if (e.target === svg) tooltip.classList.remove("show");
     });
+
+    // Sparse day labels as real HTML (see .chart-labels comment above) —
+    // one flex cell per day so spacing always matches the bars, text only
+    // set on every Nth cell to avoid crowding. Fewer labels on narrow phone
+    // screens, where each cell has less physical room.
+    if (labelsRow) {
+      const maxLabels = window.innerWidth < 480 ? 5 : 8;
+      const labelEvery = Math.ceil(dayKeys.length / maxLabels);
+      dayKeys.forEach((day, i) => {
+        const span = document.createElement("span");
+        if (i % labelEvery === 0) span.dataset.label = day.slice(5);
+        labelsRow.appendChild(span);
+      });
+    }
   }
 
   checkSession();
