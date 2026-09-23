@@ -1,6 +1,6 @@
 ---
-// Uses the real Chez Pino logo (yellow mark on transparent background,
-// public/brand/logo-pino.png) instead of the earlier typographic fallback.
+// Uses the real Indian Flavors logo mark (public/images/logo-mark.webp,
+// with a .png fallback for browsers without WebP support).
 import { siteConfig } from '../config/site.config';
 import { getReserveCtaLabel } from '../lib/nav';
 import { LANGUAGES, LANGUAGE_LABEL, LANGUAGE_NATIVE_NAME, localizedPath, arrow, t, type Language } from '../i18n/languages';
@@ -30,7 +30,10 @@ const langLinks = LANGUAGES.map((l) => ({ lang: l, href: localizedPath(currentPa
 <header id="site-header" class="sticky top-0 z-40 transition-all duration-300" data-scrolled="false">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
     <a href={localizedPath('/', lang)} class="flex items-center gap-2 min-w-0 shrink">
-      <img src="/brand/logo-pino.png" alt={siteConfig.identity.name} class="h-10 sm:h-12 w-auto" />
+      <picture>
+        <source srcset="/images/logo-mark.webp" type="image/webp" />
+        <img src="/images/logo-mark.png" alt={siteConfig.identity.name} class="h-10 sm:h-12 w-auto" />
+      </picture>
     </a>
 
     {!minimal && (
